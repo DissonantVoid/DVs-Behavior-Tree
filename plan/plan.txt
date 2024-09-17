@@ -1,0 +1,55 @@
+my behavior tree implementation to fill in gaps and issues I found with other implementations
+
+Notes:
+-keep all export variables public so they can be accessed from other scripts
+
+Stage 1:
+[X] essential nodes and tick system
+[X] nodes receive enter, exit, interrupt and tick
+
+conditional abort should be a feature of the compositor, allowing it to interupt low priority nodes or self when its first conditional child returns Success
+keep track of the currently running node and its index in the overall tree in the blackboard so we can use that to determine if conditional abort composites can run
+see https://www.youtube.com/watch?v=GFsK5x6ZW7k
+https://opsive.com/support/documentation/behavior-designer/conditional-aborts/
+
+[X] services, can be attached to a composite but unlike conditional aborts, they can't interrupt the tree, instead they run parallel shared code like contact damage while an enemy does different attacks
+services nodes must be placed before other children
+
+handle tree pausing
+
+[X] make tree inherite bt_node
+tick rate (how many frames between ticks)
+
+base class for compostes and decorators for common code :)
+including asserting that conditionals never return "running"
+
+[..] configuration warnings and tool for all nodes
+
+file template
+
+nodes:
+-play animation
+[X] -wait for some time (min-max)
+[X] -blackboard write, erase, check value
+-reactive sequence & selector
+-randomized sequence & selector
+-simple parallel
+
+Stage 2:
+make into plugin and set nodes to appear in the Add Child menu
+
+document exports and short descrption for each node
+
+support sub-trees and shared/multiple blackboards
+
+dynamic tree, support run-time modifications
+
+plugin for visualizing tree graph and monitors at run-time
+
+Stage 3:
+documentations
+unit tests
+example scenes and projects
+
+icons
+asset lib setup

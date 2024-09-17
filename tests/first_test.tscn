@@ -1,0 +1,24 @@
+[gd_scene load_steps=7 format=3 uid="uid://cfnbmibg03n32"]
+
+[ext_resource type="PackedScene" uid="uid://qseqna4tt4pl" path="res://behavior_tree/behavior_tree.tscn" id="1_blbbr"]
+[ext_resource type="Script" path="res://tests/first_test.gd" id="1_xujx0"]
+[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="2_p72fv"]
+[ext_resource type="PackedScene" uid="uid://dhp4pifglwy4c" path="res://behavior_tree/composites/bt_comp_sequence.tscn" id="2_qlavi"]
+[ext_resource type="PackedScene" uid="uid://bq36btxq5d66w" path="res://tests/move_to_random.tscn" id="5_bkbnh"]
+[ext_resource type="PackedScene" uid="uid://lt5d3j6avgcm" path="res://behavior_tree/leaves/bt_action_wait_for.tscn" id="6_7p70s"]
+
+[node name="FirstTest" type="Node2D"]
+script = ExtResource("1_xujx0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(310, 260)
+texture = ExtResource("2_p72fv")
+
+[node name="BehaviorTree" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("1_blbbr")]
+agent = NodePath("../Sprite2D")
+
+[node name="BtCompSequence" parent="BehaviorTree" instance=ExtResource("2_qlavi")]
+
+[node name="MoveToRandom" parent="BehaviorTree/BtCompSequence" instance=ExtResource("5_bkbnh")]
+
+[node name="BtActionWaitFor" parent="BehaviorTree/BtCompSequence" instance=ExtResource("6_7p70s")]

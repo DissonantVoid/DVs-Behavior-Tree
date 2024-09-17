@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://qseqna4tt4pl"]
+
+[ext_resource type="PackedScene" uid="uid://digb3l6cjvbdv" path="res://behavior_tree/bt_node.tscn" id="1_py8ql"]
+[ext_resource type="Script" path="res://behavior_tree/behavior_tree.gd" id="1_vsyu6"]
+
+[node name="BehaviorTree" instance=ExtResource("1_py8ql")]
+script = ExtResource("1_vsyu6")
+_is_active = true
+_tick_type = 0
+_frames_per_tick = 1

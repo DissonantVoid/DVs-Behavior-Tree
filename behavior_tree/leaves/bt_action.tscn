@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://upbew6q5f37f"]
+
+[ext_resource type="PackedScene" uid="uid://mot61qxpu5dq" path="res://behavior_tree/leaves/bt_leaf.tscn" id="1_ohf7v"]
+[ext_resource type="Script" path="res://behavior_tree/leaves/bt_action.gd" id="2_lp7n6"]
+
+[node name="BtAction" instance=ExtResource("1_ohf7v")]
+script = ExtResource("2_lp7n6")

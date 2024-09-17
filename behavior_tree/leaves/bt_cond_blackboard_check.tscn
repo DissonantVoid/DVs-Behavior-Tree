@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://cns3bvynlwnkv"]
+
+[ext_resource type="PackedScene" uid="uid://b76u6w4n7smdc" path="res://behavior_tree/leaves/bt_conditional.tscn" id="1_h42mb"]
+[ext_resource type="Script" path="res://behavior_tree/leaves/bt_cond_blackboard_check.gd" id="2_31glk"]
+
+[node name="BtCondBlackboardCheck" instance=ExtResource("1_h42mb")]
+script = ExtResource("2_31glk")
+_key = ""
+_condition = 0
+_value_expression = ""

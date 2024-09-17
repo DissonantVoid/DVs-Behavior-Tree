@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqixi14ahsc6f"]
+
+[ext_resource type="Script" path="res://behavior_tree/bt_service.gd" id="2_u0ssd"]
+
+[node name="BtService" type="Node"]
+script = ExtResource("2_u0ssd")

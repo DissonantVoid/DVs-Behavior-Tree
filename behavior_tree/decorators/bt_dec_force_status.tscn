@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnjdti3vr2d0o"]
+
+[ext_resource type="PackedScene" uid="uid://ddbk4u071ajk5" path="res://behavior_tree/decorators/bt_decorator.tscn" id="1_3iwst"]
+[ext_resource type="Script" path="res://behavior_tree/decorators/bt_dec_force_status.gd" id="2_aijcp"]
+
+[node name="BtDecForceStatus" instance=ExtResource("1_3iwst")]
+script = ExtResource("2_aijcp")
+_status = 0
