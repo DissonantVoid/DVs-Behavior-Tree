@@ -11,7 +11,8 @@ enum ActionType {write, erase}
 @export var value_expression : String
 @export var must_exist : bool
 
-func tick(_delta : float) -> Status:
+func tick(delta : float) -> Status:
+	super(delta)
 	if action == ActionType.write:
 		var exp : Expression = Expression.new()
 		exp.parse(value_expression)

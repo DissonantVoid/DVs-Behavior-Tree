@@ -1,5 +1,4 @@
-class_name BtDecInverter
-extends "res://behavior_tree/decorators/bt_decorator.gd"
+extends "res://behavior_tree/composites/bt_comp_random.gd"
 
 func tick(delta : float) -> Status:
 	super(delta)
@@ -8,9 +7,15 @@ func tick(delta : float) -> Status:
 	var status : Status = _active_child.tick(delta)
 	if status == Status.running:
 		return Status.running
+	
 	elif status == Status.success:
-		return Status.failure
+		# run next random child
+		_active_child.exit(false)
+		_active_child = _pick_rand_child()
+		_active_child.enter()
+		return Status.running
+	
 	elif status == Status.failure:
-		return Status.success
+		return Status.failure
 	
 	return Status.undefined

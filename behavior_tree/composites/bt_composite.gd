@@ -10,6 +10,7 @@ var _services : Array[BtService]
 var _active_child : BtNode = null
 
 func enter():
+	super()
 	# find first valid child
 	var valid_child : BtNode = _get_next_valid_child()
 	if valid_child:
@@ -20,12 +21,15 @@ func enter():
 	for child : Node in get_children():
 		if child is BtService:
 			_services.append(child)
-		else: break
+		else:
+			# ignore serviced placed after other nodes
+			break
 	
 	for service : BtService in _services:
 		service.parent_entered()
 
 func exit(is_interrupted : bool):
+	super(is_interrupted)
 	if _active_child:
 		_active_child.exit(is_interrupted)
 		_active_child = null

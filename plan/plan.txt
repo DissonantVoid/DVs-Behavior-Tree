@@ -3,6 +3,7 @@ my behavior tree implementation to fill in gaps and issues I found with other im
 Notes:
 -keep all export variables public in case users wish to access from other scripts
 -if a node emits an editor warning in _get_configuration_warnings, don't repeat the warning at run time somewhere else
+-avoid asserting, prefer throwing warnings and accounting for errors instead of crashing
 
 Resources:
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference
@@ -11,16 +12,19 @@ https://www.gamedeveloper.com/programming/behavior-trees-for-ai-how-they-work
 Stage 1:
 [X] essential nodes and tick system
 [X] nodes receive enter, exit, interrupt and tick
+[X] templates for node and service
 
 conditional abort should be a feature of the compositor, allowing it to interupt low priority nodes or self when its first conditional child returns Success
-keep track of the currently running node and its index in the overall tree in the blackboard so we can use that to determine if conditional abort composites can run
 see https://www.youtube.com/watch?v=GFsK5x6ZW7k
 https://opsive.com/support/documentation/behavior-designer/conditional-aborts/
+I can think of a few approaches to how we determine if a conditional abort node should be ticked:
+-1 each node can keep track of its index in the overall tree then use that index to compare it to other CA composites. simple but a pain in dynamic trees
+-2 CA composites listen for their parent's enter and start ticking as long as parent is ticking and active sibling is lowe priority
 
 [X] services, can be attached to a composite but unlike conditional aborts, they can't interrupt the tree, instead they run parallel shared code like contact damage while an enemy does different attacks
 services nodes must be placed before other children
 
-handle tree pausing
+[X] handle tree pausing
 
 node names are ugly with all the bt_ stuff, need a balance between readability and organizing
 
@@ -32,22 +36,28 @@ including asserting that conditionals never return "running"
 
 [..] configuration warnings and tool for all nodes
 
-file template
-
 nodes:
--play animation
 [X] -wait for some time (min-max)
 [X] -blackboard write, erase, check value
--reactive sequence & selector
--randomized sequence & selector
--simple parallel
+[X] -randomized sequence & selector
+
 
 Stage 2:
+nodes:
+-reactive sequence & selector
+-simple parallel
+-common leaves (play animation, play sound etc..)
+
 make into plugin and set nodes to appear in the Add Child menu
 
 document exports and short descrption for each node
 
-unit tests
+unit tests:
+-all node types and their expected behavior
+-conditional aborts
+-pausing/unpausing
+-changing tree nodes at run-time
+-practical example
 
 support sub-trees and shared/multiple blackboards
 

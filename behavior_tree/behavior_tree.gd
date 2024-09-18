@@ -4,11 +4,11 @@ extends "res://behavior_tree/bt_node.gd"
 
 enum TickType {idle, physics}
 
-@export var is_active : bool :
+@export var is_active : bool : # TODO: changing most of these vars at run time isn't handled properly
 	set(value):
 		is_active = value
 		_update_tick_type()
-# TODO: hide if sub-tree
+@export var agent : Node
 @export var tick_type : TickType :
 	set(value):
 		tick_type = value
@@ -19,7 +19,6 @@ enum TickType {idle, physics}
 ## if true and frames_per_tick > 1, the frame counter will start at a random value between 1 and frames_per_tick
 ## this is meant to spread the CPU load when having multiple instances of the scene this tree belongs to
 @export var randomize_tick_start : bool = true
-@export var agent : Node
 
 var blackboard : Dictionary
 
@@ -67,15 +66,28 @@ func _physics_process(delta : float):
 	if Engine.is_editor_hint(): return
 	tick(delta)
 
+func _notification(what : int):
+	if Engine.is_editor_hint(): return
+	
+	if what == NOTIFICATION_PAUSED:
+		# interrupt flow
+		if _first_child:
+			_first_child.exit(true)
+	elif what == NOTIFICATION_UNPAUSED:
+		_update_tick_type()
+
 func enter():
+	super()
 	if _first_child:
 		_first_child.enter()
 
 func exit(is_interrupted : bool):
+	super(is_interrupted)
 	if _first_child:
 		_first_child.exit(is_interrupted)
 
 func tick(delta : float) -> Status:
+	super(delta)
 	if _is_subtree == false:
 		_frames_counter += 1
 		if _frames_counter == frames_per_tick:
@@ -94,7 +106,6 @@ func tick(delta : float) -> Status:
 
 func _update_tick_type():
 	if Engine.is_editor_hint(): return
-	
 	if is_node_ready() == false: await self.ready
 	
 	# if this isn't a sub-tree of another tree, we run things ourselves

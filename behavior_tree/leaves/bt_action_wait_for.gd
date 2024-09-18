@@ -24,6 +24,7 @@ func exit(is_interrupted : bool):
 	_timer.stop()
 
 func tick(delta : float) -> Status:
+	super(delta)
 	if _timer.is_stopped():
 		return Status.success
 	return Status.running

@@ -1,9 +1,10 @@
+@tool
+class_name BtCompSequence
 extends "res://behavior_tree/composites/bt_composite.gd"
-
 
 func tick(delta : float) -> Status:
 	super(delta)
-	if _active_child == null: return Status.success
+	if _active_child == null: return Status.failure
 	
 	var status : Status = _active_child.tick(delta)
 	if status == Status.running:

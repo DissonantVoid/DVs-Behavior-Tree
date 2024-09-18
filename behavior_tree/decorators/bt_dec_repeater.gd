@@ -10,6 +10,7 @@ func enter():
 	_repeated = 0
 
 func tick(delta : float) -> Status:
+	super(delta)
 	if _active_child == null: return Status.failure
 	
 	var status : Status = _active_child.tick(delta)

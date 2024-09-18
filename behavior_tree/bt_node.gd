@@ -2,22 +2,27 @@
 class_name BtNode
 extends Node
 
+signal entered
+signal exited
+signal ticking
+
 enum Status {undefined, running, success=3, failure=4}
 enum StatusShort {success=3, failure=4}
 
 var behavior_tree : BehaviorTree
 
 func enter():
-	return
+	entered.emit()
 
 func exit(is_interrupted : bool):
-	return
+	exited.emit()
 
 func tick(delta : float) -> Status:
-	return Status.success
+	ticking.emit()
+	return Status.undefined
 
 func _get_configuration_warnings() -> PackedStringArray:
-	if get_parent() is not BtNode && get_parent() is not BehaviorTree:
+	if get_parent() is not BtNode:
 		return ["Behavior tree nodes must be parented to other behavior nodes"]
 	return []
 

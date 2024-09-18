@@ -1,3 +1,4 @@
+@tool
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
 @export var max : float = 1.0 :
@@ -23,6 +24,7 @@ func exit(is_interrupted : bool):
 	_timer.stop()
 
 func tick(delta : float) -> Status:
+	super(delta)
 	if _active_child == null: return Status.failure
 	if _timer.is_stopped():
 		return Status.failure

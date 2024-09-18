@@ -9,7 +9,8 @@ enum ConditionType {
 @export var condition : ConditionType
 @export var value_expression : String
 
-func tick(_delta : float) -> Status:
+func tick(delta : float) -> Status:
+	super(delta)
 	if behavior_tree.blackboard.has(key) == false:
 		return Status.failure
 	

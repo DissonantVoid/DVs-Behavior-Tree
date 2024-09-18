@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpn00wdjm6lu4"]
+
+[ext_resource type="PackedScene" uid="uid://of66qwagtaku" path="res://behavior_tree/composites/bt_comp_random.tscn" id="1_dpm8m"]
+[ext_resource type="Script" path="res://behavior_tree/composites/bt_comp_rand_sequence.gd" id="2_sg377"]
+
+[node name="BtCompRandSequence" instance=ExtResource("1_dpm8m")]
+script = ExtResource("2_sg377")
