@@ -5,4 +5,4 @@
 
 [node name="BtDecForceStatus" instance=ExtResource("1_3iwst")]
 script = ExtResource("2_aijcp")
-_status = 0
+status = 0

@@ -5,6 +5,7 @@
 
 [node name="BtCondBlackboardCheck" instance=ExtResource("1_h42mb")]
 script = ExtResource("2_31glk")
-_key = ""
-_condition = 0
-_value_expression = ""
+use_global_blackboard = false
+key = ""
+condition = 0
+value_expression = ""

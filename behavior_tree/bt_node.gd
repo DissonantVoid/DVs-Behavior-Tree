@@ -4,12 +4,24 @@ extends Node
 
 signal entered
 signal exited
-signal ticking
+signal ticking(delta)
 
 enum Status {undefined, running, success=3, failure=4}
-enum StatusShort {success=3, failure=4}
+enum StatusBinary               {success=3, failure=4}
 
 var behavior_tree : BehaviorTree
+
+func _enter_tree():
+	if Engine.is_editor_hint(): return
+	
+	if self is BehaviorTree:
+		behavior_tree = self
+	elif get_parent() is BtNode:
+		get_parent().behavior_tree.register_node(self)
+
+func _exit_tree():
+	if Engine.is_editor_hint(): return
+	behavior_tree.unregister_node(self)
 
 func enter():
 	entered.emit()
@@ -18,7 +30,7 @@ func exit(is_interrupted : bool):
 	exited.emit()
 
 func tick(delta : float) -> Status:
-	ticking.emit()
+	ticking.emit(delta)
 	return Status.undefined
 
 func _get_configuration_warnings() -> PackedStringArray:

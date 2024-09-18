@@ -5,7 +5,8 @@
 
 [node name="BtActionModifyBlackboard" instance=ExtResource("1_1ppp3")]
 script = ExtResource("2_sidfb")
-_action = 0
-_key = ""
-_value_expression = ""
-_must_exist = false
+use_global_blackboard = null
+action = 0
+key = ""
+value_expression = ""
+must_exist = false

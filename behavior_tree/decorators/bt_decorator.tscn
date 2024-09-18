@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ddbk4u071ajk5"]
 
-[ext_resource type="PackedScene" uid="uid://digb3l6cjvbdv" path="res://behavior_tree/bt_node.tscn" id="1_b2bts"]
+[ext_resource type="PackedScene" uid="uid://cs2vra32ita8w" path="res://behavior_tree/bt_branch.tscn" id="1_b2bts"]
 [ext_resource type="Script" path="res://behavior_tree/decorators/bt_decorator.gd" id="2_cyje3"]
 
 [node name="BtDecorator" instance=ExtResource("1_b2bts")]

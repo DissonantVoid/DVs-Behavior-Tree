@@ -1,3 +1,4 @@
+@tool
 extends "res://behavior_tree/leaves/bt_conditional.gd"
 
 enum ConditionType {
@@ -5,13 +6,17 @@ enum ConditionType {
 	more_or_equal, not_equal
 }
 
+@export var use_global_blackboard : bool = false
 @export var key : String
 @export var condition : ConditionType
 @export var value_expression : String
 
 func tick(delta : float) -> Status:
 	super(delta)
-	if behavior_tree.blackboard.has(key) == false:
+	var blackboard : Dictionary =\
+		behavior_tree.global_blackboard if use_global_blackboard else behavior_tree.blackboard
+	
+	if blackboard.has(key) == false:
 		return Status.failure
 	
 	var exp : Expression = Expression.new()
@@ -21,17 +26,17 @@ func tick(delta : float) -> Status:
 	if exp.has_execute_failed():
 		return Status.failure
 	
-	if condition == ConditionType.equal && behavior_tree.blackboard[key] == result:
+	if condition == ConditionType.equal && blackboard[key] == result:
 		return Status.success
-	if condition == ConditionType.less_than && behavior_tree.blackboard[key] < result:
+	if condition == ConditionType.less_than && blackboard[key] < result:
 		return Status.success
-	if condition == ConditionType.less_or_equal && behavior_tree.blackboard[key] <= result:
+	if condition == ConditionType.less_or_equal && blackboard[key] <= result:
 		return Status.success
-	if condition == ConditionType.more_than && behavior_tree.blackboard[key] > result:
+	if condition == ConditionType.more_than && blackboard[key] > result:
 		return Status.success
-	if condition == ConditionType.more_or_equal && behavior_tree.blackboard[key] >= result:
+	if condition == ConditionType.more_or_equal && blackboard[key] >= result:
 		return Status.success
-	if condition == ConditionType.not_equal && behavior_tree.blackboard[key] != result:
+	if condition == ConditionType.not_equal && blackboard[key] != result:
 		return Status.success
 	
 	return Status.undefined

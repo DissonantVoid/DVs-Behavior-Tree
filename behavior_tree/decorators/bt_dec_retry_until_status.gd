@@ -1,6 +1,6 @@
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
-@export var status : StatusShort
+@export var status : StatusBinary
 ## if true when the child returns a status of running the tried counter will not increment
 @export var ignore_running_status : bool = false
 @export var max_tries : int = 0 :

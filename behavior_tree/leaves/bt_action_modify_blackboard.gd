@@ -3,6 +3,7 @@ extends "res://behavior_tree/leaves/bt_action.gd"
 
 enum ActionType {write, erase}
 
+@export var use_global_blackboard : bool = false
 @export var action : ActionType :
 	set(value):
 		action = value
@@ -13,6 +14,9 @@ enum ActionType {write, erase}
 
 func tick(delta : float) -> Status:
 	super(delta)
+	var blackboard : Dictionary =\
+		behavior_tree.global_blackboard if use_global_blackboard else behavior_tree.blackboard
+	
 	if action == ActionType.write:
 		var exp : Expression = Expression.new()
 		exp.parse(value_expression)
@@ -21,16 +25,16 @@ func tick(delta : float) -> Status:
 			return Status.failure
 		
 		# set value
-		behavior_tree.blackboard[key] = result
+		blackboard[key] = result
 		return Status.success
 		
 	elif action == ActionType.erase:
-		if behavior_tree.blackboard.has(key) == false:
+		if blackboard.has(key) == false:
 			# key doesn't exist, proceed based on must_exist
 			if must_exist: return Status.failure
 			else: return Status.success
 		else:
-			behavior_tree.blackboard.erase(key)
+			blackboard.erase(key)
 			return Status.success
 	
 	return Status.undefined

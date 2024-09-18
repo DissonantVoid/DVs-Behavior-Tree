@@ -14,12 +14,9 @@ Stage 1:
 [X] nodes receive enter, exit, interrupt and tick
 [X] templates for node and service
 
-conditional abort should be a feature of the compositor, allowing it to interupt low priority nodes or self when its first conditional child returns Success
+[X]conditional abort should be a feature of the compositor, allowing it to interupt low priority nodes or self when its first conditional child returns Success
 see https://www.youtube.com/watch?v=GFsK5x6ZW7k
 https://opsive.com/support/documentation/behavior-designer/conditional-aborts/
-I can think of a few approaches to how we determine if a conditional abort node should be ticked:
--1 each node can keep track of its index in the overall tree then use that index to compare it to other CA composites. simple but a pain in dynamic trees
--2 CA composites listen for their parent's enter and start ticking as long as parent is ticking and active sibling is lowe priority
 
 [X] services, can be attached to a composite but unlike conditional aborts, they can't interrupt the tree, instead they run parallel shared code like contact damage while an enemy does different attacks
 services nodes must be placed before other children
@@ -31,8 +28,7 @@ node names are ugly with all the bt_ stuff, need a balance between readability a
 [X] make tree inherite bt_node
 tick rate (how many frames between ticks)
 
-base class for compostes and decorators for common code :)
-including asserting that conditionals never return "running"
+[X]base class for composites and decorators for common code :)
 
 [..] configuration warnings and tool for all nodes
 
@@ -48,13 +44,17 @@ nodes:
 -simple parallel
 -common leaves (play animation, play sound etc..)
 
+incorporate events, we can have nodes like a signal sequence that only runs when a signal it's listening to fire in which case it interrupt low priority nodes
+
 make into plugin and set nodes to appear in the Add Child menu
 
 document exports and short descrption for each node
 
 unit tests:
 -all node types and their expected behavior
+-blackboard
 -conditional aborts
+-forcing a path from any node to any other
 -pausing/unpausing
 -changing tree nodes at run-time
 -practical example
@@ -76,3 +76,5 @@ asset lib setup
 
 Stage 4 (future):
 make into C++ module
+translation
+multiplayer support

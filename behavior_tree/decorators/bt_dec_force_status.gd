@@ -1,6 +1,6 @@
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
-@export var status : StatusShort
+@export var status : StatusBinary
 
 func tick(delta : float) -> Status:
 	super(delta)
