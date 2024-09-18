@@ -5,6 +5,9 @@
 
 [node name="BehaviorTree" instance=ExtResource("1_py8ql")]
 script = ExtResource("1_vsyu6")
-_is_active = true
-_tick_type = 0
-_frames_per_tick = 1
+is_active = true
+tick_type = 0
+frames_per_tick = 1
+randomize_tick_start = true
+
+[connection signal="tree_entered" from="." to="." method="_on_tree_entered"]

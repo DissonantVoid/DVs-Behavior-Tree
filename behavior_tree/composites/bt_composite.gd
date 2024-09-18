@@ -10,13 +10,13 @@ var _services : Array[BtService]
 var _active_child : BtNode = null
 
 func enter():
-	# assign child here so tree can be dynamic at run-time
-	# TODO: first child might not be a bt_node, maybe update _get_next_child_index to take care of this
-	#       same for decorator base class
-	if get_child_count() > 0:
-		_active_child = get_child(0)
+	# find first valid child
+	var valid_child : BtNode = _get_next_valid_child()
+	if valid_child:
+		_active_child = valid_child
 		_active_child.enter()
 	
+	# services
 	for child : Node in get_children():
 		if child is BtService:
 			_services.append(child)
@@ -34,9 +34,11 @@ func exit(is_interrupted : bool):
 		service.parent_exiting()
 	_services.clear()
 
-func tick(delta : float):
-	for service : BtService in _services:
-		service.tick(delta)
-
 func _get_configuration_warnings() -> PackedStringArray:
+	var valid_children : int = 0
+	for child : Node in get_children():
+		if child is BtNode: valid_children += 1
+	
+	if valid_children < 2:
+		return ["Composites must have at least 2 child nodes to work properly"]
 	return []

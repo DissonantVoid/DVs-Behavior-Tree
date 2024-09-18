@@ -24,5 +24,4 @@ func tick(delta : float) -> Status:
 			_active_child.enter()
 			return Status.running
 	
-	# NoT aLl PaThS rEtUrN a VaLuE
-	return Status.running
+	return Status.undefined

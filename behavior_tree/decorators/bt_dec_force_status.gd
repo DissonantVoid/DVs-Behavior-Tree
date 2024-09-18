@@ -1,6 +1,6 @@
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
-@export_enum("success", "failure") var status : int = 0
+@export var status : StatusShort
 
 func tick(delta : float) -> Status:
 	if status == 0:

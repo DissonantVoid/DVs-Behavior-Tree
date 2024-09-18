@@ -2,39 +2,47 @@
 class_name BehaviorTree
 extends "res://behavior_tree/bt_node.gd"
 
-enum _TickType {idle, physics}
+enum TickType {idle, physics}
 
 @export var is_active : bool :
 	set(value):
 		is_active = value
 		_update_tick_type()
 # TODO: hide if sub-tree
-@export var tick_type : _TickType :
+@export var tick_type : TickType :
 	set(value):
 		tick_type = value
 		_update_tick_type()
 @export var frames_per_tick : int = 1 :
 	set(value):
 		frames_per_tick = max(value, 1)
+## if true and frames_per_tick > 1, the frame counter will start at a random value between 1 and frames_per_tick
+## this is meant to spread the CPU load when having multiple instances of the scene this tree belongs to
+@export var randomize_tick_start : bool = true
 @export var agent : Node
 
 var blackboard : Dictionary
 
-var _first_child : BtNode = null
+var _first_child : BtNode = null # TODO: detect first child being added or replaced at run-time
 var _frames_counter : int = 0
 var _is_subtree : bool
 
 func _ready():
+	_check_if_subtree()
+	
 	if Engine.is_editor_hint(): return
 	
-	_is_subtree = get_parent() is BtNode
 	_first_child = _get_next_valid_child()
+	if randomize_tick_start && frames_per_tick > 1:
+		_frames_counter = randi_range(0, frames_per_tick-1)
 	
+	child_entered_tree.connect(_on_node_entered_tree)
+	child_exiting_tree.connect(_on_node_exiting_from_tree)
 	var setup_recursive : Callable = func(node : Node, func_ : Callable):
 		for child : Node in node.get_children():
 			if child is BehaviorTree:
 				# TODO: check for further sub-trees and set them up
-				pass
+				push_warning("Sub-trees not fully supported yet")
 			else:
 				if child is BtNode || child is BtService:
 					# provide reference to tree
@@ -68,11 +76,12 @@ func exit(is_interrupted : bool):
 		_first_child.exit(is_interrupted)
 
 func tick(delta : float) -> Status:
-	_frames_counter += 1
-	if _frames_counter == frames_per_tick:
-		_frames_counter = 0
-	else:
-		return Status.running
+	if _is_subtree == false:
+		_frames_counter += 1
+		if _frames_counter == frames_per_tick:
+			_frames_counter = 0
+		else:
+			return Status.running
 	
 	if _first_child:
 		var status : Status = _first_child.tick(delta)
@@ -90,17 +99,32 @@ func _update_tick_type():
 	
 	# if this isn't a sub-tree of another tree, we run things ourselves
 	if _is_subtree == false && is_active && _first_child:
-		set_process(tick_type == _TickType.idle)
-		set_physics_process(tick_type == _TickType.physics)
+		_first_child.enter()
+		set_process(tick_type == TickType.idle)
+		set_physics_process(tick_type == TickType.physics)
 
-func _on_node_entered_tree(node : Node):
-	pass
+func _check_if_subtree():
+	_is_subtree = get_parent() is BtNode
+	notify_property_list_changed()
 
-func _on_node_exiting_from_tree(node : Node):
-	pass
-
+func _validate_property(property : Dictionary):
+	if ((property["name"] == "tick_type" || property["name"] == "frames_per_tick")
+	&& _is_subtree):
+		# hide tick_type and frames_per_tick if this is a sub-tree
+		property.usage = PROPERTY_USAGE_NO_EDITOR
 
 func _get_configuration_warnings() -> PackedStringArray:
 	if _get_valid_children().size() != 1:
 		return ["Behavior tree must have a single BtNode child"]
 	return []
+
+func _on_tree_entered():
+	# subtree moved, reevaluate some variables
+	update_configuration_warnings()
+	_check_if_subtree()
+
+func _on_node_entered_tree(node : Node):
+	push_warning("Dynamic tree support not available yet, please avoid changing tree order at runtime")
+
+func _on_node_exiting_from_tree(node : Node):
+	push_warning("Dynamic tree support not available yet, please avoid changing tree order at runtime")

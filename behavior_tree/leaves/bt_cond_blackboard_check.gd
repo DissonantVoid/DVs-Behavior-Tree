@@ -33,5 +33,4 @@ func tick(_delta : float) -> Status:
 	if condition == ConditionType.not_equal && behavior_tree.blackboard[key] != result:
 		return Status.success
 	
-	# NoT aLl PaThS rEtUrN a VaLuE
-	return Status.running
+	return Status.undefined

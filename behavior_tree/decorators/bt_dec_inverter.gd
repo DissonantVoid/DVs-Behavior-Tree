@@ -12,5 +12,4 @@ func tick(delta : float) -> Status:
 	elif status == Status.failure:
 		return Status.success
 	
-	# NoT aLl PaThS rEtUrN a VaLuE
-	return Status.running
+	return Status.undefined

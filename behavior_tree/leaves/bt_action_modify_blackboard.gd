@@ -32,11 +32,10 @@ func tick(_delta : float) -> Status:
 			behavior_tree.blackboard.erase(key)
 			return Status.success
 	
-	# NoT aLl PaThS rEtUrN a VaLuE
-	return Status.running
+	return Status.undefined
 
 func _validate_property(property : Dictionary):
 	if property["name"] == "value_expression" && action == ActionType.erase:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
-	if property["name"] == "must_exist" && action != ActionType.erase:
+	elif property["name"] == "must_exist" && action != ActionType.erase:
 		property.usage = PROPERTY_USAGE_NO_EDITOR

@@ -1,15 +1,17 @@
+@tool
 class_name BtNode
 extends Node
 
-enum Status {running, success, failure}
+enum Status {undefined, running, success=3, failure=4}
+enum StatusShort {success=3, failure=4}
 
 var behavior_tree : BehaviorTree
 
 func enter():
-	pass
+	return
 
 func exit(is_interrupted : bool):
-	pass
+	return
 
 func tick(delta : float) -> Status:
 	return Status.success
@@ -30,7 +32,7 @@ func _get_next_valid_child(index : int = -1) -> BtNode:
 		if child is BtNode:
 			return child
 		
-		index += 1
+		next_index += 1
 	
 	return null
 
@@ -42,6 +44,6 @@ func _get_valid_children() -> Array[BtNode]:
 		if child == null: break
 		else: children.append(child)
 		
-		index += 1
+		index = child.get_index()
 	
 	return children

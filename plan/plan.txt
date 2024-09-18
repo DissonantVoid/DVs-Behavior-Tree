@@ -1,7 +1,12 @@
 my behavior tree implementation to fill in gaps and issues I found with other implementations
 
 Notes:
--keep all export variables public so they can be accessed from other scripts
+-keep all export variables public in case users wish to access from other scripts
+-if a node emits an editor warning in _get_configuration_warnings, don't repeat the warning at run time somewhere else
+
+Resources:
+https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference
+https://www.gamedeveloper.com/programming/behavior-trees-for-ai-how-they-work
 
 Stage 1:
 [X] essential nodes and tick system
@@ -16,6 +21,8 @@ https://opsive.com/support/documentation/behavior-designer/conditional-aborts/
 services nodes must be placed before other children
 
 handle tree pausing
+
+node names are ugly with all the bt_ stuff, need a balance between readability and organizing
 
 [X] make tree inherite bt_node
 tick rate (how many frames between ticks)
@@ -40,16 +47,22 @@ make into plugin and set nodes to appear in the Add Child menu
 
 document exports and short descrption for each node
 
+unit tests
+
 support sub-trees and shared/multiple blackboards
 
 dynamic tree, support run-time modifications
 
-plugin for visualizing tree graph and monitors at run-time
+plugin for visualizing tree graph and monitors at run-time,
+support placing breakpoints on a specific node in the graph
+use node name and editor description for the graph
 
 Stage 3:
 documentations
-unit tests
 example scenes and projects
 
 icons
 asset lib setup
+
+Stage 4 (future):
+make into C++ module

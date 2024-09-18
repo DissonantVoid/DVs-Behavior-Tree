@@ -1,7 +1,7 @@
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
-@export_enum("success", "failure") var status : int = 0
-## if true when the child returns a status of success the tried counter will not increment
+@export var status : StatusShort
+## if true when the child returns a status of running the tried counter will not increment
 @export var ignore_running_status : bool = false
 @export var max_tries : int = 0 :
 	set(value):
