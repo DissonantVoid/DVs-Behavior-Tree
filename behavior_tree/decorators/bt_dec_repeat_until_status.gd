@@ -1,10 +1,9 @@
 @tool
-class_name BtDecRetryUntilStatus
+class_name BtDecRepeatUntilStatus
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
 @export var status : StatusBinary
-## if true when the child returns a status of running the tried counter will not increment
-@export var ignore_running_status : bool = false
+## 0 = infinite
 @export var max_tries : int = 0 :
 	set(value):
 		max_tries = max(value, 0)
@@ -19,13 +18,13 @@ func tick(delta : float) -> Status:
 	super(delta)
 	if _active_child == null: return Status.failure
 	
-	var status : Status = _active_child.tick(delta)
+	var child_status : Status = _active_child.tick(delta)
 	
-	if (status == Status.success && status == 0 ||
-	status == Status.failure && status == 0):
+	if (child_status == Status.success && status == StatusBinary.success ||
+	child_status == Status.failure && status == StatusBinary.failure):
 		return Status.success
 	
-	if max_tries > 0 && (status != Status.running or ignore_running_status):
+	if max_tries > 0:
 		_tried += 1
 		if _tried == max_tries:
 			return Status.success

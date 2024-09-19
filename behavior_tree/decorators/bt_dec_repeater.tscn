@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://dnqa8kb1p5hag"]
-
-[ext_resource type="PackedScene" uid="uid://ddbk4u071ajk5" path="res://behavior_tree/decorators/bt_decorator.tscn" id="1_0fknm"]
-[ext_resource type="Script" path="res://behavior_tree/decorators/bt_dec_repeater.gd" id="2_mhdfl"]
-
-[node name="BtDecRepeater" instance=ExtResource("1_0fknm")]
-script = ExtResource("2_mhdfl")
-_repeat_count = 0

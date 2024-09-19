@@ -9,7 +9,7 @@ Resources:
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference
 https://www.gamedeveloper.com/programming/behavior-trees-for-ai-how-they-work
 
-Stage 1:
+Stage 1 (alpha):
 [X] essential nodes and tick system
 [X] nodes receive enter, exit, interrupt and tick
 [X] templates for node and service
@@ -30,25 +30,32 @@ tick rate (how many frames between ticks)
 
 [X]base class for composites and decorators for common code :)
 
-[..] configuration warnings (composites and decorators left) and tool for all nodes
+[X] configuration warnings and tool for all nodes
 
 nodes:
 [X] -wait for some time (min-max)
 [X] -blackboard write, erase, check value
 [X] -randomized sequence & selector
 
+[] ensure nodes work as expected so we can move to v1.0
 
-Stage 2:
-nodes:
--reactive sequence & selector
-[X]-simple parallel
--common leaves (play animation, play sound etc..)
-
-incorporate events, we can have nodes like a signal sequence that only runs when a signal it's listening to fire in which case it interrupt low priority nodes
-
+Stage 2 (v1.0):
 make into plugin and set nodes to appear in the Add Child menu
 
 document exports and short descrption for each node
+
+nodes:
+-reactive sequence & selector
+[X]-simple parallel
+-rename throttle into cooldown
+-event listener that can interrupt low priority branches
+
+additional nodes (in their own "extra" folder so we don't bloat the main folder):
+-play animation (optional wait for finish)
+-play sound (optional wait for finish)
+-agent look at (2d/3d)
+-play particles (optional wait for finish)
+-instantiate object (pos, rot, scale)
 
 unit tests:
 -all node types and their expected behavior
@@ -59,7 +66,7 @@ unit tests:
 -changing tree nodes at run-time
 -practical example
 
-support sub-trees and shared/multiple blackboards
+[X]support sub-trees and shared/multiple blackboards
 
 [-] dynamic tree, support run-time modifications
 
@@ -78,4 +85,3 @@ Stage 4 (future):
 make into C++ module
 translation
 multiplayer support
-

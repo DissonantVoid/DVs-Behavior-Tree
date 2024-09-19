@@ -4,6 +4,8 @@ extends "res://behavior_tree/bt_node.gd"
 
 var _active_child : BtNode = null
 
+# TODO: monitor child_entered/exited and push error since the tree is static
+
 func exit(is_interrupted : bool):
 	super(is_interrupted)
 	if _active_child:

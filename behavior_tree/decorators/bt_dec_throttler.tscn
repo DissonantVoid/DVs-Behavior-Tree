@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://cusj65ruuii2u"]
-
-[ext_resource type="PackedScene" uid="uid://ddbk4u071ajk5" path="res://behavior_tree/decorators/bt_decorator.tscn" id="1_33q5a"]
-[ext_resource type="Script" path="res://behavior_tree/decorators/bt_dec_throttler.gd" id="2_ddwrq"]
-
-[node name="BtDecThrottler" instance=ExtResource("1_33q5a")]
-script = ExtResource("2_ddwrq")
-tick_every = 2

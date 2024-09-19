@@ -37,7 +37,7 @@ func _ready():
 		if child is BtService:
 			_services.append(child)
 		else:
-			# ignore serviced placed after other nodes
+			# ignore services placed after other nodes
 			break
 
 func enter():

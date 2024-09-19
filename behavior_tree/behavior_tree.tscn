@@ -6,7 +6,7 @@
 [node name="BehaviorTree" instance=ExtResource("1_py8ql")]
 script = ExtResource("1_vsyu6")
 is_active = true
-_force_local_blackboard = null
+_force_local_blackboard = false
 tick_type = 0
 frames_per_tick = 1
-_randomize_first_tick = null
+_randomize_first_tick = true

@@ -4,7 +4,8 @@ extends "res://behavior_tree/composites/bt_comp_random.gd"
 
 func tick(delta : float) -> Status:
 	super(delta)
-	if _active_child == null: return Status.failure
+	if _active_child == null || _weight_format_valid == false:
+		return Status.failure
 	
 	var status : Status = _active_child.tick(delta)
 	if status == Status.running:

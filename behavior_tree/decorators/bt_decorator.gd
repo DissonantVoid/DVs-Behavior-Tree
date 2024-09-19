@@ -12,5 +12,5 @@ func enter():
 
 func _get_configuration_warnings() -> PackedStringArray:
 	if _get_valid_children().size() != 1:
-		return ["Decorators must have exactly one BtNode child, any other children will be ignored"]
+		return ["Decorators must have exactly one BtNode child"]
 	return []

@@ -10,7 +10,6 @@ extends Node
 var behavior_tree : BehaviorTree
 var _frames_counter : int = 0
 
-# TODO: allow services to attach to leafs
 
 func _ready():
 	set_process(false)

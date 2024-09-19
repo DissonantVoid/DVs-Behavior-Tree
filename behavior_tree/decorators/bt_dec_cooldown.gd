@@ -1,5 +1,5 @@
 @tool
-class_name BtDecThrottler
+class_name BtDecCooldown
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
 # as soon as child returns success or failure we ignore ticks for tick_every

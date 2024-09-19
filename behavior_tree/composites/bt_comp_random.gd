@@ -19,12 +19,7 @@ func enter():
 	# for us to override that, kinda inefficient but not a big deal for now
 	_active_child = _pick_rand_child()
 	
-	_weight_format_valid = weight.size() > 0
-	for key in weight.keys():
-		if key is not BtNode || weight[key] is not float:
-			_weight_format_valid = false
-			push_warning("Weight dictionary must contain pairs of BtNode:float representing a node and its weight relative to other nodes, weight will be ignored")
-			break
+	_weight_format_valid = _validate_weight_format()
 
 func _pick_rand_child() -> BtNode:
 	var children : Array[BtNode] = _get_valid_children()
@@ -63,3 +58,17 @@ func _pick_rand_child() -> BtNode:
 	
 	_last_child = rand
 	return rand
+
+func _validate_weight_format() -> bool:
+	if weight.size() == 0: return true
+	
+	for key in weight.keys():
+		if key is not BtNode || weight[key] is not float:
+			return false
+	return true
+
+func _get_configuration_warnings() -> PackedStringArray:
+	if _validate_weight_format() == false:
+		return ["Weight dictionary must contain pairs of BtNode:float representing a node and its weight relative to other nodes, weight will be ignored"]
+	
+	return []
