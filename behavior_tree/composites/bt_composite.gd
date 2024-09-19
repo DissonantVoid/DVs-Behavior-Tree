@@ -18,11 +18,8 @@ var _has_valid_cond_abort_child : bool
 var _cond_abort_parent : BtBranch
 var _is_conditional_abort_child_ticking : bool
 
-# TODO: this reacts to self being moved to another parent but
-#       we're not checking if child order changes
-func _enter_tree():
-	super()
-	if is_node_ready() == false: await self.ready
+func _ready():
+	if Engine.is_editor_hint(): return
 	
 	var valid_child : BtNode = _get_next_valid_child()
 	_has_valid_cond_abort_child = false
@@ -34,19 +31,14 @@ func _enter_tree():
 		_cond_abort_parent.entered.connect(_on_parent_entered)
 		_cond_abort_parent.exited.connect(_on_parent_exited)
 		_cond_abort_parent.ticking.connect(_on_parent_ticking)
-
-func _exit_tree():
-	_has_valid_cond_abort_child = false
-	if _cond_abort_parent:
-		_cond_abort_parent.entered.disconnect(_on_parent_entered)
-		_cond_abort_parent.exited.disconnect(_on_parent_exited)
-		_cond_abort_parent.ticking.disconnect(_on_parent_ticking)
-		_cond_abort_parent = null
 	
-	if _is_conditional_abort_child_ticking:
-		_is_conditional_abort_child_ticking = false
-		var cond_abort_child : BtNode = _get_next_valid_child()
-		cond_abort_child.exit(true)
+	# services
+	for child : Node in get_children():
+		if child is BtService:
+			_services.append(child)
+		else:
+			# ignore serviced placed after other nodes
+			break
 
 func enter():
 	super()
@@ -56,22 +48,15 @@ func enter():
 		_active_child = valid_child
 		_active_child.enter()
 	
-	# services
-	for child : Node in get_children():
-		if child is BtService:
-			_services.append(child)
-		else:
-			# ignore serviced placed after other nodes
-			break
-	
+	# run services
 	for service : BtService in _services:
 		service.parent_entered()
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
+	# stop services
 	for service : BtService in _services:
 		service.parent_exiting()
-	_services.clear()
 
 func tick(delta : float) -> Status:
 	super(delta)
@@ -124,6 +109,9 @@ func _on_parent_ticking(delta : float):
 	
 	var running_sibling : BtNode = null
 	running_sibling = _cond_abort_parent.get_active_child()
+	if running_sibling ==  null:
+		# paren't hasn't picked a sibling yet
+		return
 	
 	# child is us
 	if running_sibling == self: return

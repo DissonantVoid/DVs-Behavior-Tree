@@ -1,4 +1,5 @@
 @tool
+class_name BtActionWaitForTime
 extends "res://behavior_tree/leaves/bt_action.gd"
 
 @export var max : float = 1.0 :

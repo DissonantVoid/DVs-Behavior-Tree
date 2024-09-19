@@ -1,4 +1,5 @@
 @tool
+class_name BtActionModifyBlackboard
 extends "res://behavior_tree/leaves/bt_action.gd"
 
 enum ActionType {write, erase}
@@ -8,12 +9,22 @@ enum ActionType {write, erase}
 	set(value):
 		action = value
 		notify_property_list_changed()
-@export var key : String
-@export var value_expression : String
+		update_configuration_warnings()
+@export var key : String :
+	set(value):
+		key = value
+		update_configuration_warnings()
+@export var value_expression : String :
+	set(value):
+		value_expression = value
+		update_configuration_warnings()
 @export var must_exist : bool
 
 func tick(delta : float) -> Status:
 	super(delta)
+	if _are_variables_valid() == false:
+		return Status.failure
+	
 	var blackboard : Dictionary =\
 		behavior_tree.global_blackboard if use_global_blackboard else behavior_tree.blackboard
 	
@@ -39,8 +50,19 @@ func tick(delta : float) -> Status:
 	
 	return Status.undefined
 
+func _get_configuration_warnings() -> PackedStringArray:
+	if _are_variables_valid() == false:
+		return ["Not all variables are set"]
+	return []
+
 func _validate_property(property : Dictionary):
 	if property["name"] == "value_expression" && action == ActionType.erase:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
 	elif property["name"] == "must_exist" && action != ActionType.erase:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
+
+func _are_variables_valid() -> bool:
+	if key.is_empty(): return false
+	if action == ActionType.write && value_expression.is_empty():
+		return false
+	return true

@@ -1,13 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://lt5d3j6avgcm"]
 
 [ext_resource type="PackedScene" uid="uid://upbew6q5f37f" path="res://behavior_tree/leaves/bt_action.tscn" id="1_m1ojj"]
-[ext_resource type="Script" path="res://behavior_tree/leaves/bt_action_wait_for.gd" id="2_5sktb"]
+[ext_resource type="Script" path="res://behavior_tree/leaves/bt_action_wait_for_time.gd" id="2_5sktb"]
 
-[node name="BtActionWaitFor" instance=ExtResource("1_m1ojj")]
+[node name="BtActionWaitForTime" instance=ExtResource("1_m1ojj")]
 script = ExtResource("2_5sktb")
-_max = 1.0
-_min = 1.0
+max = 1.0
+min = 1.0
 
 [node name="Timer" type="Timer" parent="." index="0"]
-wait_time = 0.001
 one_shot = true

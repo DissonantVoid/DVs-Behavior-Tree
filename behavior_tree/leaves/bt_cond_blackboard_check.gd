@@ -1,4 +1,5 @@
 @tool
+class_name BtCondBlackboardCheck
 extends "res://behavior_tree/leaves/bt_conditional.gd"
 
 enum ConditionType {
@@ -7,12 +8,21 @@ enum ConditionType {
 }
 
 @export var use_global_blackboard : bool = false
-@export var key : String
+@export var key : String :
+	set(value):
+		key = value
+		update_configuration_warnings()
 @export var condition : ConditionType
-@export var value_expression : String
+@export var value_expression : String :
+	set(value):
+		value_expression = value
+		update_configuration_warnings()
 
 func tick(delta : float) -> Status:
 	super(delta)
+	if _are_variables_valid() == false:
+		return Status.failure
+	
 	var blackboard : Dictionary =\
 		behavior_tree.global_blackboard if use_global_blackboard else behavior_tree.blackboard
 	
@@ -40,3 +50,13 @@ func tick(delta : float) -> Status:
 		return Status.success
 	
 	return Status.undefined
+
+func _get_configuration_warnings() -> PackedStringArray:
+	if _are_variables_valid() == false:
+		return ["Not all variables are set"]
+	return []
+
+func _are_variables_valid() -> bool:
+	if key.is_empty() || value_expression.is_empty():
+		return false
+	return true

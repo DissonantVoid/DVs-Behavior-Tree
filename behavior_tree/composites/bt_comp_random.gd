@@ -1,3 +1,5 @@
+@tool
+class_name BtCompRandom
 extends "res://behavior_tree/composites/bt_composite.gd"
 
 # NOTE: intended to be inherited rather than used directly

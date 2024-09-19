@@ -1,3 +1,5 @@
+@tool
+class_name BtCompRandSelector
 extends "res://behavior_tree/composites/bt_comp_random.gd"
 
 func tick(delta : float) -> Status:

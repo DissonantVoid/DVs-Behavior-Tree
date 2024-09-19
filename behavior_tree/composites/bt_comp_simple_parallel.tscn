@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://du7ln6fgfalcn"]
+
+[ext_resource type="PackedScene" uid="uid://b661ejvfewmov" path="res://behavior_tree/composites/bt_composite.tscn" id="1_lbt7b"]
+[ext_resource type="Script" path="res://behavior_tree/composites/bt_comp_simple_parallel.gd" id="2_ecvdm"]
+
+[node name="BtCompSimpleParallel" instance=ExtResource("1_lbt7b")]
+script = ExtResource("2_ecvdm")
+_is_delayed = false
+conditional_abort = 0

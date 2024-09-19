@@ -8,7 +8,6 @@ func exit(is_interrupted : bool):
 	super(is_interrupted)
 	if _active_child:
 		_active_child.exit(is_interrupted)
-		_active_child = null
 
 func get_active_child() -> BtNode:
 	return _active_child
@@ -28,3 +27,30 @@ func force_pick_child(child : BtNode):
 	
 	_active_child = child
 	child.enter()
+
+# utility
+
+func _get_next_valid_child(index : int = -1) -> BtNode:
+	var next_index : int = index+1
+	while true:
+		if get_child_count() <= next_index:
+			return null
+		var child : Node = get_child(next_index)
+		if child is BtNode:
+			return child
+		
+		next_index += 1
+	
+	return null
+
+func _get_valid_children() -> Array[BtNode]:
+	var children : Array[BtNode]
+	var index : int = -1
+	while true:
+		var child : BtNode = _get_next_valid_child(index)
+		if child == null: break
+		else: children.append(child)
+		
+		index = child.get_index()
+	
+	return children

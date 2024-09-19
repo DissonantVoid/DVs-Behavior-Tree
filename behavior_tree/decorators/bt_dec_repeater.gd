@@ -1,3 +1,5 @@
+@tool
+class_name BtDecRepeater
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
 ## 0 = infinite

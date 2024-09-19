@@ -7,8 +7,10 @@ extends Node
 	set(value):
 		frames_per_tick = max(value, 0)
 
-var _frames_counter : int = 0
 var behavior_tree : BehaviorTree
+var _frames_counter : int = 0
+
+# TODO: allow services to attach to leafs
 
 func _ready():
 	set_process(false)
@@ -52,6 +54,6 @@ func _get_configuration_warnings() -> PackedStringArray:
 			break
 	
 	if get_parent() is BtComposite == false || has_previous_node_sibling:
-		return ["Service nodes must be places under a composite node before any other non-service children"]
+		return ["Service nodes must be places under a composite node before any non-service children"]
 	
 	return []

@@ -14,5 +14,5 @@ func exit(is_interrupted : bool):
 
 # Called after enter() everytime the tree is ticked, use for processing node logic
 func tick(delta : float) -> Status:
-	super()
+	super(delta)
 	return Status.undefined

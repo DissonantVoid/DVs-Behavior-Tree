@@ -1,3 +1,4 @@
+@tool
 class_name BtDecInverter
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 

@@ -1,4 +1,5 @@
 @tool
+class_name BtDecTimeLimit
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
 @export var max : float = 1.0 :

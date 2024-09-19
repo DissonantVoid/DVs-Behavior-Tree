@@ -4,47 +4,78 @@ extends "res://behavior_tree/bt_branch.gd"
 
 enum TickType {idle, physics}
 
-@export var is_active : bool : # TODO: changing most of these vars at run time isn't handled properly
+@export var is_active : bool :
 	set(value):
 		is_active = value
-		_root_tree_setup()
-@export var agent : Node
+		_set_root_process()
+@export var agent : Node :
+	set(value):
+		agent = value
+		update_configuration_warnings()
 ## If true a behavior tree that is a sub-tree of another behavior tree will use its own blackboard separate from
 ## its parent tree. If false a behavior tree will share the same blackboard with all sub-trees
-@export var force_local_blackboard : bool = false :
+@export var _force_local_blackboard : bool = false :
 	set(value):
-		if Engine.is_editor_hint() == false && is_node_ready():
-			push_error("force_local_blackboard cannot be changed while the game is running")
-		else:
-			force_local_blackboard = value
+		_force_local_blackboard = value
+		if is_node_ready() == false: await self.ready
+		
+		if _is_subtree && _force_local_blackboard == false:
+			blackboard = get_parent().behavior_tree.blackboard
 @export var tick_type : TickType :
 	set(value):
+		if tick_type == value: return
 		tick_type = value
-		_root_tree_setup()
+		_set_root_process()
 @export var frames_per_tick : int :
 	set(value):
 		frames_per_tick = max(value, 1)
 		if Engine.is_editor_hint(): return
 		
 		_frames_counter = 0
-		if randomize_tick_start && frames_per_tick > 1:
+		if _randomize_first_tick && frames_per_tick > 1:
 			_frames_counter = randi_range(0, frames_per_tick-1)
-
 ## If true and frames_per_tick > 1, the frame counter will start at a random value between 1 and frames_per_tick
 ## this is meant to spread the CPU load when having multiple instances of the scene this tree belongs to
-@export var randomize_tick_start : bool = true
+## only turn off if you think all agents must tick at the same time
+@export var _randomize_first_tick : bool = true
 
 var blackboard : Dictionary
 static var global_blackboard : Dictionary
 
 var _frames_counter : int = 0
 var _is_subtree : bool
+var _is_paused : bool
+
+func _enter_tree():
+	await get_tree().process_frame
+	_is_subtree = get_parent() is BtNode
+	notify_property_list_changed()
 
 func _ready():
-	_check_if_subtree()
-	
 	if Engine.is_editor_hint(): return
+	
+	_set_root_process()
+	if _is_subtree == false:
+		behavior_tree = self
+	
+	_active_child = _get_next_valid_child()
+	
+	# setup children
+	var setup_recursive : Callable = func(node : Node, func_ : Callable):
+		if node is BehaviorTree && node != self:
+			node.behavior_tree = self
+			# stop here and let the sub-tree handle its nodes
+			return
+		elif node is BtNode || node is BtService:
+			# provide reference to tree
+			node.behavior_tree = self
+			
+			for child : Node in node.get_children():
+				func_.call(child, func_)
+	
+	setup_recursive.call(self, setup_recursive)
 
+# NOTE: _process and _ph_process will only run if this is the root tree
 func _process(delta : float):
 	if Engine.is_editor_hint(): return
 	tick(delta)
@@ -56,35 +87,13 @@ func _physics_process(delta : float):
 func _notification(what : int):
 	if Engine.is_editor_hint(): return
 	
+	if what == NOTIFICATION_PAUSED:
+		_is_paused = true
+	elif what == NOTIFICATION_UNPAUSED:
+		_is_paused = false
+	
 	if _is_subtree == false:
-		if what == NOTIFICATION_PAUSED:
-			# interrupt flow
-			if _active_child:
-				_active_child.exit(true)
-		elif what == NOTIFICATION_UNPAUSED:
-			_root_tree_setup()
-
-# we could take advantage of this later when we implement dynamic trees
-# and debug graph
-func register_node(node):
-	if node is BehaviorTree:
-		# TODO: check for further sub-trees and set them up
-		push_warning("Sub-trees not fully supported yet")
-	elif node is BtNode || node is BtService:
-		# provide reference to tree
-		node.behavior_tree = self
-
-func unregister_node(node):
-	pass
-
-func enter():
-	super()
-	_active_child = _get_next_valid_child()
-	if _active_child:
-		_active_child.enter()
-
-func exit(is_interrupted : bool):
-	super(is_interrupted)
+		_set_root_process()
 
 func tick(delta : float) -> Status:
 	super(delta)
@@ -95,7 +104,7 @@ func tick(delta : float) -> Status:
 		else:
 			return Status.running
 	
-	if _active_child:
+	if is_active && _active_child:
 		var status : Status = _active_child.tick(delta)
 		if status == Status.success || status == Status.failure:
 			_active_child.exit(false)
@@ -166,37 +175,46 @@ func force_tick_node(target : BtNode):
 		var node : BtBranch = path_to_target[i]
 		node.force_pick_child(path_to_target[i+1])
 
-func _root_tree_setup():
+func _set_root_process():
 	if Engine.is_editor_hint(): return
 	if is_node_ready() == false: await self.ready
 	
-	if _is_subtree && force_local_blackboard == false:
-		blackboard = get_parent().behavior_tree.blackboard
-	
-	# if this isn't a sub-tree of another tree, we run things ourselves
-	if _is_subtree == false && is_active:
-		_active_child = _get_next_valid_child()
-		if _active_child:
-			_active_child.enter()
+	var was_ticking : bool = is_processing() || is_physics_processing()
+	var is_ticking : bool
+	if _is_subtree == false && is_active && _is_paused == false:
 		set_process(tick_type == TickType.idle)
 		set_physics_process(tick_type == TickType.physics)
-
-func _check_if_subtree():
-	_is_subtree = get_parent() is BtNode
-	notify_property_list_changed()
+		is_ticking = true
+	else:
+		set_process(false)
+		set_physics_process(false)
+		is_ticking = false
+	
+	# only change child state if ticking state changes
+	# if we switch from TickType.idle to TickType.physics just keep child ticking
+	if _active_child:
+		if was_ticking && is_ticking == false:
+			_active_child.exit(true)
+		elif was_ticking == false && is_ticking:
+			_active_child.enter()
 
 func _validate_property(property : Dictionary):
-	if ((property["name"] == "tick_type" || property["name"] == "frames_per_tick")
+	var p_name : String = property["name"]
+	if ((p_name == "tick_type" || p_name == "frames_per_tick" || p_name == "_randomize_first_tick")
 	&& _is_subtree):
-		# hide tick_type and frames_per_tick if this is a sub-tree
+		# tick related variables if this is a sub-tree
+		property.usage = PROPERTY_USAGE_NO_EDITOR
+	elif p_name == "_force_local_blackboard" && _is_subtree == false:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
 
 func _get_configuration_warnings() -> PackedStringArray:
-	if _get_valid_children().size() != 1:
-		return ["Behavior tree must have a single BtNode child"]
-	return []
-
-func _on_tree_entered():
-	# subtree moved, reevaluate some variables
-	update_configuration_warnings()
-	_check_if_subtree()
+	var warnings : PackedStringArray
+	var valid_children_count : int = _get_valid_children().size()
+	if valid_children_count != 1:
+		warnings.append("Behavior tree must have a single BtNode child")
+	if valid_children_count == 1 && _get_next_valid_child() is BtBranch == false:
+		warnings.append("Tree is useless if first child isn't a branch")
+	if agent == null:
+		warnings.append("Agent is null")
+		
+	return warnings

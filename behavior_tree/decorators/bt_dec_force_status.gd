@@ -1,3 +1,5 @@
+@tool
+class_name BtDecForceStatus
 extends "res://behavior_tree/decorators/bt_decorator.gd"
 
 @export var status : StatusBinary

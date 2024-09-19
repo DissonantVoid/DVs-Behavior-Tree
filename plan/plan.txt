@@ -30,7 +30,7 @@ tick rate (how many frames between ticks)
 
 [X]base class for composites and decorators for common code :)
 
-[..] configuration warnings and tool for all nodes
+[..] configuration warnings (composites and decorators left) and tool for all nodes
 
 nodes:
 [X] -wait for some time (min-max)
@@ -41,7 +41,7 @@ nodes:
 Stage 2:
 nodes:
 -reactive sequence & selector
--simple parallel
+[X]-simple parallel
 -common leaves (play animation, play sound etc..)
 
 incorporate events, we can have nodes like a signal sequence that only runs when a signal it's listening to fire in which case it interrupt low priority nodes
@@ -61,7 +61,7 @@ unit tests:
 
 support sub-trees and shared/multiple blackboards
 
-dynamic tree, support run-time modifications
+[-] dynamic tree, support run-time modifications
 
 plugin for visualizing tree graph and monitors at run-time,
 support placing breakpoints on a specific node in the graph
@@ -78,3 +78,4 @@ Stage 4 (future):
 make into C++ module
 translation
 multiplayer support
+
