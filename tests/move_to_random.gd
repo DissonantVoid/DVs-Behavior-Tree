@@ -1,4 +1,4 @@
-extends "res://behavior_tree/leaves/bt_action.gd"
+extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 
 var _random_pos : Vector2
 const _speed : float = 120.0

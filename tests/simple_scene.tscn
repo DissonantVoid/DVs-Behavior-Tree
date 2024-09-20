@@ -1,12 +1,12 @@
 [gd_scene load_steps=9 format=3 uid="uid://c557vjvtb2h4w"]
 
 [ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_8xr2a"]
-[ext_resource type="PackedScene" uid="uid://qseqna4tt4pl" path="res://behavior_tree/behavior_tree.tscn" id="1_yxdkh"]
-[ext_resource type="PackedScene" uid="uid://1uhnor2a4ji0" path="res://behavior_tree/composites/bt_comp_selector.tscn" id="3_0y2mb"]
-[ext_resource type="PackedScene" uid="uid://dhp4pifglwy4c" path="res://behavior_tree/composites/bt_comp_sequence.tscn" id="3_no72l"]
+[ext_resource type="PackedScene" uid="uid://qseqna4tt4pl" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.tscn" id="1_yxdkh"]
+[ext_resource type="PackedScene" uid="uid://1uhnor2a4ji0" path="res://addons/DVs_behavior_tree/behavior_tree/composites/selector.tscn" id="3_0y2mb"]
+[ext_resource type="PackedScene" uid="uid://dhp4pifglwy4c" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.tscn" id="3_no72l"]
 [ext_resource type="PackedScene" uid="uid://bq36btxq5d66w" path="res://tests/move_to_random.tscn" id="4_5rasj"]
 [ext_resource type="PackedScene" uid="uid://m5uvh8yp7gqr" path="res://tests/is_mouse_close.tscn" id="5_0pb15"]
-[ext_resource type="PackedScene" uid="uid://lt5d3j6avgcm" path="res://behavior_tree/leaves/bt_action_wait_for_time.tscn" id="5_irou4"]
+[ext_resource type="PackedScene" uid="uid://lt5d3j6avgcm" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.tscn" id="5_irou4"]
 [ext_resource type="PackedScene" uid="uid://bw3uc4ka32s1t" path="res://tests/move_to_mouse.tscn" id="6_6llgm"]
 
 [node name="SimpleScene" type="Node2D"]
@@ -17,11 +17,8 @@ texture = ExtResource("1_8xr2a")
 
 [node name="BehaviorTree" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("1_yxdkh")]
 agent = NodePath("../Sprite2D")
-_force_local_blackboard = false
-_randomize_first_tick = true
 
 [node name="BtCompSelector" parent="BehaviorTree" instance=ExtResource("3_0y2mb")]
-conditional_abort = 0
 
 [node name="FollowMouse" parent="BehaviorTree/BtCompSelector" instance=ExtResource("3_no72l")]
 conditional_abort = 1
@@ -31,7 +28,6 @@ conditional_abort = 1
 [node name="MoveToMouse" parent="BehaviorTree/BtCompSelector/FollowMouse" instance=ExtResource("6_6llgm")]
 
 [node name="Wander" parent="BehaviorTree/BtCompSelector" instance=ExtResource("3_no72l")]
-conditional_abort = 0
 
 [node name="MoveToRandom" parent="BehaviorTree/BtCompSelector/Wander" instance=ExtResource("4_5rasj")]
 

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://digb3l6cjvbdv"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/node.gd" id="1_8f11q"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_8f11q")

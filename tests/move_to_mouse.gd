@@ -1,4 +1,4 @@
-extends "res://behavior_tree/leaves/bt_action.gd"
+extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 
 const _min_distance : float = 16.0
 const _max_distance : float = 100.0

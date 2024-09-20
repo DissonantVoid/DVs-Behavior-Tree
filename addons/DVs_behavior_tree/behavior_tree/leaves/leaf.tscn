@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://mot61qxpu5dq"]
+
+[ext_resource type="PackedScene" uid="uid://digb3l6cjvbdv" path="res://addons/DVs_behavior_tree/behavior_tree/node.tscn" id="1_pc03p"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/leaf.gd" id="2_pbtk8"]
+
+[node name="Leaf" instance=ExtResource("1_pc03p")]
+script = ExtResource("2_pbtk8")

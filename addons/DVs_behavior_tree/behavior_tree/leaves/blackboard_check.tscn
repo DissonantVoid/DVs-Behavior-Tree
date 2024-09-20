@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cns3bvynlwnkv"]
+
+[ext_resource type="PackedScene" uid="uid://b76u6w4n7smdc" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/conditional.tscn" id="1_lp42e"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/blackboard_check.gd" id="2_x47rg"]
+
+[node name="BlackboardCheck" instance=ExtResource("1_lp42e")]
+script = ExtResource("2_x47rg")
+use_global_blackboard = false
+key = ""
+condition = 0
+value_expression = ""

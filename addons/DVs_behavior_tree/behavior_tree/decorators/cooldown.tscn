@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://cusj65ruuii2u"]
+
+[ext_resource type="PackedScene" uid="uid://ddbk4u071ajk5" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.tscn" id="1_nel32"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/cooldown.gd" id="2_wvvd1"]
+
+[node name="Cooldown" instance=ExtResource("1_nel32")]
+script = ExtResource("2_wvvd1")
+tick_every = 2

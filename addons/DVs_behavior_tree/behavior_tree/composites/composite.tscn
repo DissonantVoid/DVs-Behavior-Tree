@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://b661ejvfewmov"]
+
+[ext_resource type="PackedScene" uid="uid://cs2vra32ita8w" path="res://addons/DVs_behavior_tree/behavior_tree/branch.tscn" id="1_we3vq"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd" id="2_1scpr"]
+
+[node name="Composite" instance=ExtResource("1_we3vq")]
+script = ExtResource("2_1scpr")
+conditional_abort = 0
+uninterruptible = false

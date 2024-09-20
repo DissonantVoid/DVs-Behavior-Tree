@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://du7ln6fgfalcn"]
+
+[ext_resource type="PackedScene" uid="uid://b661ejvfewmov" path="res://addons/DVs_behavior_tree/behavior_tree/composites/composite.tscn" id="1_5cvq7"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/simple_parallel.gd" id="2_xh242"]
+
+[node name="SimpleParallel" instance=ExtResource("1_5cvq7")]
+script = ExtResource("2_xh242")
+_is_delayed = false

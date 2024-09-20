@@ -4,50 +4,30 @@ Notes:
 -keep all export variables public in case users wish to access from other scripts
 -if a node emits an editor warning in _get_configuration_warnings, don't repeat the warning at run time somewhere else
 -avoid asserting, prefer throwing warnings and accounting for errors instead of crashing
+-allow user to add non BT nodes under a branch, and just ignore them
+-mark major and minor versions with tags
 
 Resources:
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference
 https://www.gamedeveloper.com/programming/behavior-trees-for-ai-how-they-work
-
-Stage 1 (alpha):
-[X] essential nodes and tick system
-[X] nodes receive enter, exit, interrupt and tick
-[X] templates for node and service
-
-[X]conditional abort should be a feature of the compositor, allowing it to interupt low priority nodes or self when its first conditional child returns Success
-see https://www.youtube.com/watch?v=GFsK5x6ZW7k
-https://opsive.com/support/documentation/behavior-designer/conditional-aborts/
-
-[X] services, can be attached to a composite but unlike conditional aborts, they can't interrupt the tree, instead they run parallel shared code like contact damage while an enemy does different attacks
-services nodes must be placed before other children
-
-[X] handle tree pausing
-
-node names are ugly with all the bt_ stuff, need a balance between readability and organizing
-
-[X] make tree inherite bt_node
-tick rate (how many frames between ticks)
-
-[X]base class for composites and decorators for common code :)
-
-[X] configuration warnings and tool for all nodes
-
-nodes:
-[X] -wait for some time (min-max)
-[X] -blackboard write, erase, check value
-[X] -randomized sequence & selector
-
-[] ensure nodes work as expected so we can move to v1.0
+https://github.com/bitbrain/beehave
+https://github.com/draghan/behavior_tree
+https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---quick-start-guide?application_version=5.2
+https://www.behaviortree.dev/docs/
+https://www.gameaipro.com/GameAIPro/GameAIPro_Chapter06_The_Behavior_Tree_Starter_Kit.pdf
 
 Stage 2 (v1.0):
-make into plugin and set nodes to appear in the Add Child menu
+[X] make into plugin
 
-document exports and short descrption for each node
+document exports and short descrption for each node (also rename and categorize exports)
+
+[] follow official style guide so it's easier for others to contribute
+https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
 
 nodes:
 -reactive sequence & selector
 [X]-simple parallel
--rename throttle into cooldown
+[X]-rename throttle into cooldown
 -event listener that can interrupt low priority branches
 
 additional nodes (in their own "extra" folder so we don't bloat the main folder):
@@ -56,6 +36,10 @@ additional nodes (in their own "extra" folder so we don't bloat the main folder)
 -agent look at (2d/3d)
 -play particles (optional wait for finish)
 -instantiate object (pos, rot, scale)
+
+plugin for visualizing tree graph and monitors at run-time,
+support placing breakpoints on a specific node in the graph
+use node name and editor description for the graph
 
 unit tests:
 -all node types and their expected behavior
@@ -70,18 +54,16 @@ unit tests:
 
 [-] dynamic tree, support run-time modifications
 
-plugin for visualizing tree graph and monitors at run-time,
-support placing breakpoints on a specific node in the graph
-use node name and editor description for the graph
+[] better caching and navigating of tree
 
 Stage 3:
 documentations
-example scenes and projects
+examples (use my space game as example)
 
 icons
 asset lib setup
 
-Stage 4 (future):
+Future:
 make into C++ module
 translation
 multiplayer support

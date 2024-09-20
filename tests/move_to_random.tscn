@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bq36btxq5d66w"]
 
-[ext_resource type="PackedScene" uid="uid://upbew6q5f37f" path="res://behavior_tree/leaves/bt_action.tscn" id="1_mk1m6"]
+[ext_resource type="PackedScene" uid="uid://upbew6q5f37f" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/action.tscn" id="1_mk1m6"]
 [ext_resource type="Script" path="res://tests/move_to_random.gd" id="2_p16y8"]
 
 [node name="MoveToRandom" instance=ExtResource("1_mk1m6")]

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://cp7j61wgylu01"]
+
+[ext_resource type="PackedScene" uid="uid://ddbk4u071ajk5" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.tscn" id="1_fk2pg"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/repeat_until_status.gd" id="2_7q0jo"]
+
+[node name="RepeatUntilStatus" instance=ExtResource("1_fk2pg")]
+script = ExtResource("2_7q0jo")
+status = 0
+max_tries = 0

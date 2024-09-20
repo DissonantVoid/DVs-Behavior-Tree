@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnjdti3vr2d0o"]
+
+[ext_resource type="PackedScene" uid="uid://ddbk4u071ajk5" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.tscn" id="1_3iwst"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/force_status.gd" id="2_aijcp"]
+
+[node name="ForceStatus" instance=ExtResource("1_3iwst")]
+script = ExtResource("2_aijcp")
+status = 0

@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://b661ejvfewmov"]
-
-[ext_resource type="PackedScene" uid="uid://cs2vra32ita8w" path="res://behavior_tree/bt_branch.tscn" id="1_fpqlh"]
-[ext_resource type="Script" path="res://behavior_tree/composites/bt_composite.gd" id="2_q3man"]
-
-[node name="BtComposite" instance=ExtResource("1_fpqlh")]
-script = ExtResource("2_q3man")
-interrupt_target = 0
-uninterruptible = false

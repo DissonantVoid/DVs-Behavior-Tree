@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbyl2kfx4ugkh"]
+
+[ext_resource type="PackedScene" uid="uid://upbew6q5f37f" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/action.tscn" id="1_1ppp3"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/modify_blackboard.gd" id="2_sidfb"]
+
+[node name="ModifyBlackboard" instance=ExtResource("1_1ppp3")]
+script = ExtResource("2_sidfb")
+use_global_blackboard = false
+action = 0
+key = ""
+value_expression = ""
+must_exist = false

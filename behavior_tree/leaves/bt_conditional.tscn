@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://b76u6w4n7smdc"]
-
-[ext_resource type="PackedScene" uid="uid://mot61qxpu5dq" path="res://behavior_tree/leaves/bt_leaf.tscn" id="1_gsbxt"]
-[ext_resource type="Script" path="res://behavior_tree/leaves/bt_conditional.gd" id="2_rjho3"]
-
-[node name="BtConditional" instance=ExtResource("1_gsbxt")]
-script = ExtResource("2_rjho3")

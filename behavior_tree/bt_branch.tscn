@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://cs2vra32ita8w"]
-
-[ext_resource type="PackedScene" uid="uid://digb3l6cjvbdv" path="res://behavior_tree/bt_node.tscn" id="1_ifhg3"]
-[ext_resource type="Script" path="res://behavior_tree/bt_branch.gd" id="2_qa61g"]
-
-[node name="BtBranch" instance=ExtResource("1_ifhg3")]
-script = ExtResource("2_qa61g")
