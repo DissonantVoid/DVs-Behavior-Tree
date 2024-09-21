@@ -1,0 +1,8 @@
+-how the addon works
+-your first behavior tree
+-docs of each category, every node and example use cases
+-docs of blackboard and global blackboard
+-debugging tools
+-best practices
+ -jerky movement if action node doesn't return running
+-creating custom nodes (what to inherite, templates etc...)

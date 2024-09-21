@@ -18,17 +18,17 @@ texture = ExtResource("1_8xr2a")
 [node name="BehaviorTree" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("1_yxdkh")]
 agent = NodePath("../Sprite2D")
 
-[node name="BtCompSelector" parent="BehaviorTree" instance=ExtResource("3_0y2mb")]
+[node name="Selector" parent="BehaviorTree" instance=ExtResource("3_0y2mb")]
 
-[node name="FollowMouse" parent="BehaviorTree/BtCompSelector" instance=ExtResource("3_no72l")]
+[node name="FollowMouse" parent="BehaviorTree/Selector" instance=ExtResource("3_no72l")]
 conditional_abort = 1
 
-[node name="BtCondIsMouseClose" parent="BehaviorTree/BtCompSelector/FollowMouse" instance=ExtResource("5_0pb15")]
+[node name="IsMouseClose" parent="BehaviorTree/Selector/FollowMouse" instance=ExtResource("5_0pb15")]
 
-[node name="MoveToMouse" parent="BehaviorTree/BtCompSelector/FollowMouse" instance=ExtResource("6_6llgm")]
+[node name="MoveToMouse" parent="BehaviorTree/Selector/FollowMouse" instance=ExtResource("6_6llgm")]
 
-[node name="Wander" parent="BehaviorTree/BtCompSelector" instance=ExtResource("3_no72l")]
+[node name="Wander" parent="BehaviorTree/Selector" instance=ExtResource("3_no72l")]
 
-[node name="MoveToRandom" parent="BehaviorTree/BtCompSelector/Wander" instance=ExtResource("4_5rasj")]
+[node name="MoveToRandom" parent="BehaviorTree/Selector/Wander" instance=ExtResource("4_5rasj")]
 
-[node name="BtActionWaitFor" parent="BehaviorTree/BtCompSelector/Wander" instance=ExtResource("5_irou4")]
+[node name="WaitFor" parent="BehaviorTree/Selector/Wander" instance=ExtResource("5_irou4")]

@@ -1,11 +1,11 @@
 @tool
-class_name BTSequence
+class_name BTSelectorReactive
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
-## Ticks its children from first to last, if the child succeeds it ticks the next child,
-## otherwise returns the child's status. Can be thought of as an "AND" node in that it only
-## executes the next child if the previous child succeeds.
-## example: an NPC that needs to open a door: sequence -> has key, go to door, open door, enter.
+## Similar to the normal selector except when a child returns running
+## this will start over from the first child and return running. The selector is reactive
+## in the sense that it rechecks previous children if a long running child is active (move_to for example)
+## reacting to any previous child having a success status.
 
 func tick(delta : float) -> Status:
 	super(delta)
@@ -13,9 +13,15 @@ func tick(delta : float) -> Status:
 	
 	var status : Status = _active_child.tick(delta)
 	if status == Status.running:
+		# start over
+		_active_child.exit(true)
+		_active_child = _get_next_valid_child()
 		return Status.running
-		
+	
 	elif status == Status.success:
+		return Status.success
+	
+	elif status == Status.failure:
 		# run next child
 		var next_child : BTNode = _get_next_valid_child(_active_child.get_index())
 		if next_child == null:
@@ -27,8 +33,5 @@ func tick(delta : float) -> Status:
 			_active_child = next_child
 			_active_child.enter()
 			return Status.running
-		
-	elif status == Status.failure:
-		return Status.failure
 	
 	return Status.undefined

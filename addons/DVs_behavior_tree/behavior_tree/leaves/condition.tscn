@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b76u6w4n7smdc"]
 
 [ext_resource type="PackedScene" uid="uid://mot61qxpu5dq" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/leaf.tscn" id="1_yssd7"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/conditional.gd" id="2_3gpll"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/condition.gd" id="2_3gpll"]
 
-[node name="Conditional" instance=ExtResource("1_yssd7")]
+[node name="Condition" instance=ExtResource("1_yssd7")]
 script = ExtResource("2_3gpll")

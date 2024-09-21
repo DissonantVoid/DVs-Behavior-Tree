@@ -2,9 +2,12 @@
 class_name BTSelectorRandom
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/random_composite.gd"
 
+## Similar to the normal selector except children are ticked in a random order, when a child fails
+## this picks a random next child.
+
 func tick(delta : float) -> Status:
 	super(delta)
-	if _active_child == null || _weight_format_valid == false:
+	if _active_child == null:
 		return Status.failure
 	
 	var status : Status = _active_child.tick(delta)

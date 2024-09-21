@@ -2,6 +2,12 @@
 class_name BTSelector
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
+## Ticks its children from first to last, if the child fails it ticks the next child,
+## otherwise returns the child's status. Can be thought of as an "OR" node in that it only
+## executes the next child if the previous child fails.
+## example: an NPC that determines whether to go outside or go to sleep depending on the time of day:
+## selector -> day routine, night routine.
+
 func tick(delta : float) -> Status:
 	super(delta)
 	if _active_child == null: return Status.failure

@@ -4,3 +4,5 @@
 
 # https://github.com/godotengine/godot/issues/82270
 *.tmp
+
+addons/DVs_behavior_tree/icons/raw

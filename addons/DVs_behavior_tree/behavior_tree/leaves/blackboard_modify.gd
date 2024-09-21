@@ -1,23 +1,31 @@
 @tool
-class_name BTModifyBlackboard
+class_name BTBlackboardModify
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
+
+## Modifies (write/erase) a blackboard entry. If writing, it takes an expression as the value.
 
 enum ActionType {write, erase}
 
+## If true, this will check the global blackboard instead of the tree blackboard.
 @export var use_global_blackboard : bool = false
+## The [code]ActionType[/code] action to perform.
 @export var action : ActionType :
 	set(value):
 		action = value
 		notify_property_list_changed()
 		update_configuration_warnings()
+## The blackboard key.
 @export var key : String :
 	set(value):
 		key = value
 		update_configuration_warnings()
+## An expression string, can be a simple value (10, "Day 3"),
+## or a function/variable access in self (behavior_tree.agent.get_stamina()).
 @export var value_expression : String :
 	set(value):
 		value_expression = value
 		update_configuration_warnings()
+## If true and the blackboard doesn't have the key this is trying to erase, it will return failure.
 @export var must_exist : bool
 
 func tick(delta : float) -> Status:
@@ -31,7 +39,7 @@ func tick(delta : float) -> Status:
 	if action == ActionType.write:
 		var exp : Expression = Expression.new()
 		exp.parse(value_expression)
-		var result : Variant = exp.execute()
+		var result := exp.execute([], self)
 		if exp.has_execute_failed():
 			return Status.failure
 		
@@ -51,9 +59,10 @@ func tick(delta : float) -> Status:
 	return Status.undefined
 
 func _get_configuration_warnings() -> PackedStringArray:
+	var warnings : PackedStringArray = super()
 	if _are_variables_valid() == false:
-		return ["Not all variables are set"]
-	return []
+		warnings.append("Not all variables are set")
+	return warnings
 
 func _validate_property(property : Dictionary):
 	if property["name"] == "value_expression" && action == ActionType.erase:

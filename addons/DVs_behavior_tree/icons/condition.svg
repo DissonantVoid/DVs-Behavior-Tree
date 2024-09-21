@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16"
+   height="15.999999"
+   viewBox="0 0 4.2333332 4.233333"
+   version="1.1"
+   id="svg1338"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="condition.svg"
+   inkscape:export-filename="..\condition.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1340"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="26.910887"
+     inkscape:cx="10.962106"
+     inkscape:cy="10.311812"
+     inkscape:window-width="1680"
+     inkscape:window-height="988"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1335" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path1459"
+       style="fill:none;stroke:#af9dd9;stroke-width:0.579;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1.1976388,1.3667464 c 0,-0.37174138 0.2239316,-0.70687873 0.5673758,-0.84913795 C 2.1084588,0.37534917 2.5037803,0.45398348 2.7666412,0.71684436 3.029502,0.97970521 3.1081364,1.3750267 2.9658771,1.7184709 2.8236178,2.0619151 2.4884805,2.2858467 2.1167391,2.2858467 v 0.9540788"
+       sodipodi:nodetypes="cssscc" />
+    <circle
+       style="fill:#af9dd9;stroke:none;stroke-width:0.480229;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="path2657"
+       cx="2.1167121"
+       cy="3.8595307"
+       r="0.30231643" />
+  </g>
+</svg>

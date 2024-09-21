@@ -2,6 +2,8 @@
 class_name BTDecorator
 extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 
+## Base class for decorators, which are nodes that take a single node child and modify its status.
+
 func enter():
 	super()
 	# find first valid child
@@ -11,6 +13,7 @@ func enter():
 		_active_child.enter()
 
 func _get_configuration_warnings() -> PackedStringArray:
+	var warnings : PackedStringArray = super()
 	if _get_valid_children().size() != 1:
-		return ["Decorators must have exactly one BTNode child"]
-	return []
+		warnings.append("Decorators must have exactly one BTNode child")
+	return warnings

@@ -2,15 +2,20 @@
 class_name BTTimeLimit
 extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 
-@export var max : float = 1.0 :
-	set(value):
-		value = max(value, 0.05)
-		if value >= min:
-			max = value
+## Fails if child fails to return success or failure before the timout,
+## otherwise returns child's status.
+
+## Minimum wait time.
 @export var min : float = 1.0 :
 	set(value):
-		value = max(value, 0.05)
-		if value <= max:
+		min = max(value, 0.05)
+		if value > max:
+			max = value
+## Maximum wait time.
+@export var max : float = 1.0 :
+	set(value):
+		max = max(value, 0.05)
+		if value < min:
 			min = value
 
 @onready var _timer : Timer = $Timer

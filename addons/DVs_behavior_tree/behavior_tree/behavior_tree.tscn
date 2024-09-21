@@ -10,3 +10,4 @@ _force_local_blackboard = false
 tick_type = 0
 frames_per_tick = 1
 _randomize_first_tick = true
+uninterruptible = false

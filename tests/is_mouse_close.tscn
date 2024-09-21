@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://m5uvh8yp7gqr"]
 
-[ext_resource type="PackedScene" uid="uid://b76u6w4n7smdc" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/conditional.tscn" id="1_gio4b"]
+[ext_resource type="PackedScene" uid="uid://b76u6w4n7smdc" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/condition.tscn" id="1_gio4b"]
 [ext_resource type="Script" path="res://tests/is_mouse_close.gd" id="2_5cr68"]
 
-[node name="BtCondIsMouseClose" instance=ExtResource("1_gio4b")]
+[node name="IsMouseClose" instance=ExtResource("1_gio4b")]
 script = ExtResource("2_5cr68")

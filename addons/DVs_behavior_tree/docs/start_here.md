@@ -1,0 +1,5 @@
+-general behavior tree definition
+  -definition
+  -how it compares to other approaches
+  -inspiration for this addon
+-addon inspirations

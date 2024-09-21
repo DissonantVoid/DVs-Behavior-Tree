@@ -1,1 +1,6 @@
-This project is still at its infancy, come back later for updates. I expect to be using this addon myself in my games so it's high on my priority list.
+-features overview
+-barebone how to use
+-examples
+-link to docs
+-contributing and feature requests (project roadmap, philosophy and style)
+-social/donation

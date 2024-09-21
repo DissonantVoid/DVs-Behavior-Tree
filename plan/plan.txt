@@ -1,11 +1,11 @@
 my behavior tree implementation to fill in gaps and issues I found with other implementations
 
 Notes:
--keep all export variables public in case users wish to access from other scripts
--if a node emits an editor warning in _get_configuration_warnings, don't repeat the warning at run time somewhere else
+-if a node emits an editor warning in _get_configuration_warnings, don't repeat the warning at runtime somewhere else
 -avoid asserting, prefer throwing warnings and accounting for errors instead of crashing
 -allow user to add non BT nodes under a branch, and just ignore them
--mark major and minor versions with tags
+-mark major and minor versions with git tags
+-icons color hex: af9dd9
 
 Resources:
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference
@@ -15,31 +15,31 @@ https://github.com/draghan/behavior_tree
 https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---quick-start-guide?application_version=5.2
 https://www.behaviortree.dev/docs/
 https://www.gameaipro.com/GameAIPro/GameAIPro_Chapter06_The_Behavior_Tree_Starter_Kit.pdf
+https://github.com/aigamedev/btsk
 
-Stage 2 (v1.0):
+Stage 2:
 [X] make into plugin
 
-document exports and short descrption for each node (also rename and categorize exports)
+[X] document all nodes
+[X] document all exports
+[] document enums if an export variable uses them (hover over composite.conditional_abort for an example)
+
+[X] better caching and navigating of tree
 
 [] follow official style guide so it's easier for others to contribute
 https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
 
 nodes:
--reactive sequence & selector
+[X]-reactive sequence & selector
 [X]-simple parallel
 [X]-rename throttle into cooldown
 -event listener that can interrupt low priority branches
 
-additional nodes (in their own "extra" folder so we don't bloat the main folder):
--play animation (optional wait for finish)
--play sound (optional wait for finish)
--agent look at (2d/3d)
--play particles (optional wait for finish)
--instantiate object (pos, rot, scale)
-
-plugin for visualizing tree graph and monitors at run-time,
-support placing breakpoints on a specific node in the graph
-use node name and editor description for the graph
+plugin for visualizing tree at run-time
+-node graph
+-can place breakpoints on a specific node in the graph
+-can force tree to run a specific node
+-use node name and editor description for the graph
 
 unit tests:
 -all node types and their expected behavior
@@ -54,13 +54,19 @@ unit tests:
 
 [-] dynamic tree, support run-time modifications
 
-[] better caching and navigating of tree
+additional nodes (in their own "extension" folder so we don't bloat the main folder):
+-play animation (optional wait for finish)
+-play sound (optional wait for finish)
+-agent look at (2d/3d) (requires character2d)
+-agent go to (2d/3d) (requires nav agent and nav mesh)
+-play particles (optional wait for finish)
+-instantiate object (pos, rot, scale)
 
 Stage 3:
 documentations
 examples (use my space game as example)
 
-icons
+[..] icons
 asset lib setup
 
 Future:

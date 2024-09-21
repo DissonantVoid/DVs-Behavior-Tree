@@ -6,4 +6,6 @@
 [node name="RandomComposite" instance=ExtResource("1_0slnf")]
 script = ExtResource("2_ojeof")
 no_repeat = false
-weight = {}
+custom_weights = true
+
+[connection signal="child_entered_tree" from="." to="." method="_on_child_entered"]

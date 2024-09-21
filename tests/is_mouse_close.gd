@@ -1,4 +1,4 @@
-extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/conditional.gd"
+extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/condition.gd"
 
 const _min_distance : float = 100.0
 

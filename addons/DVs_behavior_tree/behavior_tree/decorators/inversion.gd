@@ -2,6 +2,8 @@
 class_name BTInversion
 extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 
+## Takes the child's status and inverts it if it's success or failure.
+
 func tick(delta : float) -> Status:
 	super(delta)
 	if _active_child == null: return Status.failure
