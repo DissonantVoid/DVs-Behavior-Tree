@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://b3gqqjhsbh8cq"]
+
+[ext_resource type="Theme" uid="uid://bbuhj2nojku5d" path="res://addons/DVs_behavior_tree/debug/debugger_ui_theme.tres" id="1_fc1cr"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/debug/debugger_ui.gd" id="2_2bslt"]
+
+[node name="DebuggerUI" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_fc1cr")
+script = ExtResource("2_2bslt")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TreesMenu" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/TreesMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TreesMenu/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HBoxContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GraphContainer" type="Control" parent="HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[connection signal="gui_input" from="HBoxContainer/Panel" to="." method="_on_graph_panel_gui_input"]

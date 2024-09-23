@@ -20,6 +20,8 @@ var is_main_path : bool = true :
 		is_main_path = value
 		_is_main_path_changed()
 
+const _debugger_message_prefix : String = "DVBehaviorTree" # NOTE: must match with the name in debug plugin
+
 func enter():
 	entered.emit()
 
@@ -39,3 +41,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if get_parent() is not BTBranch && self is not BTBehaviorTree:
 		return ["Behavior nodes must be parented to a BTBranch node"]
 	return []
+
+func _send_debbuger_message(message : String, data : Dictionary):
+	if EngineDebugger.is_active():
+		EngineDebugger.send_message(message, [data])

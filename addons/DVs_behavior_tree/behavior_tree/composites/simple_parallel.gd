@@ -84,7 +84,7 @@ func _is_main_path_changed():
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray
 	
-	var valid_children : Array[BTNode] = _get_valid_children()
+	var valid_children : Array[BTNode] = get_valid_children()
 	if valid_children.size() != 2:
 		warnings.append("Simple parallel will not work unless it has exactly 2 BTNode children")
 	if valid_children.size() > 1 && valid_children[0] is not BTLeaf:

@@ -14,6 +14,6 @@ func enter():
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()
-	if _get_valid_children().size() != 1:
+	if get_valid_children().size() != 1:
 		warnings.append("Decorators must have exactly one BTNode child")
 	return warnings

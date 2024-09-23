@@ -47,10 +47,24 @@ func _on_child_exiting_tree(node : Node):
 
 func _is_main_path_changed():
 	# by default branches will reflect their is_main_path on their children
-	for child : BTNode in _get_valid_children():
+	for child : BTNode in get_valid_children():
 		child.is_main_path = is_main_path
 
 # utility
+
+# TODO: this is called so often by different branch nodes we should cache the result after first call
+#       then set _get_next_valid_child to call this
+func get_valid_children() -> Array[BTNode]:
+	var children : Array[BTNode]
+	var index : int = -1
+	while true:
+		var child : BTNode = _get_next_valid_child(index)
+		if child == null: break
+		else: children.append(child)
+		
+		index = child.get_index()
+	
+	return children
 
 func _get_next_valid_child(index : int = -1) -> BTNode:
 	var next_index : int = index+1
@@ -64,17 +78,3 @@ func _get_next_valid_child(index : int = -1) -> BTNode:
 		next_index += 1
 	
 	return null
-
-# TODO: this is called so often by different branch nodes we should cache the result after first call
-#       the set _get_next_valid_child to call this
-func _get_valid_children() -> Array[BTNode]:
-	var children : Array[BTNode]
-	var index : int = -1
-	while true:
-		var child : BTNode = _get_next_valid_child(index)
-		if child == null: break
-		else: children.append(child)
-		
-		index = child.get_index()
-	
-	return children

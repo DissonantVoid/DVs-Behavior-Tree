@@ -96,7 +96,7 @@ func _is_main_path_changed():
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()
 	
-	var valid_children : Array[BTNode] = _get_valid_children()
+	var valid_children : Array[BTNode] = get_valid_children()
 	if valid_children.size() < 2:
 		warnings.append("Composites should have at least 2 child nodes to work properly")
 	

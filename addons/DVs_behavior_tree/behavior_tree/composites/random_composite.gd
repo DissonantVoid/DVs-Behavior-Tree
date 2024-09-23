@@ -27,7 +27,7 @@ func enter():
 	_active_child = _pick_rand_child()
 
 func _pick_rand_child() -> BTNode:
-	var children : Array[BTNode] = _get_valid_children()
+	var children : Array[BTNode] = get_valid_children()
 	if children.size() == 1: return children[0]
 	
 	if no_repeat && _previous_child:
@@ -67,7 +67,7 @@ func _recalculate_weights():
 	if is_node_ready() == false: await ready
 	
 	var new_internal_weights : Dictionary
-	for child : BTNode in _get_valid_children():
+	for child : BTNode in get_valid_children():
 		var full_name : String = _editor_weights_group + child.name
 		if _internal_weights.has(full_name):
 			new_internal_weights[full_name] = _internal_weights[full_name]

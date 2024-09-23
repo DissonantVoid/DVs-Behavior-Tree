@@ -4,8 +4,8 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
 ## Similar to the normal selector except when a child returns running
 ## this will start over from the first child and return running. The selector is reactive
-## in the sense that it rechecks previous children if a long running child is active (move_to for example)
-## reacting to any previous child having a success status.
+## in the sense that it rechecks previous children if a long running child is active
+## reacting to any previous child as soon as its status goes from failure to success.
 
 func tick(delta : float) -> Status:
 	super(delta)

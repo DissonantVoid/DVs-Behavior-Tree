@@ -2,11 +2,10 @@
 class_name BTSequenceReactive
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
-# TODO: better description, same for selector_reactive
 ## Similar to the normal sequence except when a child returns running
 ## this will start over from the first child and return running. The sequence is reactive
-## in the sense that it rechecks previous children if a long running child is active (move_to for example)
-## reacting to any previous child having a failure status.
+## in the sense that it rechecks previous children if a long running child is active
+## reacting to any previous child as soon as its status goes from success to failure.
 
 func tick(delta : float) -> Status:
 	super(delta)

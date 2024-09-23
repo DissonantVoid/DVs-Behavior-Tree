@@ -58,10 +58,31 @@ var _is_paused : bool
 var _last_active_node : BTNode = null
 var _cached_path_to_last_active_node : Array[BTNode]
 
+
 func _enter_tree():
 	await get_tree().process_frame
 	_is_subtree = get_parent() is BTBranch
 	notify_property_list_changed()
+	
+	if _is_subtree == false:
+		if EngineDebugger.is_active():
+			EngineDebugger.register_message_capture(_debugger_message_prefix, _on_debugger_message_received)
+		
+		var name_ : String = name
+		if get_parent().scene_file_path:
+			name_ = get_parent().scene_file_path.split("/")[-1] + "/" + name_
+		
+		_send_debbuger_message(
+			_debugger_message_prefix + ":tree_added",
+			{"id":self.get_instance_id(), "name":name_}
+		)
+
+func _exit_tree():
+	if _is_subtree == false:
+		_send_debbuger_message(_debugger_message_prefix + ":tree_removed", {"id":self.get_instance_id()})
+		
+		if EngineDebugger.is_active():
+			EngineDebugger.unregister_message_capture(_debugger_message_prefix)
 
 func _ready():
 	if Engine.is_editor_hint(): return
@@ -118,9 +139,6 @@ func tick(delta : float) -> Status:
 			_frames_counter = 0
 		else:
 			return Status.running
-	
-	# TEMP until I get a debugger going
-	print(get_path_to_active_node())
 	
 	if is_active && _active_child:
 		var status : Status = _active_child.tick(delta)
@@ -241,7 +259,7 @@ func _validate_property(property : Dictionary):
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()
-	var valid_children_count : int = _get_valid_children().size()
+	var valid_children_count : int = get_valid_children().size()
 	if valid_children_count != 1:
 		warnings.append("Behavior tree must have a single BTNode child")
 	if valid_children_count == 1 && _get_next_valid_child() is BTBranch == false:
@@ -261,3 +279,26 @@ func _on_last_active_node_exited(node : BTNode):
 		_last_active_node = null
 	_cached_path_to_last_active_node.clear()
 	node.exited.disconnect(_on_last_active_node_exited)
+
+func _on_debugger_message_received(message : String, data : Array) -> bool:
+	# NOTE: message capture received by the game side doesn't include prefix
+	if (message == "requesting_tree_structure" &&
+	data[0]["id"] == get_instance_id()):
+		var nodes : Dictionary # id : {name, depth}
+		var relations : Dictionary # parent id : [children ids]
+		
+		var get_children_recursive : Callable = func(node : BTNode, depth : int, func_ : Callable):
+			nodes[node.get_instance_id()] = {"name":node.name, "depth":depth}
+			if node is BTBranch == false: return
+			
+			relations[node.get_instance_id()] = []
+			for child : BTNode in node.get_valid_children():
+				relations[node.get_instance_id()].append(child.get_instance_id())
+				func_.call(child, depth+1, func_)
+		
+		get_children_recursive.call(self, 0, get_children_recursive)
+		
+		_send_debbuger_message(_debugger_message_prefix + ":sending_tree_structure", {"nodes":nodes, "relations":relations})
+		return true
+	
+	return false
