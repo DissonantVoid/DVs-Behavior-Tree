@@ -48,6 +48,8 @@ enum TickType {idle, physics}
 ## this is meant to spread the CPU load when having multiple instances of the same agent to minimize lag spikes.
 @export var _randomize_first_tick : bool = true
 
+var is_displayed_in_debugger : bool = false
+
 var blackboard : Dictionary
 static var global_blackboard : Dictionary
 
@@ -284,11 +286,27 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 	# NOTE: message capture received by the game side doesn't include prefix
 	if (message == "requesting_tree_structure" &&
 	data[0]["id"] == get_instance_id()):
-		var nodes : Dictionary # id : {name, depth}
+		var nodes : Dictionary # id : {name, depth, class_name, icon_path}
 		var relations : Dictionary # parent id : [children ids]
 		
 		var get_children_recursive : Callable = func(node : BTNode, depth : int, func_ : Callable):
-			nodes[node.get_instance_id()] = {"name":node.name, "depth":depth}
+			var script : Script = node.get_script()
+			# get base class name if class isn't named for example if user inherites BTAction
+			# without declaring a class_name this should return "BTAction"
+			while script.get_global_name() == "":
+				script = script.get_base_script()
+			var class_name_ : String = script.get_global_name()
+			
+			var icon_path : String
+			for global_class : Dictionary in ProjectSettings.get_global_class_list():
+				if global_class["class"] == class_name_:
+					icon_path = global_class["icon"]; break
+			
+			nodes[node.get_instance_id()] = {
+				"name":node.name, "depth":depth, "class_name":class_name_,
+				"icon_path":icon_path, "is_leaf":node is BTLeaf
+			}
+			
 			if node is BTBranch == false: return
 			
 			relations[node.get_instance_id()] = []
@@ -298,7 +316,19 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 		
 		get_children_recursive.call(self, 0, get_children_recursive)
 		
+		
 		_send_debbuger_message(_debugger_message_prefix + ":sending_tree_structure", {"nodes":nodes, "relations":relations})
+		return true
+	
+	elif (message == "debugger_display_started" &&
+	data[0]["id"] == get_instance_id()):
+		# TODO: send info about active nodes so debugger can know the tree state
+		is_displayed_in_debugger = true
+		return true
+	
+	elif (message == "debugger_display_ended" &&
+	data[0]["id"] == get_instance_id()):
+		is_displayed_in_debugger = false
 		return true
 	
 	return false

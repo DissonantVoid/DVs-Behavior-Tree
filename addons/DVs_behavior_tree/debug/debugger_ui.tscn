@@ -45,4 +45,41 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="NoActiveTree" type="Label" parent="HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "No active behavior tree."
+horizontal_alignment = 1
+
+[node name="OptionsPanel" type="MarginContainer" parent="HBoxContainer/Panel"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 30.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Panel/OptionsPanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CenterView" type="Button" parent="HBoxContainer/Panel/OptionsPanel/HBoxContainer"]
+layout_mode = 2
+text = "(Center view)"
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/Panel/OptionsPanel/HBoxContainer"]
+layout_mode = 2
+
 [connection signal="gui_input" from="HBoxContainer/Panel" to="." method="_on_graph_panel_gui_input"]
+[connection signal="pressed" from="HBoxContainer/Panel/OptionsPanel/HBoxContainer/CenterView" to="." method="_on_center_view_pressed"]

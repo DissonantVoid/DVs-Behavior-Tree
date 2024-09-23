@@ -23,12 +23,18 @@ var is_main_path : bool = true :
 const _debugger_message_prefix : String = "DVBehaviorTree" # NOTE: must match with the name in debug plugin
 
 func enter():
+	if behavior_tree.is_displayed_in_debugger:
+		_send_debbuger_message(_debugger_message_prefix + ":node_entered", {"id":self.get_instance_id(), "main_path":is_main_path})
 	entered.emit()
 
 func exit(is_interrupted : bool):
+	if behavior_tree.is_displayed_in_debugger:
+		_send_debbuger_message(_debugger_message_prefix + ":node_exited", {"id":self.get_instance_id(), "main_path":is_main_path})
 	exited.emit()
 
 func tick(delta : float) -> Status:
+	if behavior_tree.is_displayed_in_debugger:
+		_send_debbuger_message(_debugger_message_prefix + ":node_ticked", {"id":self.get_instance_id(), "main_path":is_main_path})
 	ticking.emit(delta)
 	return Status.undefined
 

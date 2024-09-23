@@ -1,7 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://csg3fm24mmv1s"]
+[gd_scene load_steps=6 format=3 uid="uid://csg3fm24mmv1s"]
 
+[ext_resource type="Theme" uid="uid://bbuhj2nojku5d" path="res://addons/DVs_behavior_tree/debug/debugger_ui_theme.tres" id="1_wnhip"]
 [ext_resource type="Texture2D" uid="uid://pl4dl1kfgt0s" path="res://addons/DVs_behavior_tree/icons/node.svg" id="1_yrehj"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/debug/components/graph_node.gd" id="2_x26pp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cbslj"]
+resource_local_to_scene = true
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.290196, 0.270588, 0.388235, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kx1aq"]
 bg_color = Color(0.28925, 0.2691, 0.39, 1)
@@ -10,7 +20,18 @@ bg_color = Color(0.28925, 0.2691, 0.39, 1)
 custom_minimum_size = Vector2(200, 120)
 offset_right = 200.0
 offset_bottom = 120.0
+theme = ExtResource("1_wnhip")
+theme_override_styles/panel = SubResource("StyleBoxFlat_cbslj")
 script = ExtResource("2_x26pp")
+
+[node name="ConnectionLine" type="Line2D" parent="."]
+show_behind_parent = true
+width = 8.0
+default_color = Color(0.290196, 0.270588, 0.388235, 1)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

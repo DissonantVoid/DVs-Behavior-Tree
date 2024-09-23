@@ -44,6 +44,15 @@ func _capture(message : String, data : Array, session_id : int) -> bool:
 	elif message == _message_prefix + ":sending_tree_structure":
 		_tree_graph.active_tree_structure_received(data[0])
 		return true
+	elif message == _message_prefix + ":node_entered":
+		_tree_graph.active_tree_node_entered(data[0])
+		return true
+	elif message == _message_prefix + ":node_exited":
+		_tree_graph.active_tree_node_exited(data[0])
+		return true
+	elif message == _message_prefix + ":node_ticked":
+		_tree_graph.active_tree_node_ticked(data[0])
+		return true
 	
 	return false
 

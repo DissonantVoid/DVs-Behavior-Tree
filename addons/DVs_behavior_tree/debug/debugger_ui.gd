@@ -4,6 +4,8 @@ extends MarginContainer
 @onready var _graph_panel : Panel = $HBoxContainer/Panel
 @onready var _graph_container : Control = $HBoxContainer/Panel/GraphContainer
 @onready var _tree_list_container : VBoxContainer = $HBoxContainer/TreesMenu/MarginContainer/VBoxContainer
+@onready var _options_panel : MarginContainer = $HBoxContainer/Panel/OptionsPanel
+@onready var _no_active_tree_label : Label = $HBoxContainer/Panel/NoActiveTree
 
 const _graph_node_scene : PackedScene = preload("res://addons/DVs_behavior_tree/debug/components/graph_node.tscn")
 
@@ -12,7 +14,7 @@ var _existing_tree_ids : PackedInt64Array
 var _active_tree_id : int = -1
 var _id_to_graph_node_map : Dictionary # id:graph node
 
-const _node_spacing : Vector2 = Vector2(300.0, 200.0)
+const _node_spacing : Vector2 = Vector2(50.0, 200.0)
 
 const _max_zoom_in : float = 1.5
 const _max_zoom_out : float = 0.2
@@ -23,6 +25,9 @@ const _pan_sensitivity : float = 0.7
 
 func setup(debugger : EditorDebuggerPlugin):
 	_debugger = debugger
+
+func _ready():
+	_options_panel.hide()
 
 func start_monitoring():
 	# nothing to do here, behavior tree nodes will not send any messages unless debugger is active
@@ -69,12 +74,14 @@ func _on_tree_list_btn_toggled(toggled_on : bool, button : Button):
 		
 		var id : int = button.get_meta("id")
 		_active_tree_id = id
+		_no_active_tree_label.hide()
+		_options_panel.show()
 		
 		# request full tree structure and wait for response
 		_debugger.send_debugger_ui_request("requesting_tree_structure", {"id":id})
 
 func active_tree_structure_received(data : Dictionary):
-	# construct graph
+	# spawn graph nodes
 	var ids_by_depth : Dictionary # array of ids
 	for node_id : int in data["nodes"]:
 		var graph : PanelContainer = _graph_node_scene.instantiate()
@@ -86,47 +93,74 @@ func active_tree_structure_received(data : Dictionary):
 		if ids_by_depth.has(depth) == false: ids_by_depth[depth] = []
 		ids_by_depth[depth].append(node_id)
 		
-		graph.setup(node_data["name"])
+		graph.setup(
+			node_data["name"], node_data["class_name"],
+			node_data["icon_path"], node_data["is_leaf"]
+		)
+	
+	var graph_node_width : float = 200.0 # TODO: calculate this per node since their width can change
 	
 	# graph positioning
-	for relation_parent_id : int in data["relations"]:
-		for child_id : int in data["relations"][relation_parent_id]:
-			var depth : int = data["nodes"][child_id]["depth"]
-			#var depth_nodes_count : int = ids_by_depth[depth].size()
-			var index_in_depth : int = ids_by_depth[depth].find(child_id)
+	for depth : int in ids_by_depth:
+		var nodes_width : float = ((ids_by_depth[depth].size()-1) * _node_spacing.x) + (ids_by_depth[depth].size() * graph_node_width) - graph_node_width
+		for id : int in ids_by_depth[depth]:
+			var index_in_depth : int = ids_by_depth[depth].find(id)
 			
-			# TODO: this isn't accurate because we can't guarentee that all nodes in previous
-			#       depth have been positioned
-			var average_xpos_of_prev_depth : float = 0.0
+			var middle_xpos_of_prev_depth : float = 0.0
 			if depth > 0:
-				for id : int in ids_by_depth[depth-1]:
-					average_xpos_of_prev_depth += _id_to_graph_node_map[id].position.x
-				average_xpos_of_prev_depth /= ids_by_depth[depth-1].size()
-			
-			var parent_graph_node : PanelContainer = _id_to_graph_node_map[relation_parent_id]
-			var child_graph_node : PanelContainer = _id_to_graph_node_map[child_id]
-			
-			child_graph_node.position.x =\
-				average_xpos_of_prev_depth + _node_spacing.x * index_in_depth
-			child_graph_node.position.y =\
-				parent_graph_node.position.y + _node_spacing.y # TODO: should take height of the highest sibling, and of parent into account
-	
+				for id_of_prev_depth : int in ids_by_depth[depth-1]:
+					middle_xpos_of_prev_depth += _id_to_graph_node_map[id_of_prev_depth].position.x
+				middle_xpos_of_prev_depth /= ids_by_depth[depth-1].size()
+				
+				# TODO: more optimized way to find parent, would require restructuring relations dictionary
+				var parent_id : int
+				for relation_parent_id : int in data["relations"]:
+					if data["relations"][relation_parent_id].has(id):
+						parent_id = relation_parent_id
+				
+				var parent_graph_node : PanelContainer = _id_to_graph_node_map[parent_id]
+				var graph_node : PanelContainer = _id_to_graph_node_map[id]
+				
+				graph_node.position.x =\
+					(middle_xpos_of_prev_depth + (graph_node_width + _node_spacing.x) * index_in_depth) - nodes_width / 2.0
+				graph_node.position.y =\
+					parent_graph_node.position.y + _node_spacing.y # TODO: should take height of the highest sibling, and of parent into account
+		
 	# connect nodes
 	for relation_parent_id : int in data["relations"]:
 		for child_id : int in data["relations"][relation_parent_id]:
 			var parent_graph_node : PanelContainer = _id_to_graph_node_map[relation_parent_id]
 			var child_graph_node : PanelContainer = _id_to_graph_node_map[child_id]
 			
-			child_graph_node.draw_connection_line(parent_graph_node.global_position)
+			child_graph_node.draw_connection_line(
+				parent_graph_node.position - child_graph_node.position +
+				Vector2(parent_graph_node.size.x / 2.0, parent_graph_node.size.y)
+			)
 	
 	_center_view_around_nodes()
+	_debugger.send_debugger_ui_request("debugger_display_started", {"id":_active_tree_id})
+
+func active_tree_node_entered(data : Dictionary):
+	_id_to_graph_node_map[data["id"]].enter(data["main_path"])
+
+func active_tree_node_exited(data : Dictionary):
+	_id_to_graph_node_map[data["id"]].exit(data["main_path"])
+
+func active_tree_node_ticked(data : Dictionary):
+	_id_to_graph_node_map[data["id"]].tick(data["main_path"])
 
 func _clear_graph():
+	if _active_tree_id == -1: return
+	
 	if _is_panning: _is_panning = false
 	_active_tree_id = -1
+	_no_active_tree_label.show()
+	_options_panel.hide()
 	_id_to_graph_node_map.clear()
 	for child : Node in _graph_container.get_children():
 		child.queue_free()
+	
+	_debugger.send_debugger_ui_request("debugger_display_ended", {"id":_active_tree_id})
 
 func _center_view_around_nodes():
 	if _active_tree_id == -1: return
@@ -136,7 +170,7 @@ func _center_view_around_nodes():
 		average_pos += graph_node.position
 	average_pos /= _graph_container.get_child_count()
 	# TODO: broken
-	_graph_container.position = average_pos - _graph_panel.size / 2.0# * _graph_container.scale
+	_graph_container.position = Vector2.ZERO # average_pos - _graph_panel.size / 2.0# * _graph_container.scale
 
 func _on_graph_panel_gui_input(event : InputEvent):
 	if _active_tree_id == -1: return
@@ -146,16 +180,17 @@ func _on_graph_panel_gui_input(event : InputEvent):
 		if event.pressed && event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			# zoom in
 			var zoom : float = min(_graph_container.scale.x + _zoom_increment, _max_zoom_in)
-			_graph_container.pivot_offset = _graph_panel.get_local_mouse_position() + _graph_container.position
+			_graph_container.pivot_offset =\
+				_graph_container.get_local_mouse_position()# * _graph_container.scale
 			_graph_container.scale = Vector2.ONE * zoom
 		elif event.pressed && event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			# zoom out
 			var zoom : float = max(_graph_container.scale.x - _zoom_increment, _max_zoom_out)
-			_graph_container.pivot_offset = _graph_panel.get_local_mouse_position() + _graph_container.position
+			_graph_container.pivot_offset =\
+				_graph_container.get_local_mouse_position()# * _graph_container.scale
 			_graph_container.scale = Vector2.ONE * zoom
 		
 		# panning
-		# TODO: panning should be limited around the tree
 		elif event.pressed && event.button_index == MOUSE_BUTTON_LEFT && _is_panning == false:
 			_is_panning = true
 			_graph_panel.mouse_default_cursor_shape = Control.CURSOR_MOVE
@@ -165,3 +200,6 @@ func _on_graph_panel_gui_input(event : InputEvent):
 	
 	elif event is InputEventMouseMotion && _is_panning:
 		_graph_container.position += event.relative * _pan_sensitivity
+
+func _on_center_view_pressed():
+	_center_view_around_nodes()
