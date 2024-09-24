@@ -15,7 +15,6 @@ func _setup_session(session_id : int):
 	var session : EditorDebuggerSession = get_session(session_id)
 	session.add_session_tab(_tree_graph)
 	#session.remove_session_tab(_tree_graph)
-	#session.send_message()
 	session.started.connect(_on_session_started)
 	session.stopped.connect(_on_session_stopped)
 	
@@ -31,27 +30,32 @@ func _on_session_started():
 func _on_session_stopped():
 	_tree_graph.stop_monitoring()
 
-# TODO: a way to document data (using structs perhaps)
+# TODO: a way to document data (using sub-classes perhaps)
 #       so that both the sender and receiver know what to expect
-#       minimizing bugs
+#       minimizing bugs. https://github.com/godotengine/godot-proposals/issues/7329
 func _capture(message : String, data : Array, session_id : int) -> bool:
-	if message == _message_prefix + ":tree_added":
+	message = message.split(":")[1] # remove prefix
+	
+	if message == "tree_added":
 		_tree_graph.tree_added(data[0])
 		return true
-	elif message == _message_prefix + ":tree_removed":
+	elif message == "tree_removed":
 		_tree_graph.tree_removed(data[0])
 		return true
-	elif message == _message_prefix + ":sending_tree_structure":
+	elif message == "sending_tree_structure":
 		_tree_graph.active_tree_structure_received(data[0])
 		return true
-	elif message == _message_prefix + ":node_entered":
+	elif message == "node_entered":
 		_tree_graph.active_tree_node_entered(data[0])
 		return true
-	elif message == _message_prefix + ":node_exited":
+	elif message == "node_exited":
 		_tree_graph.active_tree_node_exited(data[0])
 		return true
-	elif message == _message_prefix + ":node_ticked":
+	elif message == "node_ticked":
 		_tree_graph.active_tree_node_ticked(data[0])
+		return true
+	elif message == "sending_blackboard_data":
+		_tree_graph.active_tree_blackboard_received(data[0])
 		return true
 	
 	return false

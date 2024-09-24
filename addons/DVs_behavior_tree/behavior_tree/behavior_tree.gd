@@ -48,7 +48,7 @@ enum TickType {idle, physics}
 ## this is meant to spread the CPU load when having multiple instances of the same agent to minimize lag spikes.
 @export var _randomize_first_tick : bool = true
 
-var is_displayed_in_debugger : bool = false
+var _is_displayed_in_debugger : bool = false
 
 var blackboard : Dictionary
 static var global_blackboard : Dictionary
@@ -227,6 +227,12 @@ func get_path_to_active_node() -> Array[BTNode]:
 	_cached_path_to_last_active_node = get_next_running_child.call(self, [] as Array[BTNode], get_next_running_child)
 	return _cached_path_to_last_active_node
 
+func is_tree_displayed_in_debugger() -> bool:
+	if _is_subtree:
+		return behavior_tree.is_tree_displayed_in_debugger()
+	else:
+		return _is_displayed_in_debugger
+
 func _set_root_process():
 	if Engine.is_editor_hint(): return
 	if is_node_ready() == false: await self.ready
@@ -283,12 +289,14 @@ func _on_last_active_node_exited(node : BTNode):
 	node.exited.disconnect(_on_last_active_node_exited)
 
 func _on_debugger_message_received(message : String, data : Array) -> bool:
+	if data[0]["id"] != get_instance_id(): return false
+	
 	# NOTE: message capture received by the game side doesn't include prefix
-	if (message == "requesting_tree_structure" &&
-	data[0]["id"] == get_instance_id()):
-		var nodes : Dictionary # id : {name, depth, class_name, icon_path}
+	if message == "requesting_tree_structure":
+		var nodes : Dictionary # id : {name, depth, class_name, description, icon_path, is_leaf}
 		var relations : Dictionary # parent id : [children ids]
 		
+		var global_class_list : Array[Dictionary] = ProjectSettings.get_global_class_list()
 		var get_children_recursive : Callable = func(node : BTNode, depth : int, func_ : Callable):
 			var script : Script = node.get_script()
 			# get base class name if class isn't named for example if user inherites BTAction
@@ -298,37 +306,54 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 			var class_name_ : String = script.get_global_name()
 			
 			var icon_path : String
-			for global_class : Dictionary in ProjectSettings.get_global_class_list():
-				if global_class["class"] == class_name_:
-					icon_path = global_class["icon"]; break
+			while true:
+				for global_class : Dictionary in global_class_list:
+					if global_class["class"] == script.get_global_name():
+						icon_path = global_class["icon"]; break
+				if icon_path.is_empty() == false: break
+				
+				# class with class_name doesn't have an icon, fallback to the icon of parent class
+				script = script.get_base_script()
 			
 			nodes[node.get_instance_id()] = {
 				"name":node.name, "depth":depth, "class_name":class_name_,
+				"description":node.description,
 				"icon_path":icon_path, "is_leaf":node is BTLeaf
 			}
 			
 			if node is BTBranch == false: return
 			
 			relations[node.get_instance_id()] = []
-			for child : BTNode in node.get_valid_children():
+			for child : BTNode in node.get_valid_children(): # TODO: pass services too
 				relations[node.get_instance_id()].append(child.get_instance_id())
 				func_.call(child, depth+1, func_)
 		
 		get_children_recursive.call(self, 0, get_children_recursive)
 		
-		
 		_send_debbuger_message(_debugger_message_prefix + ":sending_tree_structure", {"nodes":nodes, "relations":relations})
 		return true
 	
-	elif (message == "debugger_display_started" &&
-	data[0]["id"] == get_instance_id()):
-		# TODO: send info about active nodes so debugger can know the tree state
-		is_displayed_in_debugger = true
+	elif message == "debugger_display_started":
+		# TODO: send info about active nodes so debugger can know the initial tree state
+		_is_displayed_in_debugger = true
 		return true
 	
-	elif (message == "debugger_display_ended" &&
-	data[0]["id"] == get_instance_id()):
-		is_displayed_in_debugger = false
+	elif message == "debugger_display_ended":
+		_is_displayed_in_debugger = false
+		return true
+	
+	elif message == "requesting_force_tick":
+		# TODO: doesn't work
+		force_tick_node(instance_from_id(data[0]["target_id"]))
+		return true
+	
+	elif message == "requesting_blackboard_data":
+		var bb : Dictionary
+		if data[0]["global"]:
+			bb = global_blackboard
+		else:
+			bb = blackboard
+		_send_debbuger_message(_debugger_message_prefix + ":sending_blackboard_data", {"data":bb})
 		return true
 	
 	return false

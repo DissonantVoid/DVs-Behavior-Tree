@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/branch.svg")
 class_name BTBranch
 extends "res://addons/DVs_behavior_tree/behavior_tree/node.gd"
 

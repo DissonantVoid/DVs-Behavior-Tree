@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://csg3fm24mmv1s"]
+[gd_scene load_steps=7 format=3 uid="uid://csg3fm24mmv1s"]
 
 [ext_resource type="Theme" uid="uid://bbuhj2nojku5d" path="res://addons/DVs_behavior_tree/debug/debugger_ui_theme.tres" id="1_wnhip"]
 [ext_resource type="Texture2D" uid="uid://pl4dl1kfgt0s" path="res://addons/DVs_behavior_tree/icons/node.svg" id="1_yrehj"]
@@ -16,10 +16,14 @@ border_color = Color(0.290196, 0.270588, 0.388235, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kx1aq"]
 bg_color = Color(0.28925, 0.2691, 0.39, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5hv4x"]
+bg_color = Color(0.290196, 0.270588, 0.388235, 1)
+
 [node name="GraphNode" type="PanelContainer"]
-custom_minimum_size = Vector2(200, 120)
-offset_right = 200.0
-offset_bottom = 120.0
+custom_minimum_size = Vector2(300, 0)
+offset_right = 300.0
+offset_bottom = 193.0
+size_flags_vertical = 0
 theme = ExtResource("1_wnhip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_cbslj")
 script = ExtResource("2_x26pp")
@@ -47,37 +51,72 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("1_yrehj")
-stretch_mode = 3
+stretch_mode = 4
 
 [node name="Name" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_styles/normal = SubResource("StyleBoxFlat_kx1aq")
 text = "NodeName"
 horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="Status" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "(Last Status)"
+horizontal_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5hv4x")
+
+[node name="Description" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Description"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Margin" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 0
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Data" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="Actions" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+
+[node name="OpenBlackboard" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer/Actions"]
+layout_mode = 2
+text = "Open Blackboard"
+
+[node name="ForceTick" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer/Actions"]
+layout_mode = 2
+text = "Force Tick"
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Margin2" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
-text = "(Last Status)"
-horizontal_alignment = 1
 
 [node name="Breakpoint" type="CheckButton" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Breakpoint"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Actions/OpenBlackboard" to="." method="_on_open_blackboard_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Actions/ForceTick" to="." method="_on_force_tick_pressed"]

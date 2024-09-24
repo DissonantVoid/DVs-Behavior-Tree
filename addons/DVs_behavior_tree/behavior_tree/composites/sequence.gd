@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/sequence.svg")
 class_name BTSequence
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 

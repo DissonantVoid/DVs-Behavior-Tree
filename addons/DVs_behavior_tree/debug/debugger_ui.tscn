@@ -12,31 +12,78 @@ grow_vertical = 2
 theme = ExtResource("1_fc1cr")
 script = ExtResource("2_2bslt")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="TreesMenu" type="PanelContainer" parent="HBoxContainer"]
+[node name="TreesMenu" type="PanelContainer" parent="HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/TreesMenu"]
+[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer/TreesMenu"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TreesMenu/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HSplitContainer/TreesMenu/MarginContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/TreesMenu/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BlackboardData" type="PanelContainer" parent="HSplitContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+
+[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer/BlackboardData"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HSplitContainer/BlackboardData/MarginContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/BlackboardData/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="HBoxContainer"]
+[node name="Name" type="Label" parent="HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Blackboard Name"
+text_overrun_behavior = 3
+
+[node name="Close" type="Button" parent="HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Close"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="HSplitContainer"]
 clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="GraphContainer" type="Control" parent="HBoxContainer/Panel"]
+[node name="GraphContainer" type="Control" parent="HSplitContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -45,7 +92,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="NoActiveTree" type="Label" parent="HBoxContainer/Panel"]
+[node name="NoActiveTree" type="Label" parent="HSplitContainer/Panel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -62,7 +109,7 @@ theme_override_font_sizes/font_size = 40
 text = "No active behavior tree."
 horizontal_alignment = 1
 
-[node name="OptionsPanel" type="MarginContainer" parent="HBoxContainer/Panel"]
+[node name="OptionsPanel" type="MarginContainer" parent="HSplitContainer/Panel"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 1
 anchors_preset = 10
@@ -70,16 +117,25 @@ anchor_right = 1.0
 offset_bottom = 30.0
 grow_horizontal = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Panel/OptionsPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/Panel/OptionsPanel"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="CenterView" type="Button" parent="HBoxContainer/Panel/OptionsPanel/HBoxContainer"]
+[node name="CenterView" type="Button" parent="HSplitContainer/Panel/OptionsPanel/HBoxContainer"]
 layout_mode = 2
-text = "(Center view)"
+text = "Center view"
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/Panel/OptionsPanel/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="HSplitContainer/Panel/OptionsPanel/HBoxContainer"]
 layout_mode = 2
 
-[connection signal="gui_input" from="HBoxContainer/Panel" to="." method="_on_graph_panel_gui_input"]
-[connection signal="pressed" from="HBoxContainer/Panel/OptionsPanel/HBoxContainer/CenterView" to="." method="_on_center_view_pressed"]
+[node name="OpenGlobalBB" type="Button" parent="HSplitContainer/Panel/OptionsPanel/HBoxContainer"]
+layout_mode = 2
+text = "Open Global Blackboard"
+
+[node name="BlackboardUpdateTimer" type="Timer" parent="."]
+
+[connection signal="pressed" from="HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Close" to="." method="_on_blackboard_panel_close_pressed"]
+[connection signal="gui_input" from="HSplitContainer/Panel" to="." method="_on_graph_panel_gui_input"]
+[connection signal="pressed" from="HSplitContainer/Panel/OptionsPanel/HBoxContainer/CenterView" to="." method="_on_center_view_pressed"]
+[connection signal="pressed" from="HSplitContainer/Panel/OptionsPanel/HBoxContainer/OpenGlobalBB" to="." method="_on_open_global_blackboard_pressed"]
+[connection signal="timeout" from="BlackboardUpdateTimer" to="." method="_on_blackboard_update_timer_timeout"]

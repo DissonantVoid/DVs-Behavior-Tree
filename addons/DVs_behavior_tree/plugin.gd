@@ -6,7 +6,6 @@ var _tree_debug_plugin : EditorDebuggerPlugin
 
 func _enter_tree():
 	_tree_debug_plugin = _tree_debug_plugin_scene.new()
-	
 	add_debugger_plugin(_tree_debug_plugin)
 
 func _exit_tree():

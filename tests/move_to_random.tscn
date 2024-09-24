@@ -5,3 +5,4 @@
 
 [node name="MoveToRandom" instance=ExtResource("1_mk1m6")]
 script = ExtResource("2_p16y8")
+description = "Pick random point and move to it"

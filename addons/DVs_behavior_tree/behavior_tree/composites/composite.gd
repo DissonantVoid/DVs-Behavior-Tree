@@ -43,14 +43,19 @@ func _ready():
 		if child is BTService:
 			_services.append(child)
 		else:
-			# ignore services placed after other nodes
+			# ignore services placed after other nodes, BTService will handle warnings
 			break
 
 func enter():
 	super()
+	
 	# find first valid child
 	var valid_child : BTNode = _get_next_valid_child()
 	if valid_child:
+		# interrupt conditional abort child in case self was entered naturaly without having had interrupted another branch
+		if conditional_abort != ConditionalAbort.none && _is_conditional_abort_child_ticking:
+			valid_child.exit(true)
+		
 		_active_child = valid_child
 		_active_child.enter()
 	
@@ -66,6 +71,7 @@ func exit(is_interrupted : bool):
 
 func tick(delta : float) -> Status:
 	super(delta)
+	
 	if ((conditional_abort == ConditionalAbort.self_ ||
 	conditional_abort == ConditionalAbort.both) && _has_valid_cond_abort_child):
 		var cond_abort_child : BTNode = _get_next_valid_child()
@@ -122,7 +128,7 @@ func _on_parent_ticking(delta : float):
 	var running_sibling : BTNode = null
 	running_sibling = get_parent().get_active_child()
 	if running_sibling ==  null:
-		# paren't hasn't picked a sibling yet
+		# parent hasn't picked a sibling yet
 		return
 	
 	# child is us

@@ -6,6 +6,7 @@ Notes:
 -allow user to add non BT nodes under a branch, and just ignore them
 -mark major and minor versions with git tags
 -color palette: main af9dd9, seconday 4a4563
+-icon sprite name should match scene file name
 -debugger/game communication is handled by the root tree node
 
 Resources:
@@ -36,12 +37,14 @@ nodes:
 [X]-rename throttle into cooldown
 -event listener that can interrupt low priority branches
 
+-rename services to something more clear like observers
+
 plugin for visualizing tree at run-time
-[..] -node graph, allows browsing individual trees
-[] -can also check global blackboard
-[] -can place breakpoints on a specific node in the graph
-[] -can force tree to run a specific node
-[] -use node name and editor description for the graph
+[X] -node graph, allows browsing individual trees
+[X] -can check global blackboard. while blackboard is open in debugger update data regularly
+[..] -can place breakpoints on a specific node in the graph
+[..] -can force tree to run a specific node
+[X] -use node name and description for the graph
 [] -custom nodes can add their custom data to the graph
 
 unit tests:

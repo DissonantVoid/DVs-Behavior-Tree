@@ -5,3 +5,4 @@
 
 [node name="MoveToMouse" instance=ExtResource("1_6iycl")]
 script = ExtResource("2_c8tco")
+description = "Move towards mouse position"
