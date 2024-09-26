@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/repeat.svg")
 class_name BTRepeat
 extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 

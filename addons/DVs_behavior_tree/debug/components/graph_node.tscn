@@ -7,10 +7,10 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cbslj"]
 resource_local_to_scene = true
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
 border_color = Color(0.290196, 0.270588, 0.388235, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kx1aq"]
@@ -20,7 +20,6 @@ bg_color = Color(0.28925, 0.2691, 0.39, 1)
 bg_color = Color(0.290196, 0.270588, 0.388235, 1)
 
 [node name="GraphNode" type="PanelContainer"]
-custom_minimum_size = Vector2(300, 0)
 offset_right = 300.0
 offset_bottom = 193.0
 size_flags_vertical = 0
@@ -29,12 +28,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_cbslj")
 script = ExtResource("2_x26pp")
 
 [node name="ConnectionLine" type="Line2D" parent="."]
-show_behind_parent = true
+position = Vector2(5, 5)
 width = 8.0
 default_color = Color(0.290196, 0.270588, 0.388235, 1)
-joint_mode = 2
-begin_cap_mode = 2
-end_cap_mode = 2
 antialiased = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/simple_parallel.svg")
 class_name BTSimpleParallel
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 

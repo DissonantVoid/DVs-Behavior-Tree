@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/blackboard_check.svg")
 class_name BTBlackboardCheck
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/condition.gd"
 
@@ -38,7 +39,7 @@ func tick(delta : float) -> Status:
 	
 	var exp : Expression = Expression.new()
 	exp.parse(value_expression)
-	var result := exp.execute([], self)
+	var result : Variant= exp.execute([], self)
 	
 	if exp.has_execute_failed():
 		return Status.failure

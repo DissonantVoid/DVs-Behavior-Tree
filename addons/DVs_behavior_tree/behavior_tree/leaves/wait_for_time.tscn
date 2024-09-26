@@ -7,6 +7,3 @@
 script = ExtResource("2_5sktb")
 min = 1.0
 max = 1.0
-
-[node name="Timer" type="Timer" parent="." index="0"]
-one_shot = true

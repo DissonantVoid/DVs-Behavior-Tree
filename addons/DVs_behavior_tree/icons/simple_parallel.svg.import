@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://r7rxv53ci8uq"
-path="res://.godot/imported/action.svg-b7b3e9ac86d6868d0dbc03a845255b66.ctex"
+uid="uid://ce2rl14i42ygj"
+path="res://.godot/imported/simple_parallel.svg-0ccd013f0fa8dcc1d505661251475794.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/DVs_behavior_tree/icons/action.svg"
-dest_files=["res://.godot/imported/action.svg-b7b3e9ac86d6868d0dbc03a845255b66.ctex"]
+source_file="res://addons/DVs_behavior_tree/icons/simple_parallel.svg"
+dest_files=["res://.godot/imported/simple_parallel.svg-0ccd013f0fa8dcc1d505661251475794.ctex"]
 
 [params]
 

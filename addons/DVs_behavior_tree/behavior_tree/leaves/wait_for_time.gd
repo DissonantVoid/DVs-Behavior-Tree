@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/wait_for_time.svg")
 class_name BTWaitForTime
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 
@@ -18,19 +19,19 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 		if value < min:
 			min = value
 
-@onready var _timer : Timer = $Timer
+var _enter_time : float
+var _time : float
 
 func enter():
 	super()
-	_timer.wait_time = randf_range(min, max)
-	_timer.start()
+	_enter_time = Time.get_ticks_msec()
+	_time = randf_range(min, max)
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
-	_timer.stop()
 
 func tick(delta : float) -> Status:
 	super(delta)
-	if _timer.is_stopped():
+	if (Time.get_ticks_msec() - _enter_time) / 1000.0 >= _time:
 		return Status.success
 	return Status.running

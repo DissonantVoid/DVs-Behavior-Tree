@@ -19,10 +19,11 @@ var _debugger : EditorDebuggerPlugin
 var _existing_tree_ids : PackedInt64Array
 var _active_tree_id : int = -1
 var _id_to_graph_node_map : Dictionary # id:graph node
-var _key_to_bb_entry_map : Dictionary # key(string):entry node
+var _key_to_bb_entry_map : Dictionary # key(string):blackboard entry node
 var _is_tracking_global_blackboard : bool
 
 const _node_spacing : Vector2 = Vector2(100.0, 60.0)
+const _group_min_x_distance : float = _node_spacing.x
 
 const _max_zoom_in : float = 1.5
 const _max_zoom_out : float = 0.2
@@ -58,36 +59,23 @@ func tree_added(data : Dictionary):
 func tree_removed(data : Dictionary):
 	_remove_tree_menu_entry(data["id"])
 
-func _remove_tree_menu_entry(tree_id : int):
-	for btn : Button in _tree_menu_container.get_children():
-		if btn.get_meta("id") == tree_id:
-			btn.queue_free(); break
-	
-	if _active_tree_id == tree_id:
-		_clear_graph()
-	
-	_existing_tree_ids.remove_at(_existing_tree_ids.find(tree_id)) # no .erase?!!
-
-func _on_tree_list_btn_toggled(toggled_on : bool, button : Button):
-	if toggled_on == false:
-		# prevent toggling off
-		button.set_pressed_no_signal(true)
-	else:
-		_clear_graph()
-		
-		var id : int = button.get_meta("id")
-		_active_tree_id = id
-		_no_active_tree_label.hide()
-		_options_panel.show()
-		
-		# request full tree structure and wait for response
-		_debugger.send_debugger_ui_request("requesting_tree_structure", {"id":id})
-
+# see: https://williamyaoh.com/posts/2023-04-22-drawing-trees-functionally.html
 func active_tree_structure_received(data : Dictionary):
-	# spawn graph nodes
+	# WARNING: let there be know that only the bravest and most battle hardened of programmers may enter
+	#          this demonic realm. this place has already taken the life energy of the poor soul
+	#          that made it, he was broken, twisted and shattered into a thousand pieces, and he
+	#          will never be the same again. if you value your sanity you shall take back the road
+	#          that lead you here and live your life to the fullest, knowing that you didn't have to
+	#          witness what's bellow. that you were one of thoese who got to keep all their brain cells.
+	#          if you wish to modify the inner workings of this hellish code or fix a bug, you would
+	#          do best to live with that bug rather than take a single peek at this. YOU. Have. Been. Warned.
+	
 	var ids_by_depth : Dictionary # depth:[ids]
+	var relations : Dictionary = data["relations"] # parent_id:[children_id]
+	
+	# Step1: spawn graph nodes
 	for node_id : int in data["nodes"]:
-		var graph_node : PanelContainer = _graph_node_scene.instantiate()
+		var graph_node : Control = _graph_node_scene.instantiate()
 		_graph_container.add_child(graph_node)
 		_id_to_graph_node_map[node_id] = graph_node
 		graph_node.action_pressed.connect(_on_graph_node_action_pressed.bind(graph_node))
@@ -104,62 +92,120 @@ func active_tree_structure_received(data : Dictionary):
 		)
 		graph_node.reset_size()
 	
-	# graph positioning
-	# TODO: the current approach of structuring each depth by equally spacing
-	#       all nodes doesn't scale up. once we get to +5 layers it become hard to read
-	#       come up with a better solution
-	var max_height_of_prev_depth : float
-	var max_height_of_this_depth : float
+	# Step2: positioning
+	var height_of_prev_depth : float
 	for depth : int in ids_by_depth:
 		if depth == 0:
-			var root_graph_node : PanelContainer = _id_to_graph_node_map[ids_by_depth[0][0]]
-			max_height_of_prev_depth = root_graph_node.size.y
+			var root_graph_node : Control = _id_to_graph_node_map[ids_by_depth[0][0]]
+			height_of_prev_depth = root_graph_node.size.y
 			continue # keep root at 0,0
 		
-		var spacing_sum : float = (ids_by_depth[depth].size()-1) * _node_spacing.x # sum of all empty space between nodes
-		var total_width : float = spacing_sum
-		for i : int in ids_by_depth[depth].size(): 
-			if i == 0: continue # don't count width of first node
-			var graph_node : PanelContainer = _id_to_graph_node_map[ids_by_depth[depth][i]]
-			total_width += graph_node.size.x
+		var height_of_this_depth : float
+		for parent_id : int in ids_by_depth[depth-1]:
+			if relations.has(parent_id) == false:
+				# parent in previous depth may not have any children
+				continue
+			
+			var children_ids : PackedInt64Array = relations[parent_id]
+			
+			# calculate total width of all children in a group
+			# NOTE: a group is all children in a specific depth that share the same parent
+			var spacing_sum : float = (children_ids.size()-1) * _node_spacing.x # sum of all empty space between nodes
+			var total_width : float = spacing_sum
+			for i : int in children_ids.size():
+				var graph_node : Control = _id_to_graph_node_map[children_ids[i]]
+				total_width += graph_node.size.x
+			
+			# space out nodes in group and position group's center under parent's center
+			var parent_graph_node : Control = _id_to_graph_node_map[parent_id]
+			for i : int in children_ids.size():
+				var child_id : int = children_ids[i]
+				var graph_node : Control = _id_to_graph_node_map[child_id]
+				height_of_this_depth = max(height_of_this_depth, graph_node.size.y)
+				
+				var parent_x_center : float = parent_graph_node.position.x + parent_graph_node.size.x / 2.0
+				graph_node.position.x =\
+					(parent_x_center + (graph_node.size.x + _node_spacing.x) * i) - total_width / 2.0
+				graph_node.position.y =\
+					parent_graph_node.position.y + height_of_prev_depth + _node_spacing.y
+				graph_node.set_graph_parent(parent_graph_node)
 		
-		for id : int in ids_by_depth[depth]:
-			var index_in_depth : int = ids_by_depth[depth].find(id)
-			
-			# get mid X pos of all nodes in previous depth
-			var middle_xpos_of_prev_depth : float = 0.0
-			for id_of_prev_depth : int in ids_by_depth[depth-1]:
-				middle_xpos_of_prev_depth += _id_to_graph_node_map[id_of_prev_depth].position.x
-			middle_xpos_of_prev_depth /= ids_by_depth[depth-1].size()
-			
-			# get parent graph node
-			var parent_graph_node : PanelContainer
-			for relation_parent_id : int in data["relations"]:
-				if data["relations"][relation_parent_id].has(id):
-					parent_graph_node = _id_to_graph_node_map[relation_parent_id]
-			
-			var graph_node : PanelContainer = _id_to_graph_node_map[id]
-			max_height_of_this_depth = max(max_height_of_this_depth, graph_node.size.y)
-			
-			graph_node.position.x =\
-				(middle_xpos_of_prev_depth + (graph_node.size.x + _node_spacing.x) * index_in_depth) - total_width / 2.0
-			graph_node.position.y =\
-				parent_graph_node.position.y + max_height_of_prev_depth + _node_spacing.y
+		height_of_prev_depth = height_of_this_depth
+	
+	var get_parent_graph_node : Callable = func(child_id : int) -> Control:
+		for parent_id : int in relations:
+			if relations[parent_id].has(child_id):
+				return _id_to_graph_node_map[parent_id]
+		return null
+	
+	# Step3: eliminating intersections
+	for depth : int in ids_by_depth:
+		if depth == 0: continue
 		
-		max_height_of_prev_depth = max_height_of_this_depth
-	
-	# connect nodes
-	for relation_parent_id : int in data["relations"]:
-		for child_id : int in data["relations"][relation_parent_id]:
-			var parent_graph_node : PanelContainer = _id_to_graph_node_map[relation_parent_id]
-			var child_graph_node : PanelContainer = _id_to_graph_node_map[child_id]
+		var last_parent_graph_node : Control = null
+		for i : int in ids_by_depth[depth].size():
+			var id : int = ids_by_depth[depth][i]
+			var parent_graph_node : Control = get_parent_graph_node.call(id)
 			
-			child_graph_node.draw_connection_line(
-				parent_graph_node.position - child_graph_node.position +
-				Vector2(parent_graph_node.size.x / 2.0, parent_graph_node.size.y)
-			)
+			# detect if we've entered a new group
+			var is_new_group : bool = false
+			if parent_graph_node != last_parent_graph_node && i > 1:
+				is_new_group = true
+			
+			if is_new_group:
+				# lm=left most node of new group. rm=right most node of past group
+				var lm_node : Control = _id_to_graph_node_map[id]
+				var rm_node : Control = _id_to_graph_node_map[ids_by_depth[depth][i-1]]
+				
+				# check if leftmost node of new group group is colliding or past rightmost of prev group
+				var rm_end : float = rm_node.position.x + rm_node.size.x
+				if rm_end + _group_min_x_distance >= lm_node.position.x:
+					var x_distance : float = rm_end + _group_min_x_distance - lm_node.position.x
+					
+					var lm_parent : Control = parent_graph_node
+					var rm_parent : Control = last_parent_graph_node
+					if lm_parent == rm_parent:
+						lm_node.position.x += x_distance
+						rm_node.position.x -= x_distance
+					else:
+						# iterate back up the tree until we reach common ancestor
+						var iteration_depth : int = depth-1
+						while true:
+							var lm_parent_id : int = _id_to_graph_node_map.find_key(lm_parent)
+							var lm_grandparent : Control =\
+								get_parent_graph_node.call(lm_parent_id)
+							var rm_parent_id : int = _id_to_graph_node_map.find_key(rm_parent)
+							var rm_grandparent : Control =\
+								get_parent_graph_node.call(rm_parent_id)
+							
+							# TODO: use godot's parent/child system for this so we only need to push the ancestor
+							#       for all children to move
+							if lm_grandparent == rm_grandparent:
+								# common ancestor found. push all nodes below the ancestor to the left or right
+								var push_nodes_recursive : Callable = func(graph_node_id : int, x_offset : float, func_ : Callable):
+									_id_to_graph_node_map[graph_node_id].position.x += x_offset
+									if relations.has(graph_node_id):
+										for child_id : int in relations[graph_node_id]:
+											func_.call(child_id, x_offset, func_)
+								
+								var ids_in_iter_depth : PackedInt64Array = ids_by_depth[iteration_depth]
+								var lm_furthest_parent_idx : int = ids_in_iter_depth.find(lm_parent_id)
+								
+								for j : int in ids_in_iter_depth.size():
+									# push node and its children to the right if it's an ancestor of the lm node
+									# or it's the lm node itself. otherwise push to the left
+									var offset : float = x_distance if j >= lm_furthest_parent_idx else -x_distance
+									push_nodes_recursive.call(ids_in_iter_depth[j], offset, push_nodes_recursive)
+								
+								break 
+							
+							lm_parent = lm_grandparent
+							rm_parent = rm_grandparent
+							iteration_depth -= 1
+			
+			last_parent_graph_node = parent_graph_node
 	
-	_center_view_around_nodes()
+	_center_view_around_graph()
 	_debugger.send_debugger_ui_request("debugger_display_started", {"id":_active_tree_id})
 
 func active_tree_node_entered(data : Dictionary):
@@ -220,16 +266,41 @@ func _clear_graph():
 	
 	_debugger.send_debugger_ui_request("debugger_display_ended", {"id":_active_tree_id})
 
+func _remove_tree_menu_entry(tree_id : int):
+	for btn : Button in _tree_menu_container.get_children():
+		if btn.get_meta("id") == tree_id:
+			btn.queue_free(); break
+	
+	if _active_tree_id == tree_id:
+		_clear_graph()
+	
+	_existing_tree_ids.remove_at(_existing_tree_ids.find(tree_id)) # no .erase?!!
+
+func _on_tree_list_btn_toggled(toggled_on : bool, button : Button):
+	if toggled_on == false:
+		# prevent toggling off
+		button.set_pressed_no_signal(true)
+	else:
+		_clear_graph()
+		
+		var id : int = button.get_meta("id")
+		_active_tree_id = id
+		_no_active_tree_label.hide()
+		_options_panel.show()
+		
+		# request full tree structure and wait for response
+		_debugger.send_debugger_ui_request("requesting_tree_structure", {"id":id})
+
 func _clear_blackboard():
 	for child : Node in _blackboard_data_container.get_children():
 		child.queue_free()
 	_key_to_bb_entry_map.clear()
 
-func _center_view_around_nodes():
+func _center_view_around_graph():
 	if _active_tree_id == -1: return
 	
 	var average_pos : Vector2 = Vector2.ZERO
-	for graph_node : PanelContainer in _graph_container.get_children():
+	for graph_node : Control in _graph_container.get_children():
 		average_pos += graph_node.position + graph_node.size / 2.0
 	average_pos /= _graph_container.get_child_count()
 	
@@ -237,7 +308,7 @@ func _center_view_around_nodes():
 	var panel_center : Vector2 = (_graph_panel.size / 2.0)
 	_graph_container.position = panel_center - average_pos * _graph_container.scale
 
-func _on_graph_node_action_pressed(action_type : String, graph_node : PanelContainer):
+func _on_graph_node_action_pressed(action_type : String, graph_node : Control):
 	match action_type:
 		"force_tick":
 			var graph_id : int
@@ -256,10 +327,7 @@ func _on_graph_node_action_pressed(action_type : String, graph_node : PanelConta
 func _on_graph_panel_gui_input(event : InputEvent):
 	if _active_tree_id == -1: return
 	
-	#_graph_container.pivot_offset = Vector2.ZERO
-	#var panel_center : Vector2 = (_graph_panel.size / 2.0)
-	#_graph_container.position = panel_center - average_pos * _graph_container.scale
-	
+	# graph navigation
 	if event is InputEventMouseButton:
 		# TODO: zoom from mouse position
 		if event.pressed && event.button_index == MOUSE_BUTTON_WHEEL_UP:
@@ -295,7 +363,7 @@ func _on_blackboard_panel_close_pressed():
 	_tree_menu_panel.show()
 
 func _on_center_view_pressed():
-	_center_view_around_nodes()
+	_center_view_around_graph()
 
 func _request_blackboard_data():
 	_debugger.send_debugger_ui_request(

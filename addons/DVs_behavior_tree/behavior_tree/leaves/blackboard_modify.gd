@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/blackboard_modify.svg")
 class_name BTBlackboardModify
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 
@@ -39,7 +40,7 @@ func tick(delta : float) -> Status:
 	if action == ActionType.write:
 		var exp : Expression = Expression.new()
 		exp.parse(value_expression)
-		var result := exp.execute([], self)
+		var result : Variant = exp.execute([], self)
 		if exp.has_execute_failed():
 			return Status.failure
 		

@@ -106,7 +106,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if valid_children.size() < 2:
 		warnings.append("Composites should have at least 2 child nodes to work properly")
 	
-	if (conditional_abort != ConditionalAbort.none &&
+	if (conditional_abort != ConditionalAbort.none && valid_children &&
 	valid_children[0] is not BTCondition && valid_children[0] is not BTDecorator):
 		warnings.append("For a conditional abort to work the first child of a Composite (not including services) must be a Condition or a Decorator")
 	

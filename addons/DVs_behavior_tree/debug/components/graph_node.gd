@@ -1,5 +1,5 @@
 @tool
-extends PanelContainer
+extends Control
 
 signal action_pressed(action_type : String)
 
@@ -42,9 +42,16 @@ description : String, icon_path : String, is_leaf : bool
 	if class_name_ != "BTBehaviorTree":
 		_action_btn_open_blackboard.hide()
 
-func draw_connection_line(parent_pos : Vector2):
-	_connection_line.add_point(Vector2(size.x/2.0, 0.0))
-	_connection_line.add_point(parent_pos)
+func set_graph_parent(parent : Control):
+	await get_tree().process_frame # wait for positioning to finish
+	
+	var start : Vector2 = Vector2(size.x/2.0, 0.0)
+	var end : Vector2 = parent.position + Vector2(parent.size.x/2.0, parent.size.y) - position
+	
+	_connection_line.add_point(start)
+	_connection_line.add_point(Vector2(start.x, (end.y-start.y) / 2.0))
+	_connection_line.add_point(Vector2(end.x, (end.y-start.y) / 2.0))
+	_connection_line.add_point(end)
 
 func enter(is_main_path : bool):
 	if is_main_path:

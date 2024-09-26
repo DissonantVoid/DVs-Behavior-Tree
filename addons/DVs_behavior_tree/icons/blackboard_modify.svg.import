@@ -2,16 +2,17 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://r7rxv53ci8uq"
-path="res://.godot/imported/action.svg-b7b3e9ac86d6868d0dbc03a845255b66.ctex"
+uid="uid://da8omx4up1smy"
+path="res://.godot/imported/blackboard_modify.svg-386464a34a307da6e8f01cff32221012.ctex"
 metadata={
+"has_editor_variant": true,
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/DVs_behavior_tree/icons/action.svg"
-dest_files=["res://.godot/imported/action.svg-b7b3e9ac86d6868d0dbc03a845255b66.ctex"]
+source_file="res://addons/DVs_behavior_tree/icons/blackboard_modify.svg"
+dest_files=["res://.godot/imported/blackboard_modify.svg-386464a34a307da6e8f01cff32221012.ctex"]
 
 [params]
 
@@ -33,5 +34,5 @@ process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
 svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
+editor/scale_with_editor_scale=true
+editor/convert_colors_with_editor_theme=true

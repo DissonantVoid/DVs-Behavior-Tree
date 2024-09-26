@@ -8,6 +8,3 @@ script = ExtResource("2_mxmvc")
 min = 1.0
 max = 1.0
 uninterruptible = false
-
-[node name="Timer" type="Timer" parent="." index="0"]
-one_shot = true
