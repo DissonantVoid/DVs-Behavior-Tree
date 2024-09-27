@@ -72,6 +72,9 @@ func exit(is_interrupted : bool):
 func tick(delta : float) -> Status:
 	super(delta)
 	
+	for service : BTService in _services:
+		service.parent_tick(delta)
+	
 	if ((conditional_abort == ConditionalAbort.self_ ||
 	conditional_abort == ConditionalAbort.both) && _has_valid_cond_abort_child):
 		var cond_abort_child : BTNode = _get_next_valid_child()
@@ -92,7 +95,10 @@ func tick(delta : float) -> Status:
 	
 	return Status.undefined
 
-func _is_main_path_changed():
+func get_services() -> Array[BTService]:
+	return _services
+
+func _is_main_path_variable_changed():
 	super() # update all children
 	
 	if _has_valid_cond_abort_child && _is_conditional_abort_child_ticking == false:

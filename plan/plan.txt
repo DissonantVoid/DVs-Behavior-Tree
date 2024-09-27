@@ -43,10 +43,13 @@ nodes:
 plugin for visualizing tree at run-time (1.2)
 [X] -node graph, allows browsing individual trees
 [X] -can check global blackboard. while blackboard is open in debugger update data regularly
-[..] -can place breakpoints on a specific node in the graph
-[..] -can force tree to run a specific node
+[X] -can force tree to run a specific node
 [X] -use node name and description for the graph
+[X] -icons for actions instead of text
 [] -custom nodes can add their custom data to the graph
+
+[..] icons
+-optimize svg files, see https://docs.godotengine.org/en/stable/contributing/development/editor/creating_icons.html#icon-optimization
 
 unit tests:
 -all node types and their expected behavior
@@ -73,7 +76,6 @@ Stage 3:
 documentations
 examples (use my space game as example)
 
-[..] icons
 asset lib setup
 
 Future:

@@ -36,6 +36,7 @@ enum TickType {idle, physics}
 		_set_root_process()
 ## How many frames must pass before the tree ticks once, can be used as optimization if there are too many
 ## agents at once or as a form of LOD where agents far away are ticked less often.
+## If tree is a sub-tree, this variable represents how many ticks it must receive from parent to tick once.
 @export var frames_per_tick : int :
 	set(value):
 		frames_per_tick = max(value, 1)
@@ -135,6 +136,10 @@ func _notification(what : int):
 
 func tick(delta : float) -> Status:
 	super(delta)
+	if is_active == false:
+		# this happens when self is sub-tree and parents ticks it
+		return Status.failure
+	
 	if _is_subtree == false:
 		_frames_counter += 1
 		if _frames_counter >= frames_per_tick:
@@ -142,11 +147,16 @@ func tick(delta : float) -> Status:
 		else:
 			return Status.running
 	
-	if is_active && _active_child:
+	if _active_child:
 		var status : Status = _active_child.tick(delta)
 		if status == Status.success || status == Status.failure:
 			_active_child.exit(false)
-			_active_child.enter()
+			
+			if _is_subtree == false:
+				# no parent, re-enter
+				_active_child.enter()
+				return Status.success
+		
 		return status
 	
 	return Status.failure
@@ -158,18 +168,19 @@ func force_tick_node(target : BTNode):
 		while true:
 			if next_tree == null:
 				# reached root tree without passing self, target is higher level
-				push_error("Cannot force tick to target because target doesn't belong to this tree or any of its sub-tree.")
+				push_error("Cannot force tick to target because target doesn't belong to this tree or any of its sub-tree")
 				return
 			elif next_tree == self:
-				# tree is a sub-tree
 				break
 			next_tree = next_tree.behavior_tree
 	
-	# step1, find deepest running node #
+	# step1, get path to deepest running node #
 	var path_to_drn : Array[BTNode] = get_path_to_active_node()
 	var deepest_running_node : BTNode = path_to_drn[-1]
 	if deepest_running_node == target:
-		push_error("Cannot force tick target because it's already the deepest running child")
+		# the target is the same as the the already running deepest node
+		deepest_running_node.exit(true)
+		deepest_running_node.enter()
 		return
 	
 	# step2, get path to target
@@ -182,30 +193,31 @@ func force_tick_node(target : BTNode):
 	path_to_target.reverse() # reverse so it's a path to target rather than from target
 	
 	# step3, find last common ancestor between target and deepest node #
-	# now that we have both path, both starting from self we can compare ancestors down until we find the last common ancestor
-	var shortest_path : Array[BTNode] =\
+	# now that we have both paths, both starting from self we can compare ancestors down until we find the last common ancestor
+	var smallest_path : Array[BTNode] =\
 		path_to_drn if path_to_drn.size() <= path_to_target.size() else path_to_target
-	var longest_path : Array[BTNode] =\
+	var biggest_path : Array[BTNode] =\
 		path_to_drn if path_to_drn.size() >= path_to_target.size() else path_to_target
 	
 	var last_common_ancestor : BTNode = null
-	var ancestor_idx : int = 0
-	while ancestor_idx < shortest_path.size():
-		if longest_path[ancestor_idx] == shortest_path[ancestor_idx]:
-			last_common_ancestor = longest_path[ancestor_idx]
-		else: break
-		ancestor_idx += 1
+	var last_common_ancestor_idx : int = 0
+	while last_common_ancestor_idx < smallest_path.size():
+		if biggest_path[last_common_ancestor_idx] == smallest_path[last_common_ancestor_idx]:
+			last_common_ancestor = biggest_path[last_common_ancestor_idx]
+			break
+		last_common_ancestor_idx += 1
 	
 	# step4, interrupt common ancestor and force it to pick path leading down to target #
 	#        continue to force branches to pick nodes leading down towards target
 	last_common_ancestor.exit(true)
-	last_common_ancestor.enter()
 	
-	for i : int in range(ancestor_idx, path_to_target.size()-1):
+	for i : int in range(last_common_ancestor_idx, path_to_target.size()-1):
 		var node : BTBranch = path_to_target[i]
+		node.enter()
 		node.force_pick_child(path_to_target[i+1])
 
 func get_path_to_active_node() -> Array[BTNode]:
+	# NOTE: first node is the tree (self), last is the last active node
 	if _cached_path_to_last_active_node.is_empty() == false:
 		return _cached_path_to_last_active_node
 	
@@ -224,7 +236,9 @@ func get_path_to_active_node() -> Array[BTNode]:
 			arr.append(active_child)
 			return arr
 	
-	_cached_path_to_last_active_node = get_next_running_child.call(self, [] as Array[BTNode], get_next_running_child)
+	_cached_path_to_last_active_node = get_next_running_child.call(
+		self, [] as Array[BTNode], get_next_running_child
+	)
 	return _cached_path_to_last_active_node
 
 func is_tree_displayed_in_debugger() -> bool:
@@ -267,11 +281,12 @@ func _validate_property(property : Dictionary):
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()
-	var valid_children_count : int = get_valid_children().size()
-	if valid_children_count != 1:
+	var valid_children : Array[BTNode] = get_valid_children()
+	
+	if valid_children.size() != 1:
 		warnings.append("Behavior tree must have a single BTNode child")
-	if valid_children_count == 1 && _get_next_valid_child() is BTBranch == false:
-		warnings.append("Tree is useless if first child isn't a BTBranch")
+	if valid_children.size() == 1 && valid_children[0] is BTBranch == false:
+		warnings.append("Tree is useless if child isn't a BTBranch")
 	if agent == null:
 		warnings.append("Agent is null")
 	
@@ -279,13 +294,15 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 func _on_node_entered(node : BTNode):
 	if node.is_main_path:
+		if _last_active_node:
+			_last_active_node.exited.disconnect(_on_last_active_node_exited)
+		
 		_last_active_node = node
 		node.exited.connect(_on_last_active_node_exited.bind(node))
 
 func _on_last_active_node_exited(node : BTNode):
-	if _last_active_node == node:
-		_last_active_node = null
 	_cached_path_to_last_active_node.clear()
+	_last_active_node = null
 	node.exited.disconnect(_on_last_active_node_exited)
 
 func _on_debugger_message_received(message : String, data : Array) -> bool:
@@ -295,6 +312,7 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 	if message == "requesting_tree_structure":
 		var nodes : Dictionary # id : {name, depth, class_name, description, icon_path, is_leaf}
 		var relations : Dictionary # parent id : [children ids]
+		var services : Dictionary # composite id : [service names]
 		
 		var global_class_list : Array[Dictionary] = ProjectSettings.get_global_class_list()
 		var get_children_recursive : Callable = func(node : BTNode, depth : int, func_ : Callable):
@@ -318,23 +336,27 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 			nodes[node.get_instance_id()] = {
 				"name":node.name, "depth":depth, "class_name":class_name_,
 				"description":node.description,
-				"icon_path":icon_path, "is_leaf":node is BTLeaf
+				"icon_path":icon_path, "is_leaf":node is BTLeaf,
 			}
 			
-			if node is BTBranch == false: return
-			
-			relations[node.get_instance_id()] = []
-			for child : BTNode in node.get_valid_children(): # TODO: pass services too
-				relations[node.get_instance_id()].append(child.get_instance_id())
-				func_.call(child, depth+1, func_)
+			if node is BTBranch:
+				relations[node.get_instance_id()] = []
+				for child : BTNode in node.get_valid_children():
+					relations[node.get_instance_id()].append(child.get_instance_id())
+					func_.call(child, depth+1, func_)
+				
+				if node is BTComposite:
+					services[node.get_instance_id()] = [] as Array[String]
+					for service : BTService in node.get_services():
+						services[node.get_instance_id()].append(service.name)
 		
 		get_children_recursive.call(self, 0, get_children_recursive)
 		
-		_send_debbuger_message(_debugger_message_prefix + ":sending_tree_structure", {"nodes":nodes, "relations":relations})
+		_send_debbuger_message(_debugger_message_prefix + ":sending_tree_structure", {"nodes":nodes, "relations":relations, "services":services})
 		return true
 	
 	elif message == "debugger_display_started":
-		# TODO: send info about active nodes so debugger can know the initial tree state
+		# TODO PRIORITY: send info about active nodes so debugger can know the initial tree state
 		_is_displayed_in_debugger = true
 		return true
 	
@@ -343,7 +365,6 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 		return true
 	
 	elif message == "requesting_force_tick":
-		# TODO: doesn't work
 		force_tick_node(instance_from_id(data[0]["target_id"]))
 		return true
 	

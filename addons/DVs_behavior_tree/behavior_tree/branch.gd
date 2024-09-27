@@ -37,7 +37,7 @@ func force_pick_child(child : BTNode):
 func _children_changed(node : Node, is_added : bool):
 	if Engine.is_editor_hint() || is_node_ready() == false: return
 	if node is BTNode || node is BTService:
-		push_error("Behavior tree branches do not support adding/removing other behavior tree nodes at run-time.")
+		push_error("Behavior tree branches do not support adding/removing other behavior tree nodes at run-time")
 
 func _on_child_entered_tree(node : Node):
 	_children_changed(node, true)
@@ -46,15 +46,13 @@ func _on_child_exiting_tree(node : Node):
 	# TODO: this causes a false positive when the whole scene is about to change
 	_children_changed(node, false)
 
-func _is_main_path_changed():
+func _is_main_path_variable_changed():
 	# by default branches will reflect their is_main_path on their children
 	for child : BTNode in get_valid_children():
 		child.is_main_path = is_main_path
 
 # utility
 
-# TODO: this is called so often by different branch nodes we should cache the result after first call
-#       then set _get_next_valid_child to call this
 func get_valid_children() -> Array[BTNode]:
 	var children : Array[BTNode]
 	var index : int = -1

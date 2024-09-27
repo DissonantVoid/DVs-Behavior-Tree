@@ -1,24 +1,34 @@
-[gd_scene load_steps=9 format=3 uid="uid://c557vjvtb2h4w"]
+[gd_scene load_steps=11 format=3 uid="uid://c557vjvtb2h4w"]
 
-[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_8xr2a"]
 [ext_resource type="PackedScene" uid="uid://qseqna4tt4pl" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.tscn" id="1_yxdkh"]
 [ext_resource type="PackedScene" uid="uid://1uhnor2a4ji0" path="res://addons/DVs_behavior_tree/behavior_tree/composites/selector.tscn" id="3_0y2mb"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/service.gd" id="3_nbee2"]
 [ext_resource type="PackedScene" uid="uid://dhp4pifglwy4c" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.tscn" id="3_no72l"]
 [ext_resource type="PackedScene" uid="uid://bq36btxq5d66w" path="res://tests/move_to_random.tscn" id="4_5rasj"]
 [ext_resource type="PackedScene" uid="uid://m5uvh8yp7gqr" path="res://tests/is_mouse_close.tscn" id="5_0pb15"]
 [ext_resource type="PackedScene" uid="uid://lt5d3j6avgcm" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.tscn" id="5_irou4"]
 [ext_resource type="PackedScene" uid="uid://bw3uc4ka32s1t" path="res://tests/move_to_mouse.tscn" id="6_6llgm"]
 
+[sub_resource type="Gradient" id="Gradient_ygs4t"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_i5drc"]
+gradient = SubResource("Gradient_ygs4t")
+
 [node name="SimpleScene" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(642, 349)
-texture = ExtResource("1_8xr2a")
+scale = Vector2(0.554687, 132)
+texture = SubResource("GradientTexture1D_i5drc")
 
 [node name="BehaviorTree" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("1_yxdkh")]
 agent = NodePath("../Sprite2D")
 
 [node name="Selector" parent="BehaviorTree" instance=ExtResource("3_0y2mb")]
+
+[node name="BTService" type="Node" parent="BehaviorTree/Selector"]
+script = ExtResource("3_nbee2")
+tree_ticks_per_tick = 0
 
 [node name="FollowMouse" parent="BehaviorTree/Selector" instance=ExtResource("3_no72l")]
 conditional_abort = 1

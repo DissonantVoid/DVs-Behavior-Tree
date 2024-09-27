@@ -6,49 +6,29 @@ extends Node
 ## Base class for services, can be attached to Composite nodes and will tick as long as its parent is ticking,
 ## mainly used to monitor game state and update the blackboard.
 
-## How many tree ticks must pass before one service tick happens,
-## If set to 0 it will use the same tick rate as its tree.
-@export var tree_ticks_per_tick : int = 0 :
+## How many tree ticks must pass before one service tick occurs.
+@export var tree_ticks_per_tick : int = 1 :
 	set(value):
-		tree_ticks_per_tick = max(value, 0)
+		tree_ticks_per_tick = max(value, 1)
 
 var behavior_tree : BTBehaviorTree
 var _frames_counter : int = 0
 
 
-func _ready():
-	set_process(false)
-	set_physics_process(false)
-
-func _process(delta : float):
-	var real_frames_per_tick : int =\
-		tree_ticks_per_tick if tree_ticks_per_tick != 0 else behavior_tree.frames_per_tick
-	_frames_counter += 1
-	if _frames_counter == real_frames_per_tick:
-		_frames_counter = 0
-		_tick(delta)
-
-func _physics_process(delta : float):
-	var real_frames_per_tick : int =\
-		tree_ticks_per_tick if tree_ticks_per_tick != 0 else behavior_tree.frames_per_tick
-	_frames_counter += 1
-	if _frames_counter == real_frames_per_tick:
-		_frames_counter = 0
-		_tick(delta)
-
 func parent_entered():
-	if behavior_tree.tick_type == BTBehaviorTree.TickType.idle:
-		set_process(true)
-	else:
-		set_physics_process(true)
+	_frames_counter = 0
 
 func parent_exiting():
-	_frames_counter = 0
-	set_process(false)
-	set_physics_process(false)
+	return
+
+func parent_tick(delta : float):
+	_frames_counter += 1
+	if _frames_counter == tree_ticks_per_tick:
+		_frames_counter = 0
+		_tick(delta)
 
 func _tick(delta : float):
-	return
+	pass
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var has_previous_node_sibling : bool = false
@@ -58,6 +38,6 @@ func _get_configuration_warnings() -> PackedStringArray:
 			break
 	
 	if get_parent() is BTComposite == false || has_previous_node_sibling:
-		return ["Service nodes must be a child of a Composite node before any non-service children"]
+		return ["Service node must be a child of a Composite node, and must be positioned before any non-service children"]
 	
 	return []

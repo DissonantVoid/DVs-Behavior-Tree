@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://vu715dhdfr5m"]
+[gd_scene load_steps=4 format=3 uid="uid://vu715dhdfr5m"]
 
+[ext_resource type="Theme" uid="uid://bbuhj2nojku5d" path="res://addons/DVs_behavior_tree/debug/debugger_ui_theme.tres" id="1_fitbg"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/debug/components/blackboard_entry.gd" id="1_g6ha4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n24vx"]
@@ -9,6 +10,7 @@ bg_color = Color(0.290196, 0.270588, 0.388235, 1)
 [node name="BlackboardEntry" type="MarginContainer"]
 offset_right = 236.0
 offset_bottom = 23.0
+theme = ExtResource("1_fitbg")
 script = ExtResource("1_g6ha4")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]

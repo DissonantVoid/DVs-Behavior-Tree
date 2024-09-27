@@ -9,7 +9,7 @@
    id="svg3692"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    sodipodi:docname="simple_parallel.svg"
-   inkscape:export-filename="..\branch.svg"
+   inkscape:export-filename="..\simple_parallel.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -28,8 +28,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="13.455444"
-     inkscape:cx="13.897721"
-     inkscape:cy="20.846581"
+     inkscape:cx="12.262695"
+     inkscape:cy="20.9209"
      inkscape:window-width="1680"
      inkscape:window-height="988"
      inkscape:window-x="-8"
@@ -54,7 +54,7 @@
        cy="1.7709392"
        cx="2.2204423" />
     <rect
-       style="fill:none;fill-opacity:1;stroke:#af9dd9;stroke-width:0.633;stroke-linecap:square;stroke-dasharray:none;paint-order:normal"
+       style="fill:none;fill-opacity:1;stroke:#af9dd9;stroke-width:0.333;stroke-linecap:square;stroke-dasharray:none;paint-order:normal"
        id="rect10693"
        width="0.8128975"
        height="5.6902828"

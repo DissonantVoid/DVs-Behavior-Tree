@@ -1,16 +1,17 @@
 @tool
 extends MarginContainer
 
-@onready var _graph_panel : Panel = $HSplitContainer/Panel
-@onready var _graph_container : Control = $HSplitContainer/Panel/GraphContainer
+@onready var _graph_panel : Panel = $HSplitContainer/TreeGraph
+@onready var _graph_container : Control = $HSplitContainer/TreeGraph/GraphContainer
 @onready var _tree_menu_panel : PanelContainer = $HSplitContainer/TreesMenu
 @onready var _tree_menu_container : VBoxContainer = $HSplitContainer/TreesMenu/MarginContainer/ScrollContainer/VBoxContainer
 @onready var _blackboard_data_panel : PanelContainer = $HSplitContainer/BlackboardData
 @onready var _blackboard_data_container : VBoxContainer = $HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer/VBoxContainer
 @onready var _blackboard_data_name_label : Label = $HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Name
+@onready var _blackboard_data_empty_label : Label = $HSplitContainer/BlackboardData/MarginContainer/Empty
 @onready var _blackboard_update_timer : Timer = $BlackboardUpdateTimer
-@onready var _options_panel : MarginContainer = $HSplitContainer/Panel/OptionsPanel
-@onready var _no_active_tree_label : Label = $HSplitContainer/Panel/NoActiveTree
+@onready var _options_panel : MarginContainer = $HSplitContainer/TreeGraph/OptionsPanel
+@onready var _no_active_tree_label : Label = $HSplitContainer/TreeGraph/NoActiveTree
 
 const _graph_node_scene : PackedScene = preload("res://addons/DVs_behavior_tree/debug/components/graph_node.tscn")
 const _blackboard_entry_scene : PackedScene = preload("res://addons/DVs_behavior_tree/debug/components/blackboard_entry.tscn")
@@ -46,7 +47,7 @@ func stop_monitoring():
 	_existing_tree_ids.clear()
 
 func tree_added(data : Dictionary):
-	# NOTE: can't pass nodes between sessions :( I hate everything
+	# NOTE: can't pass nodes between the editor and running game :(
 	var btn : Button = Button.new()
 	btn.text = str(data["name"])
 	btn.toggle_mode = true
@@ -71,24 +72,30 @@ func active_tree_structure_received(data : Dictionary):
 	#          do best to live with that bug rather than take a single peek at this. YOU. Have. Been. Warned.
 	
 	var ids_by_depth : Dictionary # depth:[ids]
-	var relations : Dictionary = data["relations"] # parent_id:[children_id]
+	# see behavior_tree._on_debugger_message_received for dictionary formats
+	var nodes : Dictionary = data["nodes"]
+	var relations : Dictionary = data["relations"]
+	var services : Dictionary = data["services"]
 	
 	# Step1: spawn graph nodes
-	for node_id : int in data["nodes"]:
+	for node_id : int in nodes:
 		var graph_node : Control = _graph_node_scene.instantiate()
 		_graph_container.add_child(graph_node)
 		_id_to_graph_node_map[node_id] = graph_node
 		graph_node.action_pressed.connect(_on_graph_node_action_pressed.bind(graph_node))
 		
-		var node_data : Dictionary = data["nodes"][node_id]
+		var node_data : Dictionary = nodes[node_id]
 		var depth : int = node_data["depth"]
 		if ids_by_depth.has(depth) == false: ids_by_depth[depth] = []
 		ids_by_depth[depth].append(node_id)
 		
+		var node_services : Array[String] = services[node_id] if services.has(node_id) else ([] as Array[String])
+		
 		graph_node.setup(
 			node_data["name"], node_data["class_name"],
 			node_data["description"],
-			node_data["icon_path"], node_data["is_leaf"]
+			node_data["icon_path"], node_data["is_leaf"],
+			node_services
 		)
 		graph_node.reset_size()
 	
@@ -192,8 +199,8 @@ func active_tree_structure_received(data : Dictionary):
 								var lm_furthest_parent_idx : int = ids_in_iter_depth.find(lm_parent_id)
 								
 								for j : int in ids_in_iter_depth.size():
-									# push node and its children to the right if it's an ancestor of the lm node
-									# or it's the lm node itself. otherwise push to the left
+									# push node and its children to the right if it's the ancestor of the lm node
+									# or to the right of it. otherwise push to the left
 									var offset : float = x_distance if j >= lm_furthest_parent_idx else -x_distance
 									push_nodes_recursive.call(ids_in_iter_depth[j], offset, push_nodes_recursive)
 								
@@ -224,6 +231,7 @@ func active_tree_blackboard_received(data : Dictionary):
 		_blackboard_data_name_label.text = "Tree Root Blackboard"
 	
 	var blackboard : Dictionary = data["data"]
+	_blackboard_data_empty_label.visible = blackboard.is_empty()
 	# check for deleted keys (in cache but not in blackboard var) and delete their entry
 	for i : int in range(_key_to_bb_entry_map.size()-1, -1, -1):
 		var key : String = _key_to_bb_entry_map.keys()[i]
@@ -240,7 +248,7 @@ func active_tree_blackboard_received(data : Dictionary):
 			var black_board_entry : MarginContainer = _blackboard_entry_scene.instantiate()
 			_blackboard_data_container.add_child(black_board_entry)
 			black_board_entry.setup(key, str(blackboard[key]))
-				
+			
 			_key_to_bb_entry_map[key] = black_board_entry
 	
 	_tree_menu_panel.hide()
@@ -330,16 +338,16 @@ func _on_graph_panel_gui_input(event : InputEvent):
 	# graph navigation
 	if event is InputEventMouseButton:
 		# TODO: zoom from mouse position
-		if event.pressed && event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			# zoom in
-			var zoom : float = min(_graph_container.scale.x + _zoom_increment, _max_zoom_in)
-			_graph_container.pivot_offset = Vector2.ZERO
-			_graph_container.pivot_offset =\
-				_graph_container.get_local_mouse_position() * _graph_container.scale
-			_graph_container.scale = Vector2.ONE * zoom
-		elif event.pressed && event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			# zoom out
-			var zoom : float = max(_graph_container.scale.x - _zoom_increment, _max_zoom_out)
+		if (event.pressed &&
+		(event.button_index == MOUSE_BUTTON_WHEEL_UP || event.button_index == MOUSE_BUTTON_WHEEL_DOWN)):
+			var zoom : float
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				# zoom in
+				zoom = min(_graph_container.scale.x + _zoom_increment, _max_zoom_in)
+			else:
+				# zoom out
+				zoom = max(_graph_container.scale.x - _zoom_increment, _max_zoom_out)
+			
 			_graph_container.pivot_offset = Vector2.ZERO
 			_graph_container.pivot_offset =\
 				_graph_container.get_local_mouse_position() * _graph_container.scale

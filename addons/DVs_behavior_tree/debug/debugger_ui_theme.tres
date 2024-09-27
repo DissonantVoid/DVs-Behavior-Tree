@@ -1,4 +1,12 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bbuhj2nojku5d"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://bbuhj2nojku5d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q0eom"]
+bg_color = Color(0.686275, 0.615686, 0.85098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.290196, 0.270588, 0.388235, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5n6as"]
 bg_color = Color(0.686275, 0.615686, 0.85098, 1)
@@ -32,16 +40,23 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.290196, 0.270588, 0.388235, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t8bdr"]
+bg_color = Color(0.290196, 0.270588, 0.388235, 1)
+border_width_bottom = 2
+border_color = Color(0.686275, 0.615686, 0.85098, 1)
+
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_bb3w7"]
 color = Color(0.290196, 0.270588, 0.388235, 1)
 thickness = 2
 vertical = true
 
 [resource]
+Button/styles/focus = SubResource("StyleBoxFlat_q0eom")
 Button/styles/hover = SubResource("StyleBoxFlat_5n6as")
 Button/styles/normal = SubResource("StyleBoxFlat_2uf6g")
 Button/styles/pressed = SubResource("StyleBoxFlat_5n6as")
 HSeparator/styles/separator = SubResource("StyleBoxLine_x6ip0")
 Panel/styles/panel = SubResource("StyleBoxFlat_rxqpl")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_f43k5")
+RichTextLabel/styles/normal = SubResource("StyleBoxFlat_t8bdr")
 VSeparator/styles/separator = SubResource("StyleBoxLine_bb3w7")

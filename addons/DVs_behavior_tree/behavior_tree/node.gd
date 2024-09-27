@@ -12,7 +12,7 @@ signal ticking(delta)
 enum Status {undefined=0, running=1, success=2, failure=3}
 enum StatusBinary                   {success=2, failure=3}
 
-## Optional description used by the debugger.
+## Optional description used by the debugger, supports BBCode.
 @export_multiline var description : String
 
 var behavior_tree : BTBehaviorTree
@@ -21,7 +21,7 @@ var behavior_tree : BTBehaviorTree
 var is_main_path : bool = true :
 	set(value):
 		is_main_path = value
-		_is_main_path_changed()
+		_is_main_path_variable_changed()
 
 const _debugger_message_prefix : String = "DVBehaviorTree" # NOTE: must match with the name in debug plugin
 
@@ -41,7 +41,7 @@ func tick(delta : float) -> Status:
 	ticking.emit(delta)
 	return Status.undefined
 
-func _is_main_path_changed():
+func _is_main_path_variable_changed():
 	# used by branches, especially those that support parallel ticking to determine
 	# which child is the main one. a branch must have 1 main child.
 	return

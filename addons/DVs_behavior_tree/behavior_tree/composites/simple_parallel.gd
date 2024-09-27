@@ -71,7 +71,7 @@ func _is_first_child_valid() -> bool:
 		return true
 	return false
 
-func _is_main_path_changed():
+func _is_main_path_variable_changed():
 	if _active_child == null || _active_child is not BTLeaf || _parallel_child == null:
 		return
 	

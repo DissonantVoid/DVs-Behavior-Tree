@@ -8,6 +8,7 @@ extends MarginContainer
 const _even_panel_color : Color = Color("35314a")
 const _odd_panel_color : Color = Color("4a4563")
 
+# TODO: long values like arrays and dicts are clipped
 func setup(key : String, value : String):
 	_key_label.text = key
 	_value_label.text = value
