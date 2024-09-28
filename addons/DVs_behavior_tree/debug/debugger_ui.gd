@@ -1,13 +1,15 @@
 @tool
 extends MarginContainer
 
+# TODO: improve trees menu so monitoring and navigation multiple trees is easier
+
 @onready var _graph_panel : Panel = $HSplitContainer/TreeGraph
 @onready var _graph_container : Control = $HSplitContainer/TreeGraph/GraphContainer
 @onready var _tree_menu_panel : PanelContainer = $HSplitContainer/TreesMenu
-@onready var _tree_menu_container : VBoxContainer = $HSplitContainer/TreesMenu/MarginContainer/ScrollContainer/VBoxContainer
+@onready var _tree_menu_container : VBoxContainer = $HSplitContainer/TreesMenu/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer
 @onready var _blackboard_data_panel : PanelContainer = $HSplitContainer/BlackboardData
-@onready var _blackboard_data_container : VBoxContainer = $HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer/VBoxContainer
-@onready var _blackboard_data_name_label : Label = $HSplitContainer/BlackboardData/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Name
+@onready var _blackboard_data_container : VBoxContainer = $HSplitContainer/BlackboardData/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/VBoxContainer
+@onready var _blackboard_data_name_label : Label = $HSplitContainer/BlackboardData/MarginContainer/VBoxContainer/HBoxContainer/Name
 @onready var _blackboard_data_empty_label : Label = $HSplitContainer/BlackboardData/MarginContainer/Empty
 @onready var _blackboard_update_timer : Timer = $BlackboardUpdateTimer
 @onready var _options_panel : MarginContainer = $HSplitContainer/TreeGraph/OptionsPanel
@@ -23,11 +25,11 @@ var _id_to_graph_node_map : Dictionary # id:graph node
 var _key_to_bb_entry_map : Dictionary # key(string):blackboard entry node
 var _is_tracking_global_blackboard : bool
 
-const _node_spacing : Vector2 = Vector2(100.0, 60.0)
-const _group_min_x_distance : float = _node_spacing.x / 4.0
+const _node_spacing : Vector2 = Vector2(70.0, 50.0)
+const _group_x_spacing : float = _node_spacing.x * 2.2
 
-const _max_zoom_in : float = 1.5
-const _max_zoom_out : float = 0.2
+const _max_zoom_in : float = 1.4
+const _max_zoom_out : float = 0.1
 const _zoom_increment : float = 0.1
 var _is_panning : bool
 const _pan_sensitivity : float = 0.7
@@ -62,7 +64,7 @@ func tree_removed(data : Dictionary):
 
 # see: https://williamyaoh.com/posts/2023-04-22-drawing-trees-functionally.html
 func active_tree_structure_received(data : Dictionary):
-	# WARNING: let there be know that only the bravest and most battle hardened of programmers may enter
+	# WARNING: let there be known that only the bravest and most battle hardened of programmers may enter
 	#          this demonic realm. this place has already taken the life energy of the poor soul
 	#          that made it, he was broken, twisted and shattered into a thousand pieces, and he
 	#          will never be the same again. if you value your sanity you shall take back the road
@@ -163,8 +165,9 @@ func active_tree_structure_received(data : Dictionary):
 				
 				# check if leftmost node of new group group is colliding or past rightmost of prev group
 				var rm_end : float = rm_node.position.x + rm_node.size.x
-				if rm_end + _group_min_x_distance >= lm_node.position.x:
-					var x_distance : float = rm_end + _group_min_x_distance - lm_node.position.x
+				if rm_end + _group_x_spacing >= lm_node.position.x:
+					var x_distance : float =\
+						(rm_end + _group_x_spacing - lm_node.position.x) / 2.0
 					
 					var lm_parent : Control = parent_graph_node
 					var rm_parent : Control = last_parent_graph_node
@@ -213,7 +216,7 @@ func active_tree_structure_received(data : Dictionary):
 	_debugger.send_debugger_ui_request("debugger_display_started", {"id":_active_tree_id})
 
 func active_tree_node_entered(data : Dictionary):
-	_id_to_graph_node_map[data["id"]].enter(data["main_path"])
+	_id_to_graph_node_map[data["id"]].enter()
 
 func active_tree_node_exited(data : Dictionary):
 	_id_to_graph_node_map[data["id"]].exit()
@@ -228,7 +231,7 @@ func active_tree_blackboard_received(data : Dictionary):
 	if _is_tracking_global_blackboard:
 		_blackboard_data_name_label.text = "Global Blackboard"
 	else:
-		_blackboard_data_name_label.text = "Tree Root Blackboard"
+		_blackboard_data_name_label.text = "Blackboard"
 	
 	var blackboard : Dictionary = data["data"]
 	_blackboard_data_empty_label.visible = blackboard.is_empty()
@@ -239,17 +242,20 @@ func active_tree_blackboard_received(data : Dictionary):
 			_key_to_bb_entry_map[key].queue_free()
 			_key_to_bb_entry_map.erase(key)
 	
-	for key : String in blackboard:
-		if _key_to_bb_entry_map.has(key):
+	for key : Variant in blackboard:
+		var key_str : String = str(key)
+		var value_str : String = str(blackboard[key])
+		
+		if _key_to_bb_entry_map.has(key_str):
 			# update cache
-			_key_to_bb_entry_map[key].update_value(str(blackboard[key]))
+			_key_to_bb_entry_map[key_str].update_value(value_str)
 		else:
 			# key is new, create new entry
 			var black_board_entry : MarginContainer = _blackboard_entry_scene.instantiate()
 			_blackboard_data_container.add_child(black_board_entry)
-			black_board_entry.setup(key, str(blackboard[key]))
+			black_board_entry.setup(key_str, value_str)
 			
-			_key_to_bb_entry_map[key] = black_board_entry
+			_key_to_bb_entry_map[key_str] = black_board_entry
 	
 	_tree_menu_panel.hide()
 	_blackboard_data_panel.show()
@@ -330,7 +336,7 @@ func _on_graph_node_action_pressed(action_type : String, graph_node : Control):
 			)
 		"open_blackboard":
 			_is_tracking_global_blackboard = false
-			_request_blackboard_data()
+			_request_blackboard_content()
 
 func _on_graph_panel_gui_input(event : InputEvent):
 	if _active_tree_id == -1: return
@@ -373,7 +379,7 @@ func _on_blackboard_panel_close_pressed():
 func _on_center_view_pressed():
 	_center_view_around_graph()
 
-func _request_blackboard_data():
+func _request_blackboard_content():
 	_debugger.send_debugger_ui_request(
 		"requesting_blackboard_data", {"id":_active_tree_id, "global":_is_tracking_global_blackboard}
 	)
@@ -381,7 +387,7 @@ func _request_blackboard_data():
 
 func _on_open_global_blackboard_pressed():
 	_is_tracking_global_blackboard = true
-	_request_blackboard_data()
+	_request_blackboard_content()
 
 func _on_blackboard_update_timer_timeout():
-	_request_blackboard_data()
+	_request_blackboard_content()

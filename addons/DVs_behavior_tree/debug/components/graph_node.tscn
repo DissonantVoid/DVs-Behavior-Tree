@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://csg3fm24mmv1s"]
+[gd_scene load_steps=15 format=3 uid="uid://csg3fm24mmv1s"]
 
 [ext_resource type="Theme" uid="uid://bbuhj2nojku5d" path="res://addons/DVs_behavior_tree/debug/debugger_ui_theme.tres" id="1_wnhip"]
 [ext_resource type="Texture2D" uid="uid://pl4dl1kfgt0s" path="res://addons/DVs_behavior_tree/icons/node.svg" id="1_yrehj"]
@@ -16,19 +16,39 @@ border_width_right = 5
 border_width_bottom = 5
 border_color = Color(0.290196, 0.270588, 0.388235, 1)
 
+[sub_resource type="FontVariation" id="FontVariation_gt8kn"]
+variation_embolden = 1.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kx1aq"]
 bg_color = Color(0.28925, 0.2691, 0.39, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_y4wbf"]
+variation_embolden = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iqolg"]
+resource_local_to_scene = true
+bg_color = Color(0.290196, 0.270588, 0.388235, 1)
+expand_margin_left = 6.0
+expand_margin_right = 6.0
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_i33n3"]
+resource_local_to_scene = true
+color = Color(0.290196, 0.270588, 0.388235, 1)
+grow_end = 0.0
+thickness = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5hv4x"]
 bg_color = Color(0.290196, 0.270588, 0.388235, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_um8gy"]
+resource_local_to_scene = true
 bg_color = Color(0.290196, 0.270588, 0.388235, 1)
+draw_center = false
 
 [node name="GraphNode" type="PanelContainer"]
-custom_minimum_size = Vector2(400, 0)
-offset_right = 400.0
-offset_bottom = 262.0
+custom_minimum_size = Vector2(300, 0)
+offset_right = 300.0
+offset_bottom = 224.0
 size_flags_vertical = 0
 theme = ExtResource("1_wnhip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_cbslj")
@@ -37,7 +57,6 @@ script = ExtResource("2_x26pp")
 [node name="ConnectionLine" type="Line2D" parent="."]
 position = Vector2(5, 5)
 default_color = Color(0.290196, 0.270588, 0.388235, 1)
-antialiased = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -48,7 +67,7 @@ theme_override_constants/margin_bottom = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 
 [node name="Top" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -57,7 +76,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/Top/Name"]
-custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("1_yrehj")
 stretch_mode = 4
@@ -66,6 +84,7 @@ stretch_mode = 4
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+theme_override_fonts/font = SubResource("FontVariation_gt8kn")
 theme_override_styles/normal = SubResource("StyleBoxFlat_kx1aq")
 text = "NodeName"
 horizontal_alignment = 1
@@ -75,8 +94,28 @@ text_overrun_behavior = 3
 
 [node name="Status" type="Label" parent="MarginContainer/VBoxContainer/Top"]
 layout_mode = 2
-horizontal_alignment = 1
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.133333, 0.133333, 0.133333, 1)
+theme_override_fonts/font = SubResource("FontVariation_y4wbf")
+theme_override_styles/normal = SubResource("StyleBoxFlat_iqolg")
+text = "- undefined -"
 uppercase = true
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/Top/Status"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -139.0
+offset_top = -2.0
+offset_right = 139.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_i33n3")
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -85,13 +124,13 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_5hv4x")
 [node name="Description" type="RichTextLabel" parent="MarginContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 bbcode_enabled = true
-text = "Description"
+text = "[center]Description[/center]"
 fit_content = true
 
 [node name="ServicesContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_right = 14
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_right = 12
 
 [node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/ServicesContainer"]
 layout_mode = 2
@@ -105,10 +144,8 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="Icon" type="TextureRect" parent="MarginContainer/VBoxContainer/ServicesContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("4_biey8")
-stretch_mode = 4
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ServicesContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -122,6 +159,7 @@ layout_mode = 2
 [node name="ActionsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
+theme_override_constants/separation = 0
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/ActionsContainer"]
 layout_mode = 2
@@ -133,11 +171,13 @@ layout_mode = 2
 layout_mode = 2
 text = "Open Blackboard"
 icon = ExtResource("5_guht6")
+expand_icon = true
 
 [node name="ForceTick" type="Button" parent="MarginContainer/VBoxContainer/ActionsContainer/Actions"]
 layout_mode = 2
 text = "Force Tick"
 icon = ExtResource("6_o6k03")
+expand_icon = true
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/ActionsContainer"]
 layout_mode = 2

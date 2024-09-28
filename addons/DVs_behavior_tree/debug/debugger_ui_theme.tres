@@ -51,6 +51,7 @@ thickness = 2
 vertical = true
 
 [resource]
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/styles/focus = SubResource("StyleBoxFlat_q0eom")
 Button/styles/hover = SubResource("StyleBoxFlat_5n6as")
 Button/styles/normal = SubResource("StyleBoxFlat_2uf6g")

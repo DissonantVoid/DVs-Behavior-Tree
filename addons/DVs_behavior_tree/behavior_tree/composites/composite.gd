@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/composite.svg")
 class_name BTComposite
 extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 

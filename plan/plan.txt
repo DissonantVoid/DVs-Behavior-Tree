@@ -68,9 +68,9 @@ additional nodes (in their own "extension" folder so we don't bloat the main fol
 -play particles (optional wait for finish)
 
 Stage 3:
+asset lib setup
 [..] documentations
 examples (use my space game as example, ants sim could work too)
-asset lib setup
 
 [] follow official style guide so it's easier for others to contribute
 https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide

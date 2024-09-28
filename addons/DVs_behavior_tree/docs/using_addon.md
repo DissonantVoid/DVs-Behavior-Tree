@@ -5,4 +5,5 @@
 -debugging tools
 -best practices
  -jerky movement if action node doesn't return running
+ -different ways to do things (parallel node vs service, conditional abort vs reactive composite...)
 -creating custom nodes (what to inherite, templates etc...)

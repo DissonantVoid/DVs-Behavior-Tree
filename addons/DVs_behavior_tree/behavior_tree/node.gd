@@ -9,7 +9,7 @@ signal entered
 signal exited
 signal ticking(delta)
 
-enum Status {undefined=0, running=1, success=2, failure=3}
+enum Status {undefined=0, running=1, success=2, failure=3, interrupted=4}
 enum StatusBinary                   {success=2, failure=3}
 
 ## Optional description used by the debugger, supports BBCode.
@@ -27,7 +27,7 @@ var is_main_path : bool = true :
 func enter():
 	if behavior_tree.can_send_debugger_message():
 		behavior_tree.send_debbuger_message(
-			"node_entered", {"id":self.get_instance_id(), "main_path":is_main_path}
+			"node_entered", {"id":self.get_instance_id()}
 		)
 	entered.emit()
 
@@ -37,8 +37,7 @@ func exit(is_interrupted : bool):
 			"node_exited", {"id":self.get_instance_id()}
 		)
 	if is_interrupted:
-		# mainly for the debugger to prevent flow from pointing at this node after it has been interrupted
-		_set_status(Status.undefined)
+		_set_status(Status.interrupted)
 	exited.emit()
 
 func tick(delta : float):
@@ -49,11 +48,12 @@ func tick(delta : float):
 	ticking.emit(delta)
 
 func get_status() -> Status:
-	if _status == Status.undefined:
-		push_error("Status.undefiend is not supposed to be returned by behavior tree nodes")
 	return _status
 
 func _set_status(status : Status):
+	if status == Status.undefined:
+		push_error("Status.undefiend is not supposed to be returned by behavior tree nodes")
+	
 	if behavior_tree.can_send_debugger_message():
 		behavior_tree.send_debbuger_message(
 			"node_status_changed", {"id":self.get_instance_id(), "status":status, "main_path":is_main_path}

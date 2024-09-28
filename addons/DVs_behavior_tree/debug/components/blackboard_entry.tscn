@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://vu715dhdfr5m"]
+[gd_scene load_steps=5 format=3 uid="uid://vu715dhdfr5m"]
 
 [ext_resource type="Theme" uid="uid://bbuhj2nojku5d" path="res://addons/DVs_behavior_tree/debug/debugger_ui_theme.tres" id="1_fitbg"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/debug/components/blackboard_entry.gd" id="1_g6ha4"]
@@ -6,6 +6,11 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n24vx"]
 resource_local_to_scene = true
 bg_color = Color(0.290196, 0.270588, 0.388235, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_wfch7"]
+color = Color(0.133333, 0.133333, 0.133333, 1)
+thickness = 4
+vertical = true
 
 [node name="BlackboardEntry" type="MarginContainer"]
 offset_right = 236.0
@@ -22,10 +27,11 @@ layout_mode = 2
 
 [node name="Key" type="Label" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.4
 text = "Key"
-text_overrun_behavior = 3
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_wfch7")
 
 [node name="Value" type="Label" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
