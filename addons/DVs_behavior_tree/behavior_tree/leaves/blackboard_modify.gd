@@ -29,10 +29,11 @@ enum ActionType {write, erase}
 ## If true and the blackboard doesn't have the key this is trying to erase, it will return failure.
 @export var must_exist : bool
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
 	if _are_variables_valid() == false:
-		return Status.failure
+		_set_status(Status.failure)
+		return
 	
 	var blackboard : Dictionary =\
 		behavior_tree.global_blackboard if use_global_blackboard else behavior_tree.blackboard
@@ -42,22 +43,29 @@ func tick(delta : float) -> Status:
 		exp.parse(value_expression)
 		var result : Variant = exp.execute([], self)
 		if exp.has_execute_failed():
-			return Status.failure
+			_set_status(Status.failure)
+			return
 		
 		# set value
 		blackboard[key] = result
-		return Status.success
+		_set_status(Status.success)
+		return
 		
 	elif action == ActionType.erase:
 		if blackboard.has(key) == false:
 			# key doesn't exist, proceed based on must_exist
-			if must_exist: return Status.failure
-			else: return Status.success
+			if must_exist:
+				_set_status(Status.failure)
+				return
+			else:
+				_set_status(Status.success)
+				return
 		else:
 			blackboard.erase(key)
-			return Status.success
+			_set_status(Status.success)
+			return
 	
-	return Status.undefined
+	_set_status(Status.undefined)
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()

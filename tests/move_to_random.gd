@@ -11,12 +11,12 @@ func enter():
 		randf_range(0.0, get_viewport().size.y)
 	)
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
 	var direction : Vector2 = (_random_pos - behavior_tree.agent.global_position).normalized()
 	behavior_tree.agent.global_position += direction * _speed * delta
 	
 	if _random_pos.distance_to(behavior_tree.agent.global_position) <= _min_distance:
-		return Status.success
-	
-	return Status.running
+		_set_status(Status.success)
+	else:
+		_set_status(Status.running)

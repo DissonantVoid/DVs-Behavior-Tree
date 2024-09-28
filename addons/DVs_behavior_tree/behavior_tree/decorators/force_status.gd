@@ -6,8 +6,6 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 
 @export var status : StatusBinary = StatusBinary.success
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
-	if status == StatusBinary.success:
-		return Status.success
-	return Status.failure
+	_set_status(Status.success if status == StatusBinary.success else Status.failure)

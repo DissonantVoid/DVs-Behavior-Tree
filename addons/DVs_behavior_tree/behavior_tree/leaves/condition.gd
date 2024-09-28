@@ -5,4 +5,7 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/leaf.gd"
 
 ## Acts as a boolean, checks some condition and returns either success or failure.
 
-# TODO: push a warning if a condition node returns Running
+func get_status() -> Status:
+	if _status == Status.running:
+		push_warning("Condition nodes should return either success or failure")
+	return super()

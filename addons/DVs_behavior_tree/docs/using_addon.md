@@ -1,7 +1,7 @@
 -how the addon works
 -your first behavior tree
--docs of each category, every node and example use cases
--docs of blackboard and global blackboard
+-docs for blackboard and global blackboard
+-docs for each category, every node and example use cases
 -debugging tools
 -best practices
  -jerky movement if action node doesn't return running

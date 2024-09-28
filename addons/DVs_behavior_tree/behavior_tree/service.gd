@@ -28,7 +28,7 @@ func parent_tick(delta : float):
 		_tick(delta)
 
 func _tick(delta : float):
-	pass
+	return
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var has_previous_node_sibling : bool = false

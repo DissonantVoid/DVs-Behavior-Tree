@@ -50,6 +50,7 @@ enum TickType {idle, physics}
 @export var _randomize_first_tick : bool = true
 
 var _is_displayed_in_debugger : bool = false
+const _debugger_message_prefix : String = "DVBehaviorTree" # NOTE: must match with the name in debug plugin
 
 var blackboard : Dictionary
 static var global_blackboard : Dictionary
@@ -75,14 +76,14 @@ func _enter_tree():
 		if get_parent().scene_file_path:
 			name_ = get_parent().scene_file_path.split("/")[-1] + "/" + name_
 		
-		_send_debbuger_message(
-			_debugger_message_prefix + ":tree_added",
+		send_debbuger_message(
+			"tree_added",
 			{"id":self.get_instance_id(), "name":name_}
 		)
 
 func _exit_tree():
 	if _is_subtree == false:
-		_send_debbuger_message(_debugger_message_prefix + ":tree_removed", {"id":self.get_instance_id()})
+		send_debbuger_message("tree_removed", {"id":self.get_instance_id()})
 		
 		if EngineDebugger.is_active():
 			EngineDebugger.unregister_message_capture(_debugger_message_prefix)
@@ -134,32 +135,37 @@ func _notification(what : int):
 	if _is_subtree == false:
 		_set_root_process()
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
 	if is_active == false:
 		# this happens when self is sub-tree and parents ticks it
-		return Status.failure
+		_set_status(Status.failure)
+		return
 	
 	if _is_subtree == false:
 		_frames_counter += 1
 		if _frames_counter >= frames_per_tick:
 			_frames_counter = 0
 		else:
-			return Status.running
+			_set_status(Status.running)
+			return
 	
 	if _active_child:
-		var status : Status = _active_child.tick(delta)
+		_active_child.tick(delta)
+		var status : Status = _active_child.get_status()
 		if status == Status.success || status == Status.failure:
 			_active_child.exit(false)
 			
 			if _is_subtree == false:
 				# no parent, re-enter
 				_active_child.enter()
-				return Status.success
+				_set_status(Status.success)
+				return
 		
-		return status
-	
-	return Status.failure
+		_set_status(status)
+		return
+	else:
+		_set_status(Status.failure)
 
 func force_tick_node(target : BTNode):
 	# ensure that target is a child of this tree, or a lower sub-tree
@@ -241,11 +247,17 @@ func get_path_to_active_node() -> Array[BTNode]:
 	)
 	return _cached_path_to_last_active_node
 
-func is_tree_displayed_in_debugger() -> bool:
+func can_send_debugger_message() -> bool:
+	if OS.is_debug_build() == false: return false
+	
 	if _is_subtree:
-		return behavior_tree.is_tree_displayed_in_debugger()
+		return behavior_tree.can_send_debugger_message()
 	else:
 		return _is_displayed_in_debugger
+
+func send_debbuger_message(message : String, data : Dictionary):
+	if EngineDebugger.is_active():
+		EngineDebugger.send_message(_debugger_message_prefix + ":" + message, [data])
 
 func _set_root_process():
 	if Engine.is_editor_hint(): return
@@ -310,9 +322,8 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 	
 	# NOTE: message capture received by the game side doesn't include prefix
 	if message == "requesting_tree_structure":
-		var nodes : Dictionary # id : {name, depth, class_name, description, icon_path, is_leaf}
+		var nodes : Dictionary # id : {name, depth, class_name, status, description, icon_path, is_leaf}
 		var relations : Dictionary # parent id : [children ids]
-		var services : Dictionary # composite id : [service names]
 		
 		var global_class_list : Array[Dictionary] = ProjectSettings.get_global_class_list()
 		var get_children_recursive : Callable = func(node : BTNode, depth : int, func_ : Callable):
@@ -333,10 +344,15 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 				# class with class_name doesn't have an icon, fallback to the icon of parent class
 				script = script.get_base_script()
 			
+			var services : Array[String]
+			if node is BTComposite:
+				for service : BTService in node.get_services():
+					services.append(service.name)
+			
 			nodes[node.get_instance_id()] = {
 				"name":node.name, "depth":depth, "class_name":class_name_,
-				"description":node.description,
-				"icon_path":icon_path, "is_leaf":node is BTLeaf,
+				"status":node.get_status(), "description":node.description,
+				"icon_path":icon_path, "is_leaf":node is BTLeaf, "services":services
 			}
 			
 			if node is BTBranch:
@@ -344,19 +360,13 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 				for child : BTNode in node.get_valid_children():
 					relations[node.get_instance_id()].append(child.get_instance_id())
 					func_.call(child, depth+1, func_)
-				
-				if node is BTComposite:
-					services[node.get_instance_id()] = [] as Array[String]
-					for service : BTService in node.get_services():
-						services[node.get_instance_id()].append(service.name)
 		
 		get_children_recursive.call(self, 0, get_children_recursive)
 		
-		_send_debbuger_message(_debugger_message_prefix + ":sending_tree_structure", {"nodes":nodes, "relations":relations, "services":services})
+		send_debbuger_message("sending_tree_structure", {"nodes":nodes, "relations":relations})
 		return true
 	
 	elif message == "debugger_display_started":
-		# TODO PRIORITY: send info about active nodes so debugger can know the initial tree state
 		_is_displayed_in_debugger = true
 		return true
 	
@@ -369,12 +379,12 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 		return true
 	
 	elif message == "requesting_blackboard_data":
-		var bb : Dictionary
+		var target_blackboard : Dictionary
 		if data[0]["global"]:
-			bb = global_blackboard
+			target_blackboard = global_blackboard
 		else:
-			bb = blackboard
-		_send_debbuger_message(_debugger_message_prefix + ":sending_blackboard_data", {"data":bb})
+			target_blackboard = blackboard
+		send_debbuger_message("sending_blackboard_data", {"data":target_blackboard})
 		return true
 	
 	return false

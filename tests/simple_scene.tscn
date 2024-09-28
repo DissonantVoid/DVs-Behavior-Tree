@@ -28,7 +28,6 @@ agent = NodePath("../Sprite2D")
 
 [node name="BTService" type="Node" parent="BehaviorTree/Selector"]
 script = ExtResource("3_nbee2")
-tree_ticks_per_tick = 0
 
 [node name="FollowMouse" parent="BehaviorTree/Selector" instance=ExtResource("3_no72l")]
 conditional_abort = 1

@@ -20,16 +20,18 @@ func exit(is_interrupted : bool):
 	super(is_interrupted)
 	if reset_on_exit: _ticked = tick_every
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
-	if _active_child == null: return Status.failure
+	if _active_child == null:
+		_set_status(Status.failure)
+		return
 	
 	if _last_status == Status.running || _ticked == tick_every:
-		var status : Status = _active_child.tick(delta)
+		_active_child.tick(delta)
+		var status : Status = _active_child.get_status()
 		_last_status = status
 		_ticked = 0
-		
-		return status
+		_set_status(status)
 	else:
 		_ticked += 1
-		return _last_status
+		_set_status(_last_status)

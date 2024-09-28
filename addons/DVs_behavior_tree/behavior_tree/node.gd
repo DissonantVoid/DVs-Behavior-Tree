@@ -3,7 +3,7 @@
 class_name BTNode
 extends Node
 
-## Base class for all leafs and branches.
+## Base class for all behavior tree nodes.
 
 signal entered
 signal exited
@@ -16,6 +16,7 @@ enum StatusBinary                   {success=2, failure=3}
 @export_multiline var description : String
 
 var behavior_tree : BTBehaviorTree
+var _status : Status = Status.undefined
 
 # used to differentiate between main tick path and parallel paths running due to features like simple parallel and conditional abort, nodes are assumed main path by default unless set otherwise
 var is_main_path : bool = true :
@@ -23,23 +24,42 @@ var is_main_path : bool = true :
 		is_main_path = value
 		_is_main_path_variable_changed()
 
-const _debugger_message_prefix : String = "DVBehaviorTree" # NOTE: must match with the name in debug plugin
-
 func enter():
-	if behavior_tree.is_tree_displayed_in_debugger():
-		_send_debbuger_message(_debugger_message_prefix + ":node_entered", {"id":self.get_instance_id(), "main_path":is_main_path})
+	if behavior_tree.can_send_debugger_message():
+		behavior_tree.send_debbuger_message(
+			"node_entered", {"id":self.get_instance_id(), "main_path":is_main_path}
+		)
 	entered.emit()
 
 func exit(is_interrupted : bool):
-	if behavior_tree.is_tree_displayed_in_debugger():
-		_send_debbuger_message(_debugger_message_prefix + ":node_exited", {"id":self.get_instance_id(), "main_path":is_main_path})
+	if behavior_tree.can_send_debugger_message():
+		behavior_tree.send_debbuger_message(
+			"node_exited", {"id":self.get_instance_id()}
+		)
+	if is_interrupted:
+		# mainly for the debugger to prevent flow from pointing at this node after it has been interrupted
+		_set_status(Status.undefined)
 	exited.emit()
 
-func tick(delta : float) -> Status:
-	if behavior_tree.is_tree_displayed_in_debugger():
-		_send_debbuger_message(_debugger_message_prefix + ":node_ticked", {"id":self.get_instance_id(), "main_path":is_main_path})
+func tick(delta : float):
+	if behavior_tree.can_send_debugger_message():
+		behavior_tree.send_debbuger_message(
+			"node_ticked", {"id":self.get_instance_id(), "main_path":is_main_path}
+		)
 	ticking.emit(delta)
-	return Status.undefined
+
+func get_status() -> Status:
+	if _status == Status.undefined:
+		push_error("Status.undefiend is not supposed to be returned by behavior tree nodes")
+	return _status
+
+func _set_status(status : Status):
+	if behavior_tree.can_send_debugger_message():
+		behavior_tree.send_debbuger_message(
+			"node_status_changed", {"id":self.get_instance_id(), "status":status, "main_path":is_main_path}
+		)
+		
+	_status = status
 
 func _is_main_path_variable_changed():
 	# used by branches, especially those that support parallel ticking to determine
@@ -50,7 +70,3 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if get_parent() is not BTBranch && self is not BTBehaviorTree:
 		return ["Behavior nodes must be parented to a BTBranch node"]
 	return []
-
-func _send_debbuger_message(message : String, data : Dictionary):
-	if EngineDebugger.is_active():
-		EngineDebugger.send_message(message, [data])

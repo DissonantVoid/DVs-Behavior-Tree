@@ -27,25 +27,27 @@ func enter():
 	super()
 	_tried = 0
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
-	if _active_child == null: return Status.failure
+	if _active_child == null:
+		_set_status(Status.failure)
+		return
 	
-	var child_status : Status = _active_child.tick(delta)
+	_active_child.tick(delta)
+	var child_status : Status = _active_child.get_status()
 	if stop_on_status && child_status == status:
-		return Status.success
+		_set_status(Status.success)
+		return
 	
 	if child_status != Status.running:
 		if max_tries > 0:
 			_tried += 1
 			if _tried == max_tries:
-				return Status.success
+				_set_status(Status.success)
 			else:
 				# next tick
 				_active_child.exit(false)
 				_active_child.enter()
-	
-	return Status.running
 
 func _validate_property(property : Dictionary):
 	if stop_on_status == false && property["name"] == "status":

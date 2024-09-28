@@ -37,7 +37,7 @@ func _capture(message : String, data : Array, session_id : int) -> bool:
 	message = message.split(":")[1] # remove prefix
 	
 	if message == "tree_added":
-		_tree_graph.tree_added(data[0])
+		_tree_graph.tree_added(data[0]) # TODO: instead of passing dictionary to graph ui, unpack it here and pass variables
 		return true
 	elif message == "tree_removed":
 		_tree_graph.tree_removed(data[0])
@@ -53,6 +53,9 @@ func _capture(message : String, data : Array, session_id : int) -> bool:
 		return true
 	elif message == "node_ticked":
 		_tree_graph.active_tree_node_ticked(data[0])
+		return true
+	elif message == "node_status_changed":
+		_tree_graph.active_tree_node_status_changed(data[0])
 		return true
 	elif message == "sending_blackboard_data":
 		_tree_graph.active_tree_blackboard_received(data[0])

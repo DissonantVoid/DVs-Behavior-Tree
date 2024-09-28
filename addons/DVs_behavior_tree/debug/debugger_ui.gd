@@ -24,7 +24,7 @@ var _key_to_bb_entry_map : Dictionary # key(string):blackboard entry node
 var _is_tracking_global_blackboard : bool
 
 const _node_spacing : Vector2 = Vector2(100.0, 60.0)
-const _group_min_x_distance : float = _node_spacing.x
+const _group_min_x_distance : float = _node_spacing.x / 4.0
 
 const _max_zoom_in : float = 1.5
 const _max_zoom_out : float = 0.2
@@ -75,7 +75,6 @@ func active_tree_structure_received(data : Dictionary):
 	# see behavior_tree._on_debugger_message_received for dictionary formats
 	var nodes : Dictionary = data["nodes"]
 	var relations : Dictionary = data["relations"]
-	var services : Dictionary = data["services"]
 	
 	# Step1: spawn graph nodes
 	for node_id : int in nodes:
@@ -89,13 +88,11 @@ func active_tree_structure_received(data : Dictionary):
 		if ids_by_depth.has(depth) == false: ids_by_depth[depth] = []
 		ids_by_depth[depth].append(node_id)
 		
-		var node_services : Array[String] = services[node_id] if services.has(node_id) else ([] as Array[String])
-		
 		graph_node.setup(
 			node_data["name"], node_data["class_name"],
-			node_data["description"],
+			node_data["status"], node_data["description"],
 			node_data["icon_path"], node_data["is_leaf"],
-			node_services
+			node_data["services"]
 		)
 		graph_node.reset_size()
 	
@@ -219,10 +216,13 @@ func active_tree_node_entered(data : Dictionary):
 	_id_to_graph_node_map[data["id"]].enter(data["main_path"])
 
 func active_tree_node_exited(data : Dictionary):
-	_id_to_graph_node_map[data["id"]].exit(data["main_path"])
+	_id_to_graph_node_map[data["id"]].exit()
 
 func active_tree_node_ticked(data : Dictionary):
 	_id_to_graph_node_map[data["id"]].tick(data["main_path"])
+
+func active_tree_node_status_changed(data : Dictionary):
+	_id_to_graph_node_map[data["id"]].update_status(data["status"], data["main_path"])
 
 func active_tree_blackboard_received(data : Dictionary):
 	if _is_tracking_global_blackboard:

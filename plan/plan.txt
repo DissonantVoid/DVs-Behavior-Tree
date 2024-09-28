@@ -29,14 +29,10 @@ Stage 2:
 
 [X] better caching and navigating of tree
 
-[] follow official style guide so it's easier for others to contribute
-https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
-
 nodes:
 [X]-reactive sequence & selector
 [X]-simple parallel
 [X]-rename throttle into cooldown
--event listener that can interrupt low priority branches
 
 -rename services to something more clear like observers
 
@@ -46,12 +42,12 @@ plugin for visualizing tree at run-time (1.2)
 [X] -can force tree to run a specific node
 [X] -use node name and description for the graph
 [X] -icons for actions instead of text
-[] -custom nodes can add their custom data to the graph
+[X] -solve priority TODOs
 
 [..] icons
 -optimize svg files, see https://docs.godotengine.org/en/stable/contributing/development/editor/creating_icons.html#icon-optimization
 
-unit tests:
+unit tests: (see https://github.com/bitwes/Gut)
 -all node types and their expected behavior
 -blackboard
 -conditional aborts
@@ -70,13 +66,17 @@ additional nodes (in their own "extension" folder so we don't bloat the main fol
 -agent look at (2d/3d) (requires character2d)
 -agent go to (2d/3d) (requires nav agent and nav mesh)
 -play particles (optional wait for finish)
--instantiate object (pos, rot, scale)
 
 Stage 3:
-documentations
-examples (use my space game as example)
-
+[..] documentations
+examples (use my space game as example, ants sim could work too)
 asset lib setup
+
+[] follow official style guide so it's easier for others to contribute
+https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
+
+debugger real time export var values, allowing user to track those vars in the debugger
+-custom nodes made by users should be able to add their custom data too
 
 Future:
 make into C++ module

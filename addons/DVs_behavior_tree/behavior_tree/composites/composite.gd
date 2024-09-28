@@ -69,7 +69,7 @@ func exit(is_interrupted : bool):
 	for service : BTService in _services:
 		service.parent_exiting()
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
 	
 	for service : BTService in _services:
@@ -84,7 +84,8 @@ func tick(delta : float) -> Status:
 				cond_abort_child.is_main_path = false
 				cond_abort_child.enter()
 			
-			var status : Status = cond_abort_child.tick(delta)
+			cond_abort_child.tick(delta)
+			var status : Status = cond_abort_child.get_status()
 			if status == Status.failure:
 				cond_abort_child.exit(false)
 				_is_conditional_abort_child_ticking = false
@@ -92,8 +93,6 @@ func tick(delta : float) -> Status:
 				self.exit(true)
 				cond_abort_child.is_main_path = self.is_main_path
 				self.enter()
-	
-	return Status.undefined
 
 func get_services() -> Array[BTService]:
 	return _services
@@ -156,7 +155,8 @@ func _on_parent_ticking(delta : float):
 		cond_abort_child.is_main_path = false
 		cond_abort_child.enter()
 	
-	var status : Status = cond_abort_child.tick(delta)
+	cond_abort_child.tick(delta)
+	var status : Status = cond_abort_child.get_status()
 	if status == Status.success:
 		cond_abort_child.exit(false)
 		cond_abort_child.is_main_path = self.is_main_path

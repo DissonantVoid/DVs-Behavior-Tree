@@ -32,18 +32,20 @@ func exit(is_interrupted : bool):
 		_parallel_child.exit(is_interrupted)
 		_parallel_child = null
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
 	if _active_child == null || _active_child is not BTLeaf || _parallel_child == null:
 		# can't do my job
-		return Status.failure
+		_set_status(Status.failure)
 	
 	var status : Status
 	if _is_first_child_ticking:
-		status = _active_child.tick(delta)
+		_active_child.tick(delta)
+		status = _active_child.get_status()
 		_parallel_child.tick(delta)
 	else:
-		status = _parallel_child.tick(delta)
+		_parallel_child.tick(delta)
+		status = _parallel_child.get_status()
 	
 	if status == Status.success || status == Status.failure:
 		if _is_delayed:
@@ -51,14 +53,15 @@ func tick(delta : float) -> Status:
 				_is_first_child_ticking = false
 				_active_child.exit(false)
 				_parallel_child.is_main_path = true
-				return Status.running
+				_set_status(Status.running)
 			else:
 				_parallel_child.exit(true)
 				_parallel_child.is_main_path = false
-				return status
+				_set_status(status)
 		else:
-			return status
-	return status
+			_set_status(status)
+	else:
+		_set_status(status)
 
 func get_active_child() -> BTNode:
 	if _is_delayed && _is_first_child_ticking == false:

@@ -29,10 +29,14 @@ func enter():
 func exit(is_interrupted : bool):
 	super(is_interrupted)
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
-	if _active_child == null: return Status.failure
+	if _active_child == null:
+		_set_status(Status.failure)
+		return
 	
 	if (Time.get_ticks_msec() - _enter_time) / 1000.0 >= _time:
-		return Status.failure
-	return _active_child.tick(delta)
+		_set_status(Status.failure)
+	else:
+		_active_child.tick(delta)
+		_set_status(_active_child.get_status())

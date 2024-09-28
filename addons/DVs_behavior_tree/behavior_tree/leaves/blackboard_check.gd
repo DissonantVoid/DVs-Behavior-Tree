@@ -26,38 +26,47 @@ enum ConditionType {
 		value_expression = value
 		update_configuration_warnings()
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
 	if _are_variables_valid() == false:
-		return Status.failure
+		_set_status(Status.failure)
+		return
 	
 	var blackboard : Dictionary =\
 		behavior_tree.global_blackboard if use_global_blackboard else behavior_tree.blackboard
 	
 	if blackboard.has(key) == false:
-		return Status.failure
+		_set_status(Status.failure)
+		return
 	
 	var exp : Expression = Expression.new()
 	exp.parse(value_expression)
 	var result : Variant= exp.execute([], self)
 	
 	if exp.has_execute_failed():
-		return Status.failure
+		_set_status(Status.failure)
+		return
 	
 	if condition == ConditionType.equal && blackboard[key] == result:
-		return Status.success
+		_set_status(Status.success)
+		return
 	if condition == ConditionType.less_than && blackboard[key] < result:
-		return Status.success
+		_set_status(Status.success)
+		return
 	if condition == ConditionType.less_or_equal && blackboard[key] <= result:
-		return Status.success
+		_set_status(Status.success)
+		return
 	if condition == ConditionType.more_than && blackboard[key] > result:
-		return Status.success
+		_set_status(Status.success)
+		return
 	if condition == ConditionType.more_or_equal && blackboard[key] >= result:
-		return Status.success
+		_set_status(Status.success)
+		return
 	if condition == ConditionType.not_equal && blackboard[key] != result:
-		return Status.success
+		_set_status(Status.success)
+		return
 	
-	return Status.failure
+	_set_status(Status.failure)
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()

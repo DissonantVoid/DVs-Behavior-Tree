@@ -30,8 +30,9 @@ func enter():
 func exit(is_interrupted : bool):
 	super(is_interrupted)
 
-func tick(delta : float) -> Status:
+func tick(delta : float):
 	super(delta)
 	if (Time.get_ticks_msec() - _enter_time) / 1000.0 >= _time:
-		return Status.success
-	return Status.running
+		_set_status(Status.success)
+	else:
+		_set_status(Status.running)

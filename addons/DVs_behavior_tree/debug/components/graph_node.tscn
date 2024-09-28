@@ -75,8 +75,8 @@ text_overrun_behavior = 3
 
 [node name="Status" type="Label" parent="MarginContainer/VBoxContainer/Top"]
 layout_mode = 2
-text = "(Last Status)"
 horizontal_alignment = 1
+uppercase = true
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -90,8 +90,8 @@ fit_content = true
 
 [node name="ServicesContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_right = 12
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_right = 14
 
 [node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/ServicesContainer"]
 layout_mode = 2
