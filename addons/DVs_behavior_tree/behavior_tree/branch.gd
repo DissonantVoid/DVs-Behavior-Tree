@@ -43,8 +43,10 @@ func _on_child_entered_tree(node : Node):
 	_children_changed(node)
 
 func _on_child_exiting_tree(node : Node):
-	# TODO: this causes a false positive when the whole scene is about to change
-	_children_changed(node)
+	# TODO this causes a false positive when the whole scene is about to change
+	#      or when agent is freed
+	#_children_changed(node)
+	pass
 
 func _is_main_path_variable_changed():
 	# by default branches will reflect their is_main_path on their children

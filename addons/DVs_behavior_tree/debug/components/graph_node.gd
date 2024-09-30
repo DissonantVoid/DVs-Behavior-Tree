@@ -30,7 +30,7 @@ const _interrupted_color : Color = Color("8f688d")
 const _fadout_lerp_value : float = 1.8
 
 const _line_off_color : Color = _undefined_color
-const _line_on_color : Color = Color.WHITE
+const _line_on_color : Color = Color("d6c9ab")
 
 var _tick_tween : Tween
 const _tick_tween_time : float = 0.15
@@ -114,19 +114,16 @@ func update_status(status : BTNode.Status, is_main_path : bool):
 	if is_main_path:
 		if status == BTNode.Status.running:
 			line_color = _line_on_color
+			# display line above other sibling lines
+			_connection_line.z_index = 1
 		else:
 			line_color = _line_off_color
+			_connection_line.z_index = 0
 	else:
 		line_color = _parallel_color
-	
-	if status == BTNode.Status.running:
-		# display line above other sibling lines
 		_connection_line.z_index = 1
-	else:
-		_connection_line.z_index = 0
 	
 	_connection_line.default_color = line_color
-	
 	_calc_stylebox_color(is_main_path)
 
 func _calc_stylebox_color(is_main_path : bool):

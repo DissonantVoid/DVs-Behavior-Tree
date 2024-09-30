@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/inversion.svg")
 class_name BTInversion
 extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 

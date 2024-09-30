@@ -1,31 +1,38 @@
 # Dissonant Void's Behavior Tree
-A modular and scalable behavior tree implementation addon for Godot4, allowing you to create adaptive AI that reacts to its environment. With a user-friendly and extendable system, you can create complex NPCs to populate your world, or bosses that can go through many phases and react to multiple conditions without making spagetti code with the combination of simple actions and flow control.
+A modular behavior tree implementation addon for Godot4, with a user-friendly and extendable system allowing the creation of adaptive AI able to react to its environment and perform many actions without the code turning more spagetti with each iteration.
+With this addon you can make complex NPCs to populate your world, or bosses that can go through many phases and react to multiple conditions with the combination of simple actions and flow control.
 
 <p align="center">
-  <img src="icon.svg" alt="ICON" width="400"/>
+  <img src="icon.svg" alt="ICON" width="300"/>
 </p>
 
 ## Overview
 -features overview (show images)
- -nodes and some exports
+ -modular/scalable system
+ -easy to setup
+ -nodes and fine tuning (exports)
  -debugger features
- -extra nodes
 -barebone how to use
 
 ## Examples
 -example projects
 
 ## Documentations
-[Documentations](addons/DVs_behavior_tree/docs)
+If you are new to behavior trees or wish to refresh your knowledge of how they work and compare to finite state machines [start here](addons/DVs_behavior_tree/docs/start_here.md).
+Documentations of how to use the addon and its features [can be found here](addons/DVs_behavior_tree/docs).
 
 ## Contribution
 -project roadmap, philosophy and style
 
 ## Credits
-Follow me for (for what? cookies?)
+### Socials
 [Xhitter](https://twitter.com/Dissonant_Void)
+
 [Instagram](https://www.instagram.com/dissonant_void/)
+
 [Itch io](https://x-void-x.itch.io)
+
 [Discord Profile](https://discordapp.com/users/1109492493197787206)
 
--donation
+### Support
+[Support me on Ko-Fi](https://ko-fi.com/dissonantvoid)

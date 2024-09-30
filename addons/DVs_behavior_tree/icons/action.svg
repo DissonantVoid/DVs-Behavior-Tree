@@ -9,7 +9,7 @@
    id="svg3478"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    sodipodi:docname="action.svg"
-   inkscape:export-filename="..\action.svg"
+   inkscape:export-filename="..\..\action.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,9 +27,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="9.5144354"
-     inkscape:cx="12.822621"
-     inkscape:cy="22.124277"
+     inkscape:zoom="16"
+     inkscape:cx="22.40625"
+     inkscape:cy="13.34375"
      inkscape:window-width="1680"
      inkscape:window-height="988"
      inkscape:window-x="-8"
@@ -50,26 +50,19 @@
        x="1.3396776"
        y="4.8810186" />
     <rect
-       style="fill:none;stroke:#af9dd9;stroke-width:0.337472;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;stroke:#af9dd9;stroke-width:0.337048;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="rect3707"
-       width="6.3086128"
-       height="0.97175157"
-       x="1.3609847"
-       y="3.9092672" />
+       width="6.2900352"
+       height="0.97217536"
+       x="1.3607728"
+       y="3.9090552" />
     <rect
        style="fill:#af9dd9;stroke:none;stroke-width:0.337472;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="rect10514"
        width="6.5083647"
        height="0.9717595"
-       x="0.30268958"
-       y="3.1565416"
+       x="0.16260631"
+       y="3.0303261"
        transform="matrix(0.96593385,-0.25878909,0.25884899,0.9659178,0,0)" />
-    <ellipse
-       style="fill:#af9dd9;fill-opacity:1;stroke:none;stroke-width:0.206072;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-       id="path11242"
-       cx="1.3609847"
-       cy="3.9092672"
-       rx="0.73265153"
-       ry="0.73256063" />
   </g>
 </svg>

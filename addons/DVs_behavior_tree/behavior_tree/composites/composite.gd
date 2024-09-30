@@ -6,14 +6,16 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 ## Base class for Composites, which are nodes that have 2 or more node children.
 ## composites tick their children in a certain order depending on certain rules, typically from left to right.
 
-enum ConditionalAbort {none, low_priority, self_, both}
+enum ConditionalAbort {
+	none,         ## No conditional abort.
+	low_priority, ## If first child is a condition, as long as a lower priority node is ticking (a node that comes after self in the tree and all its offsprings),
+				  ## this will tick its first child in parallel. If the condition succeeds the lower priority node will be interrupted and this will run instead.
+	self_,        ## If first child is a condition, as long as self is ticking its children
+				  ## it will also tick its first child in parallel, if the condition fails this will interrupt its running child and start over.
+	both          ## Same effect as low_priority and self combined.
+}
 
-## If set to low priority and the first child is a condition, as long as a lower priority node is ticking
-## (a node that comes after self in the tree and all its offsprings) this will tick its first child at the same time,
-## if the condition succeeds the lower priority node will be interrupted and this will run instead.
-## If set to self and the first child is a condition, as long as this composite is ticking its children
-## it will also tick its first child at the same time, if the condition fails this will interrupt its running child and start over.
-## Both has the same effect as low_priority and self combined and none means no conditional abort.
+## One of [code]ConditionAbort[/code] values.
 @export var conditional_abort : ConditionalAbort :
 	set(value):
 		conditional_abort = value
@@ -23,7 +25,7 @@ enum ConditionalAbort {none, low_priority, self_, both}
 var _services : Array[BTService]
 
 var _has_valid_cond_abort_child : bool
-var _is_conditional_abort_child_ticking : bool
+var _conditional_abort_child : BTNode
 
 func _ready():
 	if Engine.is_editor_hint(): return
@@ -34,7 +36,8 @@ func _ready():
 		_has_valid_cond_abort_child = true
 	
 	var parent : Node = get_parent()
-	if _has_valid_cond_abort_child && parent is BTBranch:
+	if (conditional_abort == ConditionalAbort.low_priority ||
+	conditional_abort == ConditionalAbort.both) && _has_valid_cond_abort_child:
 		parent.entered.connect(_on_parent_entered)
 		parent.exited.connect(_on_parent_exited)
 		parent.ticking.connect(_on_parent_ticking)
@@ -53,12 +56,18 @@ func enter():
 	# find first valid child
 	var valid_child : BTNode = _get_next_valid_child()
 	if valid_child:
-		# interrupt conditional abort child in case self was entered naturaly without having had interrupted another branch
-		if conditional_abort != ConditionalAbort.none && _is_conditional_abort_child_ticking:
-			valid_child.exit(true)
-		
 		_active_child = valid_child
 		_active_child.enter()
+	
+	# ConditionalAbort.low_priority, abort child in case self was entered naturaly without having had interrupted another branch
+	if (conditional_abort == ConditionalAbort.low_priority ||
+	conditional_abort == ConditionalAbort.both) && _conditional_abort_child:
+		_exit_cond_abord_child(true)
+	
+	# ConditionalAbort.self_, get conditional
+	if (conditional_abort == ConditionalAbort.self_ ||
+	conditional_abort == ConditionalAbort.both) && _has_valid_cond_abort_child:
+		_conditional_abort_child = valid_child
 	
 	# run services
 	for service : BTService in _services:
@@ -66,6 +75,12 @@ func enter():
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
+	
+	# interrupt self abort child if it's still running
+	if (conditional_abort == ConditionalAbort.self_ ||
+	conditional_abort == ConditionalAbort.both) && _conditional_abort_child:
+		_exit_cond_abord_child(true)
+	
 	# stop services
 	for service : BTService in _services:
 		service.parent_exiting()
@@ -76,34 +91,32 @@ func tick(delta : float):
 	for service : BTService in _services:
 		service.parent_tick(delta)
 	
+	# ConditionalAbort.self_ check
 	if ((conditional_abort == ConditionalAbort.self_ ||
 	conditional_abort == ConditionalAbort.both) && _has_valid_cond_abort_child):
-		var cond_abort_child : BTNode = _get_next_valid_child()
-		if cond_abort_child != _active_child:
-			if _is_conditional_abort_child_ticking == false:
-				_is_conditional_abort_child_ticking = true
-				cond_abort_child.is_main_path = false
-				cond_abort_child.enter()
-			
-			cond_abort_child.tick(delta)
-			var status : Status = cond_abort_child.get_status()
-			if status == Status.failure:
-				cond_abort_child.exit(false)
-				_is_conditional_abort_child_ticking = false
-				# interrupt self and start over
-				self.exit(true)
-				cond_abort_child.is_main_path = self.is_main_path
-				self.enter()
+		if _active_child == _conditional_abort_child:
+			# don't tick cond abort child if it's the current active child
+			# TODO: need a way to call _conditional_abort_child.exit right before _active_child
+			#       is ticked, so the cond child exits properly before being entered back as active child
+			#       for now, we just avoid calling _conditional_abort_child.exit which means that the child
+			#       is entered a second time without being exited
+			return
+		
+		if _conditional_abort_child == null:
+			_conditional_abort_child = _get_next_valid_child()
+			_conditional_abort_child.is_main_path = false
+			_conditional_abort_child.enter()
+		
+		_conditional_abort_child.tick(delta)
+		var status : Status = _conditional_abort_child.get_status()
+		if status == Status.failure:
+			_exit_cond_abord_child(false)
+			# interrupt self and start over
+			self.exit(true)
+			self.enter()
 
 func get_services() -> Array[BTService]:
 	return _services
-
-func _is_main_path_variable_changed():
-	super() # update all children
-	
-	if _has_valid_cond_abort_child && _is_conditional_abort_child_ticking == false:
-		var first_condition : BTCondition = _get_next_valid_child()
-		first_condition.is_main_path = self.is_main_path
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()
@@ -118,49 +131,56 @@ func _get_configuration_warnings() -> PackedStringArray:
 	
 	return warnings
 
+func _exit_cond_abord_child(is_interrupted : bool):
+	if _conditional_abort_child:
+		_conditional_abort_child.exit(is_interrupted)
+		_conditional_abort_child.is_main_path = self.is_main_path # cond abort node runs in parallel to main path
+		_conditional_abort_child = null
+
 # conditional abort (low_priority)
 
 func _on_parent_entered():
 	return
 
 func _on_parent_exited():
-	return
+	_exit_cond_abord_child(true)
 
 func _on_parent_ticking(delta : float):
-	if (conditional_abort != ConditionalAbort.low_priority &&
-	conditional_abort != ConditionalAbort.both): # _has_valid_cond_abort_child is already checked for in _ready
-		return
-	
 	var running_sibling : BTNode = null
 	running_sibling = get_parent().get_active_child()
 	if running_sibling ==  null:
 		# parent hasn't picked a sibling yet
+		_exit_cond_abord_child(true)
 		return
 	
-	# child is us
-	if running_sibling == self: return
-	# child is higher priority than us because it's to the left
-	if running_sibling.get_index() < self.get_index(): return
+	# sibling is self
+	if running_sibling == self:
+		# NOTE: the signal that calls this (BTNode.ticking) is received before parent ticks self, so we don't have to worry
+		#       about derived self entering cond child right as we're trying to make it exit
+		_exit_cond_abord_child(true)
+		return
+	# sibling is higher priority than us because it's to the left
+	if running_sibling.get_index() < self.get_index():
+		_exit_cond_abord_child(true)
+		return
 	
 	var path_to_active : Array[BTNode] = behavior_tree.get_path_to_active_node()
 	for i : int in range(path_to_active.find(get_parent())+1, path_to_active.size()):
 		var node : BTNode = path_to_active[i]
 		if node is BTBranch && node.uninterruptible:
 			# one of the branches along the path to active node is uninterruptible
+			_exit_cond_abord_child(true)
 			return
 	
-	# tick our condition child
-	var cond_abort_child : BTNode = _get_next_valid_child()
-	if _is_conditional_abort_child_ticking == false:
-		_is_conditional_abort_child_ticking = true
-		cond_abort_child.is_main_path = false
-		cond_abort_child.enter()
+	# tick our conditional child
+	if _conditional_abort_child == null:
+		_conditional_abort_child = _get_next_valid_child()
+		_conditional_abort_child.is_main_path = false
+		_conditional_abort_child.enter()
 	
-	cond_abort_child.tick(delta)
-	var status : Status = cond_abort_child.get_status()
+	_conditional_abort_child.tick(delta)
+	var status : Status = _conditional_abort_child.get_status()
 	if status == Status.success:
-		cond_abort_child.exit(false)
-		cond_abort_child.is_main_path = self.is_main_path
-		_is_conditional_abort_child_ticking = false
+		_exit_cond_abord_child(false)
 		# interrupt and redirect flow to self
 		behavior_tree.force_tick_node(self)

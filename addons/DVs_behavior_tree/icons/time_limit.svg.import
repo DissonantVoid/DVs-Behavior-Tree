@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b350ya8ur7inr"
-path="res://.godot/imported/repeat.svg-ed31fa92811edfade1f13e1e7d765c63.ctex"
+uid="uid://dwgdd8fav8q2y"
+path="res://.godot/imported/time_limit.svg-429d65c514acc315e4c746ff9ca15e9c.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/DVs_behavior_tree/icons/repeat.svg"
-dest_files=["res://.godot/imported/repeat.svg-ed31fa92811edfade1f13e1e7d765c63.ctex"]
+source_file="res://addons/DVs_behavior_tree/icons/time_limit.svg"
+dest_files=["res://.godot/imported/time_limit.svg-429d65c514acc315e4c746ff9ca15e9c.ctex"]
 
 [params]
 

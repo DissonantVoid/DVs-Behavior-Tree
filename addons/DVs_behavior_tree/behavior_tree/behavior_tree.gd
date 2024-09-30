@@ -6,7 +6,10 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 ## The starting point of a behavior tree, can also be a sub-tree if its
 ## parent is a Branch node.
 
-enum TickType {idle, physics}
+enum TickType {
+	idle, ## Ticks happen on idle frames (process)
+	physics ## Ticks happen on physics frames (physics process)
+}
 
 ## Determines if the tree can run or not.
 @export var is_active : bool :
@@ -28,7 +31,7 @@ enum TickType {idle, physics}
 		
 		if _is_subtree && _force_local_blackboard == false:
 			blackboard = get_parent().behavior_tree.blackboard
-## Determines if the tree should tick on idle frames (process), or physics frames (physics process).
+## Determines when the tree should tick.
 @export var tick_type : TickType :
 	set(value):
 		if tick_type == value: return
@@ -384,7 +387,7 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 			target_blackboard = global_blackboard
 		else:
 			target_blackboard = blackboard
-		send_debbuger_message("sending_blackboard_data", {"data":target_blackboard})
+		send_debbuger_message("sending_blackboard_data", {"blackboard":target_blackboard})
 		return true
 	
 	return false

@@ -5,7 +5,10 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 
 ## Modifies (write/erase) a blackboard entry. If writing, it takes an expression as the value.
 
-enum ActionType {write, erase}
+enum ActionType {
+	write, ## Write a new value or override an existing one with the same name.
+	erase ## Erases the key/value pair.
+}
 
 ## If true, this will check the global blackboard instead of the tree blackboard.
 @export var use_global_blackboard : bool = false

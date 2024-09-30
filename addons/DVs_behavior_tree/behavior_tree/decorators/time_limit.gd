@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/time_limit.svg")
 class_name BTTimeLimit
 extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 

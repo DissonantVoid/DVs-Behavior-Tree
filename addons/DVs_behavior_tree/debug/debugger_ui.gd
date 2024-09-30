@@ -13,7 +13,7 @@ extends MarginContainer
 @onready var _blackboard_data_empty_label : Label = $HSplitContainer/BlackboardData/MarginContainer/Empty
 @onready var _blackboard_update_timer : Timer = $BlackboardUpdateTimer
 @onready var _options_panel : MarginContainer = $HSplitContainer/TreeGraph/OptionsPanel
-@onready var _no_active_tree_label : Label = $HSplitContainer/TreeGraph/NoActiveTree
+@onready var _no_selected_tree_label : Label = $HSplitContainer/TreeGraph/NoSelectedTree
 
 const _graph_node_scene : PackedScene = preload("res://addons/DVs_behavior_tree/debug/components/graph_node.tscn")
 const _blackboard_entry_scene : PackedScene = preload("res://addons/DVs_behavior_tree/debug/components/blackboard_entry.tscn")
@@ -48,22 +48,22 @@ func stop_monitoring():
 		_remove_tree_menu_entry(btn.get_meta("id"))
 	_existing_tree_ids.clear()
 
-func tree_added(data : Dictionary):
+func tree_added(id : int, name_ : String):
 	# NOTE: can't pass nodes between the editor and running game :(
 	var btn : Button = Button.new()
-	btn.text = str(data["name"])
+	btn.text = name_
 	btn.toggle_mode = true
-	btn.set_meta("id", data["id"])
+	btn.set_meta("id", id)
 	_tree_menu_container.add_child(btn)
 	btn.toggled.connect(_on_tree_list_btn_toggled.bind(btn))
 	
-	_existing_tree_ids.append(data["id"])
+	_existing_tree_ids.append(id)
 
-func tree_removed(data : Dictionary):
-	_remove_tree_menu_entry(data["id"])
+func tree_removed(id : int):
+	_remove_tree_menu_entry(id)
 
 # see: https://williamyaoh.com/posts/2023-04-22-drawing-trees-functionally.html
-func active_tree_structure_received(data : Dictionary):
+func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 	# WARNING: let there be known that only the bravest and most battle hardened of programmers may enter
 	#          this demonic realm. this place has already taken the life energy of the poor soul
 	#          that made it, he was broken, twisted and shattered into a thousand pieces, and he
@@ -74,9 +74,6 @@ func active_tree_structure_received(data : Dictionary):
 	#          do best to live with that bug rather than take a single peek at this. YOU. Have. Been. Warned.
 	
 	var ids_by_depth : Dictionary # depth:[ids]
-	# see behavior_tree._on_debugger_message_received for dictionary formats
-	var nodes : Dictionary = data["nodes"]
-	var relations : Dictionary = data["relations"]
 	
 	# Step1: spawn graph nodes
 	for node_id : int in nodes:
@@ -189,6 +186,8 @@ func active_tree_structure_received(data : Dictionary):
 							#       for all children to move
 							if lm_grandparent == rm_grandparent:
 								# common ancestor found. push all nodes below the ancestor to the left or right
+								# TODO: this seems to cause issues where the common ancestor isn't the CA of other nodes in the same depth
+								#       so not all nodes at the lm and rm depth get pushed
 								var push_nodes_recursive : Callable = func(graph_node_id : int, x_offset : float, func_ : Callable):
 									_id_to_graph_node_map[graph_node_id].position.x += x_offset
 									if relations.has(graph_node_id):
@@ -215,25 +214,24 @@ func active_tree_structure_received(data : Dictionary):
 	_center_view_around_graph()
 	_debugger.send_debugger_ui_request("debugger_display_started", {"id":_active_tree_id})
 
-func active_tree_node_entered(data : Dictionary):
-	_id_to_graph_node_map[data["id"]].enter()
+func active_tree_node_entered(id : int):
+	_id_to_graph_node_map[id].enter()
 
-func active_tree_node_exited(data : Dictionary):
-	_id_to_graph_node_map[data["id"]].exit()
+func active_tree_node_exited(id : int):
+	_id_to_graph_node_map[id].exit()
 
-func active_tree_node_ticked(data : Dictionary):
-	_id_to_graph_node_map[data["id"]].tick(data["main_path"])
+func active_tree_node_ticked(id : int, main_path : bool):
+	_id_to_graph_node_map[id].tick(main_path)
 
-func active_tree_node_status_changed(data : Dictionary):
-	_id_to_graph_node_map[data["id"]].update_status(data["status"], data["main_path"])
+func active_tree_node_status_changed(id : int, status : BTNode.Status, main_path : bool):
+	_id_to_graph_node_map[id].update_status(status, main_path)
 
-func active_tree_blackboard_received(data : Dictionary):
+func active_tree_blackboard_received(blackboard : Dictionary):
 	if _is_tracking_global_blackboard:
 		_blackboard_data_name_label.text = "Global Blackboard"
 	else:
 		_blackboard_data_name_label.text = "Blackboard"
 	
-	var blackboard : Dictionary = data["data"]
 	_blackboard_data_empty_label.visible = blackboard.is_empty()
 	# check for deleted keys (in cache but not in blackboard var) and delete their entry
 	for i : int in range(_key_to_bb_entry_map.size()-1, -1, -1):
@@ -265,7 +263,7 @@ func _clear_graph():
 	
 	if _is_panning: _is_panning = false
 	_active_tree_id = -1
-	_no_active_tree_label.show()
+	_no_selected_tree_label.show()
 	_options_panel.hide()
 	_id_to_graph_node_map.clear()
 	
@@ -299,7 +297,7 @@ func _on_tree_list_btn_toggled(toggled_on : bool, button : Button):
 		
 		var id : int = button.get_meta("id")
 		_active_tree_id = id
-		_no_active_tree_label.hide()
+		_no_selected_tree_label.hide()
 		_options_panel.show()
 		
 		# request full tree structure and wait for response
@@ -343,7 +341,6 @@ func _on_graph_panel_gui_input(event : InputEvent):
 	
 	# graph navigation
 	if event is InputEventMouseButton:
-		# TODO: zoom from mouse position
 		if (event.pressed &&
 		(event.button_index == MOUSE_BUTTON_WHEEL_UP || event.button_index == MOUSE_BUTTON_WHEEL_DOWN)):
 			var zoom : float
@@ -354,10 +351,14 @@ func _on_graph_panel_gui_input(event : InputEvent):
 				# zoom out
 				zoom = max(_graph_container.scale.x - _zoom_increment, _max_zoom_out)
 			
-			_graph_container.pivot_offset = Vector2.ZERO
-			_graph_container.pivot_offset =\
-				_graph_container.get_local_mouse_position() * _graph_container.scale
-			_graph_container.scale = Vector2.ONE * zoom
+			if is_equal_approx(_graph_container.scale.x, zoom) == false:
+				var prev_pos : Vector2 = _graph_container.global_position
+				_graph_container.pivot_offset =\
+					_graph_container.get_local_mouse_position() * _graph_container.scale
+				# reset pos because changing pivot offsets position for some hecking reason
+				_graph_container.global_position = prev_pos
+				
+				_graph_container.scale = Vector2.ONE * zoom
 		
 		# panning
 		elif event.pressed && event.button_index == MOUSE_BUTTON_LEFT && _is_panning == false:

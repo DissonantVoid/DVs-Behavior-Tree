@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/cooldown.svg")
 class_name BTCooldown
 extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 
@@ -7,10 +8,12 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 ## while the cooldown is active it will return the last status that the child has returned before the cooldown.
 ## Mainly used to prevent an expensive condition node from running when it's not nessesary to keep the result up to date.
 
-@export var tick_every : int :
+## The cooldown in ticks.
+@export var tick_cooldown : int :
 	set(value):
-		tick_every = max(value, 2)
-		_ticked = tick_every
+		tick_cooldown = max(value, 2)
+		_ticked = tick_cooldown
+## If true, the internal tick counter will reset when this node is exited.
 @export var reset_on_exit : bool = true
 
 var _ticked : int
@@ -18,7 +21,7 @@ var _last_status : Status = Status.running
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
-	if reset_on_exit: _ticked = tick_every
+	if reset_on_exit: _ticked = tick_cooldown
 
 func tick(delta : float):
 	super(delta)
@@ -26,7 +29,7 @@ func tick(delta : float):
 		_set_status(Status.failure)
 		return
 	
-	if _last_status == Status.running || _ticked == tick_every:
+	if _last_status == Status.running || _ticked == tick_cooldown:
 		_active_child.tick(delta)
 		var status : Status = _active_child.get_status()
 		_last_status = status

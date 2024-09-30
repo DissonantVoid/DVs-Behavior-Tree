@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/DVs_behavior_tree/icons/selector_random.svg")
 class_name BTSelectorRandom
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/random_composite.gd"
 

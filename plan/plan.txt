@@ -25,7 +25,7 @@ Stage 2:
 
 [X] document all nodes
 [X] document all exports
-[] document enums if an export variable uses them (hover over composite.conditional_abort for an example)
+[X] document enums if an export variable uses them (hover over composite.conditional_abort for an example)
 
 [X] better caching and navigating of tree
 
@@ -44,7 +44,7 @@ plugin for visualizing tree at run-time (1.2)
 [X] -icons for actions instead of text
 [X] -solve priority TODOs
 
-[..] icons
+[X] icons
 -optimize svg files, see https://docs.godotengine.org/en/stable/contributing/development/editor/creating_icons.html#icon-optimization
 
 unit tests: (see https://github.com/bitwes/Gut)
@@ -53,8 +53,6 @@ unit tests: (see https://github.com/bitwes/Gut)
 -conditional aborts
 -forcing a path from any node to any other
 -pausing/unpausing
--changing tree nodes at run-time
--practical example
 
 [X]support sub-trees and shared/multiple blackboards
 
@@ -67,6 +65,9 @@ additional nodes (in their own "extension" folder so we don't bloat the main fol
 -agent go to (2d/3d) (requires nav agent and nav mesh)
 -play particles (optional wait for finish)
 
+other nodes:
+-parallel node (runs all children in parallel)
+
 Stage 3:
 asset lib setup
 [..] documentations
@@ -75,10 +76,16 @@ examples (use my space game as example, ants sim could work too)
 [] follow official style guide so it's easier for others to contribute
 https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
 
-debugger real time export var values, allowing user to track those vars in the debugger
+Future:
+ability to modify blackboard values in debugger
+
+debugger real time node data updates, allowing user to track export variables
 -custom nodes made by users should be able to add their custom data too
 
-Future:
+tree stats:
+-heatmap of the most visited nodes
+-how long it takes for a node to execute
+
 make into C++ module
 translation
 multiplayer support

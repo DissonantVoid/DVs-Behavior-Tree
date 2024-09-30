@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b350ya8ur7inr"
-path="res://.godot/imported/repeat.svg-ed31fa92811edfade1f13e1e7d765c63.ctex"
+uid="uid://dc64ua4luoib6"
+path="res://.godot/imported/inversion.svg-a310daaef0200274462756a207acba78.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/DVs_behavior_tree/icons/repeat.svg"
-dest_files=["res://.godot/imported/repeat.svg-ed31fa92811edfade1f13e1e7d765c63.ctex"]
+source_file="res://addons/DVs_behavior_tree/icons/inversion.svg"
+dest_files=["res://.godot/imported/inversion.svg-a310daaef0200274462756a207acba78.ctex"]
 
 [params]
 
