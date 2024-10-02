@@ -91,7 +91,7 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 			node_data["name"], node_data["class_name"],
 			node_data["status"], node_data["description"],
 			node_data["icon_path"], node_data["is_leaf"],
-			node_data["services"]
+			node_data["attachments"]
 		)
 		graph_node.reset_size()
 	

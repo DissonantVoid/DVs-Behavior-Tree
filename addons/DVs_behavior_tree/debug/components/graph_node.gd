@@ -11,9 +11,9 @@ signal action_pressed(action_type : String)
 @onready var _status_label_line : HSeparator = $MarginContainer/VBoxContainer/Top/Status/HSeparator
 @onready var _description_container : PanelContainer = $MarginContainer/VBoxContainer/PanelContainer
 @onready var _description_text : RichTextLabel = $MarginContainer/VBoxContainer/PanelContainer/Description
-@onready var _services_container : MarginContainer = $MarginContainer/VBoxContainer/ServicesContainer
-@onready var _services_container_panel : Panel = $MarginContainer/VBoxContainer/ServicesContainer/Panel
-@onready var _services_labels_container : VBoxContainer = $MarginContainer/VBoxContainer/ServicesContainer/VBoxContainer/VBoxContainer
+@onready var _attachments_container : MarginContainer = $MarginContainer/VBoxContainer/AttachmentsContainer
+@onready var _attachments_container_panel : Panel = $MarginContainer/VBoxContainer/AttachmentsContainer/Panel
+@onready var _attachments_labels_container : VBoxContainer = $MarginContainer/VBoxContainer/AttachmentsContainer/VBoxContainer/VBoxContainer
 
 @onready var _action_btn_open_blackboard : Button = $MarginContainer/VBoxContainer/ActionsContainer/Actions/OpenBlackboard
 
@@ -39,7 +39,7 @@ const _tick_tween_max_scale : float = 1.1
 func setup(
 node_name : String, class_name_ : String, status : BTNode.Status,
 description : String, icon_path : String, is_leaf : bool,
-services : Array[String]
+attachments : Array[String]
 ):
 	_name_label.text = node_name
 	_is_leaf = is_leaf
@@ -58,12 +58,12 @@ services : Array[String]
 	if class_name_ != "BTBehaviorTree": # NOTE: this works as long as user doesn't inherite BehaviorTree and adds class_name
 		_action_btn_open_blackboard.hide()
 	
-	_services_container.visible = services.size() > 0
-	for service_name : String in services:
+	_attachments_container.visible = attachments.size() > 0
+	for attachment_name : String in attachments:
 		var label : Label = Label.new()
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.text = service_name
-		_services_labels_container.add_child(label)
+		label.text = attachment_name
+		_attachments_labels_container.add_child(label)
 
 func _ready():
 	set_process(false)
@@ -88,12 +88,12 @@ func set_graph_parent(parent : Control):
 	_connection_line.add_point(end)
 
 func enter():
-	if _services_container.visible:
-		_services_container_panel.get_theme_stylebox("panel").draw_center = true
+	if _attachments_container.visible:
+		_attachments_container_panel.get_theme_stylebox("panel").draw_center = true
 
 func exit():
-	if _services_container.visible:
-		_services_container_panel.get_theme_stylebox("panel").draw_center = false
+	if _attachments_container.visible:
+		_attachments_container_panel.get_theme_stylebox("panel").draw_center = false
 
 func tick(is_main_path : bool):
 	if _is_leaf == false: return

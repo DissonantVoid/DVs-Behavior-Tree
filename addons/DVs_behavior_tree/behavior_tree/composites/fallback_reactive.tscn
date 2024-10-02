@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b78jl8rpafe6u"]
 
 [ext_resource type="PackedScene" uid="uid://b661ejvfewmov" path="res://addons/DVs_behavior_tree/behavior_tree/composites/composite.tscn" id="1_s6d3l"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/selector_reactive.gd" id="2_65l8g"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback_reactive.gd" id="2_65l8g"]
 
-[node name="SelectorReactive" instance=ExtResource("1_s6d3l")]
+[node name="FallbackReactive" instance=ExtResource("1_s6d3l")]
 script = ExtResource("2_65l8g")

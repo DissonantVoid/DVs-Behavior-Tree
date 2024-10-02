@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://c557vjvtb2h4w"]
 
 [ext_resource type="PackedScene" uid="uid://qseqna4tt4pl" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.tscn" id="1_yxdkh"]
-[ext_resource type="PackedScene" uid="uid://1uhnor2a4ji0" path="res://addons/DVs_behavior_tree/behavior_tree/composites/selector.tscn" id="3_0y2mb"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/service.gd" id="3_nbee2"]
+[ext_resource type="PackedScene" uid="uid://1uhnor2a4ji0" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.tscn" id="3_0y2mb"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composite_attachment.gd" id="3_nbee2"]
 [ext_resource type="PackedScene" uid="uid://dhp4pifglwy4c" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.tscn" id="3_no72l"]
 [ext_resource type="PackedScene" uid="uid://bq36btxq5d66w" path="res://tests/move_to_random.tscn" id="4_5rasj"]
 [ext_resource type="PackedScene" uid="uid://m5uvh8yp7gqr" path="res://tests/is_mouse_close.tscn" id="5_0pb15"]
@@ -24,20 +24,20 @@ texture = SubResource("GradientTexture1D_i5drc")
 [node name="BehaviorTree" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("1_yxdkh")]
 agent = NodePath("../Sprite2D")
 
-[node name="Selector" parent="BehaviorTree" instance=ExtResource("3_0y2mb")]
+[node name="Fallback" parent="BehaviorTree" instance=ExtResource("3_0y2mb")]
 
-[node name="BTService" type="Node" parent="BehaviorTree/Selector"]
+[node name="CompositeAttachment" type="Node" parent="BehaviorTree/Fallback"]
 script = ExtResource("3_nbee2")
 
-[node name="FollowMouse" parent="BehaviorTree/Selector" instance=ExtResource("3_no72l")]
+[node name="FollowMouse" parent="BehaviorTree/Fallback" instance=ExtResource("3_no72l")]
 conditional_abort = 1
 
-[node name="IsMouseClose" parent="BehaviorTree/Selector/FollowMouse" instance=ExtResource("5_0pb15")]
+[node name="IsMouseClose" parent="BehaviorTree/Fallback/FollowMouse" instance=ExtResource("5_0pb15")]
 
-[node name="MoveToMouse" parent="BehaviorTree/Selector/FollowMouse" instance=ExtResource("6_6llgm")]
+[node name="MoveToMouse" parent="BehaviorTree/Fallback/FollowMouse" instance=ExtResource("6_6llgm")]
 
-[node name="Wander" parent="BehaviorTree/Selector" instance=ExtResource("3_no72l")]
+[node name="Wander" parent="BehaviorTree/Fallback" instance=ExtResource("3_no72l")]
 
-[node name="MoveToRandom" parent="BehaviorTree/Selector/Wander" instance=ExtResource("4_5rasj")]
+[node name="MoveToRandom" parent="BehaviorTree/Fallback/Wander" instance=ExtResource("4_5rasj")]
 
-[node name="WaitFor" parent="BehaviorTree/Selector/Wander" instance=ExtResource("5_irou4")]
+[node name="WaitFor" parent="BehaviorTree/Fallback/Wander" instance=ExtResource("5_irou4")]

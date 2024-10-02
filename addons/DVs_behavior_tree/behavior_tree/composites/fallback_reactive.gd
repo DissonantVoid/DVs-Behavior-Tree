@@ -1,13 +1,12 @@
 @tool
-@icon("res://addons/DVs_behavior_tree/icons/selector.svg")
-class_name BTSelector
+@icon("res://addons/DVs_behavior_tree/icons/fallback_reactive.svg")
+class_name BTFallbackReactive
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
-## Ticks its children from first to last, if the child fails it ticks the next child,
-## otherwise returns the child's status. Can be thought of as an "OR" node in that it only
-## executes the next child if the previous child fails.
-## example: an NPC that determines whether to go outside or go to sleep depending on the time of day:
-## selector -> day routine, night routine.
+## Similar to the normal fallback except when a child returns running
+## this will start over from the first child and return running. The fallback is reactive
+## in the sense that it rechecks previous children if a long running child is active
+## reacting to any previous child as soon as its status goes from failure to success.
 
 func tick(delta : float):
 	super(delta)
@@ -18,6 +17,9 @@ func tick(delta : float):
 	_active_child.tick(delta)
 	var status : Status = _active_child.get_status()
 	if status == Status.running:
+		# start over
+		_active_child.exit(true)
+		_active_child = _get_next_valid_child()
 		_set_status(Status.running)
 	
 	elif status == Status.success:

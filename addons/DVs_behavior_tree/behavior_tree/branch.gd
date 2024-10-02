@@ -36,7 +36,7 @@ func force_pick_child(child : BTNode):
 
 func _children_changed(node : Node):
 	if Engine.is_editor_hint() || is_node_ready() == false: return
-	if node is BTNode || node is BTService:
+	if node is BTNode || node is BTCompositeAttachment:
 		push_error("Behavior tree branches do not support adding/removing other behavior tree nodes at run-time")
 
 func _on_child_entered_tree(node : Node):

@@ -23,6 +23,7 @@ Documentations of how to use the addon and its features [can be found here](addo
 
 ## Contribution
 -project roadmap, philosophy and style
+-optimize icons https://docs.godotengine.org/en/stable/contributing/development/editor/creating_icons.html#icon-optimization
 
 ## Credits
 ### Socials

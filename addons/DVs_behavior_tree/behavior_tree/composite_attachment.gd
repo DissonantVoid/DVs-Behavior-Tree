@@ -1,12 +1,12 @@
 @tool
-@icon("res://addons/DVs_behavior_tree/icons/service.svg")
-class_name BTService
+@icon("res://addons/DVs_behavior_tree/icons/composite_attachment.svg")
+class_name BTCompositeAttachment
 extends Node
 
-## Base class for services, can be attached to Composite nodes and will tick as long as its parent is ticking,
+## Base class for attachments, can be attached to Composite nodes and will tick as long as its parent is ticking,
 ## mainly used to monitor game state and update the blackboard.
 
-## How many tree ticks must pass before one service tick occurs.
+## How many tree ticks must pass before one attachment tick occurs.
 @export var tree_ticks_per_tick : int = 1 :
 	set(value):
 		tree_ticks_per_tick = max(value, 1)
@@ -38,6 +38,6 @@ func _get_configuration_warnings() -> PackedStringArray:
 			break
 	
 	if get_parent() is BTComposite == false || has_previous_node_sibling:
-		return ["Service node must be a child of a Composite node, and must be positioned before any non-service children"]
+		return ["Attachment node must be a child of a Composite node, and must be positioned before any non-attachment children"]
 	
 	return []

@@ -22,7 +22,7 @@ enum ConditionalAbort {
 		if is_node_ready() == false: await self.ready
 		update_configuration_warnings()
 
-var _services : Array[BTService]
+var _attachments : Array[BTCompositeAttachment]
 
 var _has_valid_cond_abort_child : bool
 var _conditional_abort_child : BTNode
@@ -42,12 +42,12 @@ func _ready():
 		parent.exited.connect(_on_parent_exited)
 		parent.ticking.connect(_on_parent_ticking)
 	
-	# services
+	# attachments
 	for child : Node in get_children():
-		if child is BTService:
-			_services.append(child)
+		if child is BTCompositeAttachment:
+			_attachments.append(child)
 		else:
-			# ignore services placed after other nodes, BTService will handle warnings
+			# ignore attachments placed after other nodes, BTCompositeAttachment will handle warnings
 			break
 
 func enter():
@@ -69,9 +69,9 @@ func enter():
 	conditional_abort == ConditionalAbort.both) && _has_valid_cond_abort_child:
 		_conditional_abort_child = valid_child
 	
-	# run services
-	for service : BTService in _services:
-		service.parent_entered()
+	# run attachments
+	for attachment : BTCompositeAttachment in _attachments:
+		attachment.parent_entered()
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
@@ -81,15 +81,15 @@ func exit(is_interrupted : bool):
 	conditional_abort == ConditionalAbort.both) && _conditional_abort_child:
 		_exit_cond_abord_child(true)
 	
-	# stop services
-	for service : BTService in _services:
-		service.parent_exiting()
+	# stop attachments
+	for attachment : BTCompositeAttachment in _attachments:
+		attachment.parent_exiting()
 
 func tick(delta : float):
 	super(delta)
 	
-	for service : BTService in _services:
-		service.parent_tick(delta)
+	for attachment : BTCompositeAttachment in _attachments:
+		attachment.parent_tick(delta)
 	
 	# ConditionalAbort.self_ check
 	if ((conditional_abort == ConditionalAbort.self_ ||
@@ -115,8 +115,8 @@ func tick(delta : float):
 			self.exit(true)
 			self.enter()
 
-func get_services() -> Array[BTService]:
-	return _services
+func get_attachments() -> Array[BTCompositeAttachment]:
+	return _attachments
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()
@@ -127,7 +127,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 	
 	if (conditional_abort != ConditionalAbort.none && valid_children &&
 	valid_children[0] is not BTCondition && valid_children[0] is not BTDecorator):
-		warnings.append("For a conditional abort to work the first child of a Composite (not including services) must be a Condition or a Decorator")
+		warnings.append("For a conditional abort to work the first child of a Composite (not including attachments) must be a Condition or a Decorator")
 	
 	return warnings
 

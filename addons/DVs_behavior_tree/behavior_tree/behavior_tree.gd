@@ -109,7 +109,7 @@ func _ready():
 			node.behavior_tree = self
 			# stop here and let the sub-tree handle its nodes
 			return
-		elif node is BTNode || node is BTService:
+		elif node is BTNode || node is BTCompositeAttachment:
 			# provide reference to tree
 			node.behavior_tree = self
 			
@@ -347,15 +347,15 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 				# class with class_name doesn't have an icon, fallback to the icon of parent class
 				script = script.get_base_script()
 			
-			var services : Array[String]
+			var attachments : Array[String]
 			if node is BTComposite:
-				for service : BTService in node.get_services():
-					services.append(service.name)
+				for attachment : BTCompositeAttachment in node.get_attachments():
+					attachments.append(attachment.name)
 			
 			nodes[node.get_instance_id()] = {
 				"name":node.name, "depth":depth, "class_name":class_name_,
 				"status":node.get_status(), "description":node.description,
-				"icon_path":icon_path, "is_leaf":node is BTLeaf, "services":services
+				"icon_path":icon_path, "is_leaf":node is BTLeaf, "attachments":attachments
 			}
 			
 			if node is BTBranch:
