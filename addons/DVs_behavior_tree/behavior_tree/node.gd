@@ -25,15 +25,15 @@ var is_main_path : bool = true :
 		_is_main_path_variable_changed()
 
 func enter():
-	if behavior_tree.can_send_debugger_message():
-		behavior_tree.send_debbuger_message(
+	if behavior_tree.is_active_tree_in_debugger():
+		BTDebuggerListener.send_message(
 			"node_entered", {"id":self.get_instance_id()}
 		)
 	entered.emit()
 
 func exit(is_interrupted : bool):
-	if behavior_tree.can_send_debugger_message():
-		behavior_tree.send_debbuger_message(
+	if behavior_tree.is_active_tree_in_debugger():
+		BTDebuggerListener.send_message(
 			"node_exited", {"id":self.get_instance_id()}
 		)
 	if is_interrupted:
@@ -41,8 +41,8 @@ func exit(is_interrupted : bool):
 	exited.emit()
 
 func tick(delta : float):
-	if behavior_tree.can_send_debugger_message():
-		behavior_tree.send_debbuger_message(
+	if behavior_tree.is_active_tree_in_debugger():
+		BTDebuggerListener.send_message(
 			"node_ticked", {"id":self.get_instance_id(), "main_path":is_main_path}
 		)
 	ticking.emit(delta)
@@ -54,8 +54,8 @@ func _set_status(status : Status):
 	if status == Status.undefined:
 		push_error("Status.undefiend is not supposed to be returned by behavior tree nodes")
 	
-	if behavior_tree.can_send_debugger_message():
-		behavior_tree.send_debbuger_message(
+	if behavior_tree.is_active_tree_in_debugger():
+		BTDebuggerListener.send_message(
 			"node_status_changed", {"id":self.get_instance_id(), "status":status, "main_path":is_main_path}
 		)
 		

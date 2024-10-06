@@ -3,4 +3,4 @@
 class_name BTAction
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/leaf.gd"
 
-## Base class for actions such as moving the agent, shooting etc...
+## Base class for actions.

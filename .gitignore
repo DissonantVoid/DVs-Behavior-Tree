@@ -5,4 +5,5 @@
 # https://github.com/godotengine/godot/issues/82270
 *.tmp
 
+# inkscape files
 addons/DVs_behavior_tree/icons/raw

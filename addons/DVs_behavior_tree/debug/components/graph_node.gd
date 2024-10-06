@@ -27,7 +27,7 @@ const _running_color : Color = Color("aa662e")
 const _parallel_color : Color = Color("696775")
 const _interrupted_color : Color = Color("8f688d")
 
-const _fadout_lerp_value : float = 1.8
+const _color_fadout_lerp : float = 1.8
 
 const _line_off_color : Color = _undefined_color
 const _line_on_color : Color = Color("d6c9ab")
@@ -45,7 +45,7 @@ attachments : Array[String]
 	_is_leaf = is_leaf
 	
 	_last_status = status
-	_calc_stylebox_color(false)
+	update_status(_last_status, true)
 	
 	if description:
 		_description_text.text = "[center]" + description + "[/center]"
@@ -71,7 +71,7 @@ func _ready():
 
 func _process(delta : float):
 	_stylebox.border_color = lerp(
-		_stylebox.border_color, _undefined_color, _fadout_lerp_value * delta
+		_stylebox.border_color, _undefined_color, _color_fadout_lerp * delta
 	)
 	if _stylebox.border_color == _undefined_color:
 		set_process(false)
@@ -110,11 +110,12 @@ func tick(is_main_path : bool):
 func update_status(status : BTNode.Status, is_main_path : bool):
 	_last_status = status
 	
+	# line
 	var line_color : Color
 	if is_main_path:
 		if status == BTNode.Status.running:
 			line_color = _line_on_color
-			# display line above other sibling lines
+			# display line above other lines
 			_connection_line.z_index = 1
 		else:
 			line_color = _line_off_color
@@ -124,11 +125,9 @@ func update_status(status : BTNode.Status, is_main_path : bool):
 		_connection_line.z_index = 1
 	
 	_connection_line.default_color = line_color
-	_calc_stylebox_color(is_main_path)
-
-func _calc_stylebox_color(is_main_path : bool):
-	var style_color : Color
 	
+	# style
+	var style_color : Color
 	if is_main_path:
 		match _last_status:
 			BTNode.Status.undefined:
@@ -143,11 +142,13 @@ func _calc_stylebox_color(is_main_path : bool):
 				style_color = _interrupted_color
 	else:
 		style_color = _parallel_color
-	
 	_stylebox.border_color = style_color
+	
+	# text
 	_status_label.text = "- " + BTNode.Status.find_key(_last_status) + " -"
 	_status_label.get_theme_stylebox("normal").bg_color = style_color
 	_status_label_line.get_theme_stylebox("separator").color = style_color
+	
 	set_process(true)
 
 func _on_force_tick_pressed():

@@ -3,100 +3,73 @@
 class_name BTBehaviorTree
 extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 
-## The starting point of a behavior tree, can also be a sub-tree if its
-## parent is a Branch node.
+## The root of a behavior tree.
 
 enum TickType {
 	idle, ## Ticks happen on idle frames (process)
 	physics ## Ticks happen on physics frames (physics process)
+	# TODO: TickType manual
 }
 
 ## Determines if the tree can run or not.
 @export var is_active : bool :
 	set(value):
 		is_active = value
-		_set_root_process()
+		_setup_tick()
 ## The node that this tree belongs to, usually an enemy or an NPC.
 ## Allows nodes to access the agent by calling [code]behavior_tree.agent[/code].
 @export var agent : Node :
 	set(value):
 		agent = value
 		update_configuration_warnings()
-## If true a behavior tree that is a sub-tree of another behavior tree will use its own blackboard separate.
-## If false it will share the same blackboard as the parent tree.
-@export var _force_local_blackboard : bool = false :
-	set(value):
-		_force_local_blackboard = value
-		if is_node_ready() == false: await self.ready
-		
-		if _is_subtree && _force_local_blackboard == false:
-			blackboard = get_parent().behavior_tree.blackboard
 ## Determines when the tree should tick.
 @export var tick_type : TickType :
 	set(value):
 		if tick_type == value: return
 		tick_type = value
-		_set_root_process()
+		_setup_tick()
 ## How many frames must pass before the tree ticks once, can be used as optimization if there are too many
 ## agents at once or as a form of LOD where agents far away are ticked less often.
-## If tree is a sub-tree, this variable represents how many ticks it must receive from parent to tick once.
 @export var frames_per_tick : int :
 	set(value):
 		frames_per_tick = max(value, 1)
 		if Engine.is_editor_hint(): return
 		
-		_frames_counter = 0
+		_ticks_counter = 0
 		if _randomize_first_tick && frames_per_tick > 1:
-			_frames_counter = randi_range(0, frames_per_tick-1)
+			_ticks_counter = randi_range(0, _ticks_counter-1)
 ## If true and frames_per_tick > 1, the frame counter will start at a random value between 1 and frames_per_tick,
 ## this is meant to spread the CPU load when having multiple instances of the same agent to minimize lag spikes.
 @export var _randomize_first_tick : bool = true
 
 var _is_displayed_in_debugger : bool = false
-const _debugger_message_prefix : String = "DVBehaviorTree" # NOTE: must match with the name in debug plugin
 
 var blackboard : Dictionary
 static var global_blackboard : Dictionary
 
-var _frames_counter : int = 0
-var _is_subtree : bool
-var _is_paused : bool
+var _ticks_counter : int = 0
 
 var _last_active_node : BTNode = null
 var _cached_path_to_last_active_node : Array[BTNode]
 
 
-func _enter_tree():
-	await get_tree().process_frame
-	_is_subtree = get_parent() is BTBranch
-	notify_property_list_changed()
-	
-	if _is_subtree == false:
-		if EngineDebugger.is_active():
-			EngineDebugger.register_message_capture(_debugger_message_prefix, _on_debugger_message_received)
-		
-		var name_ : String = name
-		if get_parent().scene_file_path:
-			name_ = get_parent().scene_file_path.split("/")[-1] + "/" + name_
-		
-		send_debbuger_message(
-			"tree_added",
-			{"id":self.get_instance_id(), "name":name_}
-		)
-
-func _exit_tree():
-	if _is_subtree == false:
-		send_debbuger_message("tree_removed", {"id":self.get_instance_id()})
-		
-		if EngineDebugger.is_active():
-			EngineDebugger.unregister_message_capture(_debugger_message_prefix)
-
 func _ready():
 	if Engine.is_editor_hint(): return
 	
-	_set_root_process()
-	if _is_subtree == false:
-		behavior_tree = self
+	BTDebuggerListener.debugger_message_received.connect(_on_debugger_message_received)
+	_setup_tick()
+	
+	# debugger message
+	var name_ : String = ""
+	if get_parent().scene_file_path:
+		if agent:
+			name_ += agent.name
+		name_ += " (" + get_parent().scene_file_path.split("/")[-1] + ")"
+	
+	BTDebuggerListener.send_message(
+		"tree_added",
+		{"id":self.get_instance_id(), "name":name_}
+	)
 	
 	_active_child = _get_next_valid_child()
 	
@@ -105,11 +78,7 @@ func _ready():
 		if node is BTNode:
 			# track current active node
 			node.entered.connect(_on_node_entered.bind(node))
-		if node is BTBehaviorTree && node != self:
-			node.behavior_tree = self
-			# stop here and let the sub-tree handle its nodes
-			return
-		elif node is BTNode || node is BTCompositeAttachment:
+		if node is BTNode || node is BTCompositeAttachment:
 			# provide reference to tree
 			node.behavior_tree = self
 			
@@ -118,7 +87,11 @@ func _ready():
 	
 	setup_recursive.call(self, setup_recursive)
 
-# NOTE: _process and _ph_process will only run if this is the root tree
+func _exit_tree():
+	if Engine.is_editor_hint(): return
+	
+	BTDebuggerListener.send_message("tree_removed", {"id":self.get_instance_id()})
+
 func _process(delta : float):
 	if Engine.is_editor_hint(): return
 	tick(delta)
@@ -127,31 +100,15 @@ func _physics_process(delta : float):
 	if Engine.is_editor_hint(): return
 	tick(delta)
 
-func _notification(what : int):
-	if Engine.is_editor_hint(): return
-	
-	if what == NOTIFICATION_PAUSED:
-		_is_paused = true
-	elif what == NOTIFICATION_UNPAUSED:
-		_is_paused = false
-	
-	if _is_subtree == false:
-		_set_root_process()
-
 func tick(delta : float):
 	super(delta)
-	if is_active == false:
-		# this happens when self is sub-tree and parents ticks it
+	
+	_ticks_counter += 1
+	if _ticks_counter >= frames_per_tick:
+		_ticks_counter = 0
+	else:
 		_set_status(Status.failure)
 		return
-	
-	if _is_subtree == false:
-		_frames_counter += 1
-		if _frames_counter >= frames_per_tick:
-			_frames_counter = 0
-		else:
-			_set_status(Status.running)
-			return
 	
 	if _active_child:
 		_active_child.tick(delta)
@@ -159,29 +116,20 @@ func tick(delta : float):
 		if status == Status.success || status == Status.failure:
 			_active_child.exit(false)
 			
-			if _is_subtree == false:
-				# no parent, re-enter
-				_active_child.enter()
-				_set_status(Status.success)
-				return
+			# re-enter
+			_active_child.enter()
+			_set_status(Status.success)
+			return
 		
 		_set_status(status)
-		return
 	else:
 		_set_status(Status.failure)
 
 func force_tick_node(target : BTNode):
-	# ensure that target is a child of this tree, or a lower sub-tree
+	# ensure that target is a child of this tree
 	if target.behavior_tree != self:
-		var next_tree : BTBehaviorTree = target.behavior_tree.behavior_tree
-		while true:
-			if next_tree == null:
-				# reached root tree without passing self, target is higher level
-				push_error("Cannot force tick to target because target doesn't belong to this tree or any of its sub-tree")
-				return
-			elif next_tree == self:
-				break
-			next_tree = next_tree.behavior_tree
+		push_error("Cannot force tick to target because it doesn't belong to this tree")
+		return
 	
 	# step1, get path to deepest running node #
 	var path_to_drn : Array[BTNode] = get_path_to_active_node()
@@ -250,25 +198,17 @@ func get_path_to_active_node() -> Array[BTNode]:
 	)
 	return _cached_path_to_last_active_node
 
-func can_send_debugger_message() -> bool:
-	if OS.is_debug_build() == false: return false
-	
-	if _is_subtree:
-		return behavior_tree.can_send_debugger_message()
-	else:
-		return _is_displayed_in_debugger
+func is_active_tree_in_debugger() -> bool:
+	return _is_displayed_in_debugger
 
-func send_debbuger_message(message : String, data : Dictionary):
-	if EngineDebugger.is_active():
-		EngineDebugger.send_message(_debugger_message_prefix + ":" + message, [data])
-
-func _set_root_process():
+func _setup_tick():
 	if Engine.is_editor_hint(): return
+	
 	if is_node_ready() == false: await self.ready
 	
 	var was_ticking : bool = is_processing() || is_physics_processing()
 	var is_ticking : bool
-	if _is_subtree == false && is_active && _is_paused == false:
+	if is_active:
 		set_process(tick_type == TickType.idle)
 		set_physics_process(tick_type == TickType.physics)
 		is_ticking = true
@@ -285,19 +225,12 @@ func _set_root_process():
 		elif was_ticking == false && is_ticking:
 			_active_child.enter()
 
-func _validate_property(property : Dictionary):
-	var p_name : String = property["name"]
-	if ((p_name == "tick_type" || p_name == "frames_per_tick" || p_name == "_randomize_first_tick")
-	&& _is_subtree):
-		# tick related variables if this is a sub-tree
-		property.usage = PROPERTY_USAGE_NO_EDITOR
-	elif p_name == "_force_local_blackboard" && _is_subtree == false:
-		property.usage = PROPERTY_USAGE_NO_EDITOR
-
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()
 	var valid_children : Array[BTNode] = get_valid_children()
 	
+	if get_parent() is BTNode:
+		warnings.append("Behavior tree node must be the root of the tree")
 	if valid_children.size() != 1:
 		warnings.append("Behavior tree must have a single BTNode child")
 	if valid_children.size() == 1 && valid_children[0] is BTBranch == false:
@@ -321,9 +254,11 @@ func _on_last_active_node_exited(node : BTNode):
 	node.exited.disconnect(_on_last_active_node_exited)
 
 func _on_debugger_message_received(message : String, data : Array) -> bool:
-	if data[0]["id"] != get_instance_id(): return false
-	
 	# NOTE: message capture received by the game side doesn't include prefix
+	
+	if data[0]["id"] != get_instance_id():
+		return false
+	
 	if message == "requesting_tree_structure":
 		var nodes : Dictionary # id : {name, depth, class_name, status, description, icon_path, is_leaf}
 		var relations : Dictionary # parent id : [children ids]
@@ -366,7 +301,9 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 		
 		get_children_recursive.call(self, 0, get_children_recursive)
 		
-		send_debbuger_message("sending_tree_structure", {"nodes":nodes, "relations":relations})
+		BTDebuggerListener.send_message(
+			"sending_tree_structure", {"nodes":nodes, "relations":relations}
+		)
 		return true
 	
 	elif message == "debugger_display_started":
@@ -387,7 +324,9 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 			target_blackboard = global_blackboard
 		else:
 			target_blackboard = blackboard
-		send_debbuger_message("sending_blackboard_data", {"blackboard":target_blackboard})
+		BTDebuggerListener.send_message(
+			"sending_blackboard_data", {"blackboard":target_blackboard}
+		)
 		return true
 	
 	return false

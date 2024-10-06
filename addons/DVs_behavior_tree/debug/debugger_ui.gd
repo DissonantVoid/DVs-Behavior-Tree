@@ -21,9 +21,12 @@ const _blackboard_entry_scene : PackedScene = preload("res://addons/DVs_behavior
 var _debugger : EditorDebuggerPlugin
 var _existing_tree_ids : PackedInt64Array
 var _active_tree_id : int = -1
+var _is_tracking_global_blackboard : bool
+
+# active tree cache
 var _id_to_graph_node_map : Dictionary # id:graph node
 var _key_to_bb_entry_map : Dictionary # key(string):blackboard entry node
-var _is_tracking_global_blackboard : bool
+var _tree_menu_btn_to_id_map : Dictionary # btn:id
 
 const _node_spacing : Vector2 = Vector2(70.0, 50.0)
 const _group_x_spacing : float = _node_spacing.x * 2.2
@@ -33,6 +36,8 @@ const _max_zoom_out : float = 0.1
 const _zoom_increment : float = 0.1
 var _is_panning : bool
 const _pan_sensitivity : float = 0.7
+
+# TODO PRIORITY: exiting debugger with more than 1 active tree causes trees to not be removed from ui
 
 func setup(debugger : EditorDebuggerPlugin):
 	_debugger = debugger
@@ -45,7 +50,7 @@ func start_monitoring():
 func stop_monitoring():
 	# session ended, clear everything
 	for btn : Button in _tree_menu_container.get_children():
-		_remove_tree_menu_entry(btn.get_meta("id"))
+		_remove_tree_menu_entry(_tree_menu_btn_to_id_map[btn])
 	_existing_tree_ids.clear()
 
 func tree_added(id : int, name_ : String):
@@ -53,7 +58,7 @@ func tree_added(id : int, name_ : String):
 	var btn : Button = Button.new()
 	btn.text = name_
 	btn.toggle_mode = true
-	btn.set_meta("id", id)
+	_tree_menu_btn_to_id_map[btn] = id
 	_tree_menu_container.add_child(btn)
 	btn.toggled.connect(_on_tree_list_btn_toggled.bind(btn))
 	
@@ -262,26 +267,28 @@ func _clear_graph():
 	if _active_tree_id == -1: return
 	
 	if _is_panning: _is_panning = false
+	
+	_debugger.send_debugger_ui_request("debugger_display_ended", {"id":_active_tree_id})
 	_active_tree_id = -1
 	_no_selected_tree_label.show()
 	_options_panel.hide()
 	_id_to_graph_node_map.clear()
 	
-	for child : Node in _graph_container.get_children():
-		child.queue_free()
+	for graph_node : Control in _graph_container.get_children():
+		graph_node.queue_free()
 	
 	_blackboard_update_timer.stop()
 	if _blackboard_data_panel.visible:
 		_clear_blackboard()
 		_blackboard_data_panel.hide()
 		_tree_menu_panel.show()
-	
-	_debugger.send_debugger_ui_request("debugger_display_ended", {"id":_active_tree_id})
 
 func _remove_tree_menu_entry(tree_id : int):
 	for btn : Button in _tree_menu_container.get_children():
-		if btn.get_meta("id") == tree_id:
-			btn.queue_free(); break
+		if _tree_menu_btn_to_id_map[btn] == tree_id:
+			_tree_menu_btn_to_id_map.erase(btn)
+			btn.queue_free()
+			break
 	
 	if _active_tree_id == tree_id:
 		_clear_graph()
@@ -290,12 +297,17 @@ func _remove_tree_menu_entry(tree_id : int):
 
 func _on_tree_list_btn_toggled(toggled_on : bool, button : Button):
 	if toggled_on == false:
-		# prevent toggling off
+		# prevent toggling off so we the list behaves like radio buttons
 		button.set_pressed_no_signal(true)
 	else:
+		if _active_tree_id != -1:
+			# toggle off previous button
+			var prev_button : Button = _tree_menu_btn_to_id_map.find_key(_active_tree_id)
+			prev_button.set_pressed_no_signal(false)
+		
 		_clear_graph()
 		
-		var id : int = button.get_meta("id")
+		var id : int = _tree_menu_btn_to_id_map[button]
 		_active_tree_id = id
 		_no_selected_tree_label.hide()
 		_options_panel.show()
@@ -326,7 +338,8 @@ func _on_graph_node_action_pressed(action_type : String, graph_node : Control):
 			var graph_id : int
 			for id : int in _id_to_graph_node_map:
 				if _id_to_graph_node_map[id] == graph_node:
-					graph_id = id; break
+					graph_id = id
+					break
 			
 			_debugger.send_debugger_ui_request(
 				"requesting_force_tick",

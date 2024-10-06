@@ -10,7 +10,7 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
 func tick(delta : float):
 	super(delta)
-	if _active_child == null: 
+	if _active_child == null:
 		_set_status(Status.failure)
 		return
 	

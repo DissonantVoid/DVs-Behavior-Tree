@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://ysc5x418oxld"]
+
+[ext_resource type="PackedScene" uid="uid://upbew6q5f37f" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/action.tscn" id="1_da68h"]
+[ext_resource type="Script" path="res://tests/dodge_other_agents.gd" id="2_6x10i"]
+
+[node name="DodgeOtherAgents" instance=ExtResource("1_da68h")]
+script = ExtResource("2_6x10i")

@@ -1,6 +1,4 @@
-my behavior tree implementation to fill in gaps and issues I found with other implementations
-
-Notes:
+## Notes ##
 -if a node emits an editor warning in _get_configuration_warnings, don't repeat the warning at runtime somewhere else
 -avoid asserting, prefer throwing warnings and accounting for errors instead of crashing
 -allow user to add non BT nodes under a branch, and just ignore them
@@ -8,9 +6,8 @@ Notes:
 -nodes should not have any children in local scene since users will be instancing with "add child node" which works similar to attaching the script to an empty node
 -color palette: main af9dd9, seconday 4a4563
 -icon file name should match scene file name
--debugger/game communication is handled by the root tree node
 
-Resources:
+## Resources ##
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference
 https://www.gamedeveloper.com/programming/behavior-trees-for-ai-how-they-work
 https://github.com/bitbrain/beehave
@@ -20,11 +17,7 @@ https://www.behaviortree.dev/docs/
 https://www.gameaipro.com/GameAIPro/GameAIPro_Chapter06_The_Behavior_Tree_Starter_Kit.pdf
 https://github.com/aigamedev/btsk
 
-1.3:
-[X]-rename services to something more clear like CompositeAttachement
-[X]-rename selectors to fallbacks as it's clearer to understand
-[X]-redo sequence and selector icons. || and && isn't recommended style way to represent "and" and "or"
-
+## Tasks ##
 1.4:
 [..] documentations
 asset lib setup
@@ -37,6 +30,14 @@ unit tests: (see https://github.com/bitwes/Gut)
 -forcing a path from any node to any other
 -pausing/unpausing
 
+other nodes:
+-parallel node (runs all children in parallel)
+-placeholder leaf (holds desciption of what the branch is going to have)
+
+follow official style guide so it's easier for others to contribute
+https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
+
+## Future ##
 additional nodes (in their own "extension" folder so we don't bloat the main folder):
 -play animation (optional wait for finish)
 -play sound (optional wait for finish)
@@ -44,24 +45,20 @@ additional nodes (in their own "extension" folder so we don't bloat the main fol
 -agent go to (2d/3d) (requires nav agent and nav mesh)
 -play particles (optional wait for finish)
 
-other nodes:
--parallel node (runs all children in parallel)
-
-follow official style guide so it's easier for others to contribute
-https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
-
-
-Future:
+support for time based tick intervals alongside frame based intervals in trees
 
 ability to modify blackboard values in debugger
+
+nodes grouping in debugger, a branch can have an optional "group" variable that makes the debugger
+encapsulate it and and all its children in a colored rectangle
 
 debugger real time node data updates, allowing user to track export variables
 -custom nodes made by users should be able to add their custom data too
 
-tree stats:
+tree stats in debugger:
 -heatmap of the most visited nodes
--how long it takes for a node to execute
+-benchmarks for whole tree and individual nodes
 
 make into C++ module
 translation
-multiplayer support
+multiplayer support (isn't this as simple as the user disabling tree in puppet? need to test)

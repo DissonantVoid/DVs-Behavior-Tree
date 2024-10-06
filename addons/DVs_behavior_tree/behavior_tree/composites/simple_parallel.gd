@@ -86,7 +86,7 @@ func _is_main_path_variable_changed():
 		_parallel_child.is_main_path = _is_delayed && _is_first_child_ticking == false
 
 func _get_configuration_warnings() -> PackedStringArray:
-	var warnings : PackedStringArray
+	var warnings : PackedStringArray = super()
 	
 	var valid_children : Array[BTNode] = get_valid_children()
 	if valid_children.size() != 2:

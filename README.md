@@ -1,28 +1,41 @@
 # Dissonant Void's Behavior Tree
-A modular behavior tree implementation addon for Godot4, with a user-friendly and extendable system allowing the creation of adaptive AI able to react to its environment and perform many actions without the code turning more spagetti with each iteration.
+A modular behavior tree implementation addon for Godot4, with a user-friendly and extendable system allowing for adaptive AI that reacts to its environment and perform many actions without the code turning spagetti with each iteration.
 With this addon you can make complex NPCs to populate your world, or bosses that can go through many phases and react to multiple conditions with the combination of simple actions and flow control.
 
 <p align="center">
-  <img src="icon.svg" alt="ICON" width="300"/>
+  <img src="icon.svg" alt="Icon" width="300"/>
 </p>
 
 ## Overview
--features overview (show images)
- -modular/scalable system
- -easy to setup
- -nodes and fine tuning (exports)
- -debugger features
--barebone how to use
+### easy to setup and use
+Tree structure is easily setup in the Scene tab allowing for intuitive use.
+(image: Scene tab)
+### modular system
+Bahavior trees are highly scalable by design, allowing for iterable design where nodes are added/removed to reach a complex AI one step at a time.
+(image: complex setup, highlight sub-sections)
+### customization and fine tuning
+Designed with customization in mind, ...
+(exports (timer min/max, tree...), entending classes)
+(image)
+### debugger
+A powerful debugger that allows for viewing active behavior trees, their decision making and their data (blackboards) in real-time. It also allows for overriding the flow to help with debugging.
+(image: debugger)
 
 ## Examples
--example projects
+Here are some examples I made while developing the addon:
+(projects gifs, link to projects playable HTML and source code)
 
 ## Documentations
 If you are new to behavior trees or wish to refresh your knowledge of how they work and compare to finite state machines [start here](addons/DVs_behavior_tree/docs/start_here.md).
-Documentations of how to use the addon and its features [can be found here](addons/DVs_behavior_tree/docs).
+Documentations of this addon and its features [can be found here](addons/DVs_behavior_tree/docs/using_addon.md).
 
 ## Contribution
--project roadmap, philosophy and style
+### Structure and Roadmap
+-folder structure
+### Style Choices
+-godot style guide
+-philosophy
+  -work around user error
 -optimize icons https://docs.godotengine.org/en/stable/contributing/development/editor/creating_icons.html#icon-optimization
 
 ## Credits

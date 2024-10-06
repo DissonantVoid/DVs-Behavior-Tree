@@ -15,6 +15,10 @@ run/main_scene="res://tests/simple_scene.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+BTDebuggerListener="*res://addons/DVs_behavior_tree/debug/debugger_listener_autoload.gd"
+
 [debug]
 
 gdscript/warnings/exclude_addons=false
