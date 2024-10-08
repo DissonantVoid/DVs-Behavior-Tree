@@ -1,12 +1,11 @@
 @tool
 extends MarginContainer
 
-# TODO: improve trees menu so monitoring and navigation multiple trees is easier
-
 @onready var _graph_panel : Panel = $HSplitContainer/TreeGraph
 @onready var _graph_container : Control = $HSplitContainer/TreeGraph/GraphContainer
 @onready var _tree_menu_panel : PanelContainer = $HSplitContainer/TreesMenu
 @onready var _tree_menu_container : VBoxContainer = $HSplitContainer/TreesMenu/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer
+@onready var _tree_sort_button : MenuButton = $HSplitContainer/TreesMenu/MarginContainer/VBoxContainer/HBoxContainer/Sort
 @onready var _blackboard_data_panel : PanelContainer = $HSplitContainer/BlackboardData
 @onready var _blackboard_data_container : VBoxContainer = $HSplitContainer/BlackboardData/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/VBoxContainer
 @onready var _blackboard_data_name_label : Label = $HSplitContainer/BlackboardData/MarginContainer/VBoxContainer/HBoxContainer/Name
@@ -37,11 +36,13 @@ const _zoom_increment : float = 0.1
 var _is_panning : bool
 const _pan_sensitivity : float = 0.7
 
-# TODO PRIORITY: exiting debugger with more than 1 active tree causes trees to not be removed from ui
 
 func setup(debugger : EditorDebuggerPlugin):
 	_debugger = debugger
 	_options_panel.hide()
+
+func _ready():
+	_tree_sort_button.get_popup().id_pressed.connect(_on_tree_sort_id_pressed)
 
 func start_monitoring():
 	# nothing to do here, behavior tree nodes will not send any messages unless debugger is active
@@ -49,16 +50,20 @@ func start_monitoring():
 
 func stop_monitoring():
 	# session ended, clear everything
-	for btn : Button in _tree_menu_container.get_children():
-		_remove_tree_menu_entry(_tree_menu_btn_to_id_map[btn])
+	for i : int in range(_tree_menu_container.get_child_count()-1, -1, -1):
+		_remove_tree_menu_entry(
+			_tree_menu_btn_to_id_map[_tree_menu_container.get_child(i)]
+		)
 	_existing_tree_ids.clear()
 
-func tree_added(id : int, name_ : String):
+func tree_added(id : int, name_ : String, type : StringName):
 	# NOTE: can't pass nodes between the editor and running game :(
 	var btn : Button = Button.new()
-	btn.text = name_
+	btn.text = name_ + " (" + type + ")"
 	btn.toggle_mode = true
 	_tree_menu_btn_to_id_map[btn] = id
+	btn.set_meta("type", type)
+	btn.set_meta("instance_creation", Time.get_ticks_msec())
 	_tree_menu_container.add_child(btn)
 	btn.toggled.connect(_on_tree_list_btn_toggled.bind(btn))
 	
@@ -331,6 +336,29 @@ func _center_view_around_graph():
 	_graph_container.pivot_offset = Vector2.ZERO
 	var panel_center : Vector2 = (_graph_panel.size / 2.0)
 	_graph_container.position = panel_center - average_pos * _graph_container.scale
+
+func _on_tree_sort_id_pressed(id : int):
+	var menu_children : Array[Node] = _tree_menu_container.get_children()
+	var sort_func : Callable
+	
+	# sort
+	match id:
+		0: # sort by type
+			sort_func = func(a : Button, b : Button) -> bool:
+				if a.get_meta("type") != b.get_meta("type"):
+					return true
+				return false
+		1: # sort by date
+			sort_func = func(a : Button, b : Button) -> bool:
+				if a.get_meta("instance_creation") < b.get_meta("instance_creation"):
+					return true
+				return false
+	menu_children.sort_custom(sort_func)
+	
+	# reorder buttons based on sort result
+	for i : int in menu_children.size():
+		var menu_child : Button = menu_children[i]
+		_tree_menu_container.move_child(menu_child, i)
 
 func _on_graph_node_action_pressed(action_type : String, graph_node : Control):
 	match action_type:

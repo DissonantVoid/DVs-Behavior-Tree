@@ -60,15 +60,15 @@ func _ready():
 	_setup_tick()
 	
 	# debugger message
-	var name_ : String = ""
-	if get_parent().scene_file_path:
-		if agent:
-			name_ += agent.name
-		name_ += " (" + get_parent().scene_file_path.split("/")[-1] + ")"
+	var name_in_debugger : String =\
+		agent.name if agent else name
 	
 	BTDebuggerListener.send_message(
 		"tree_added",
-		{"id":self.get_instance_id(), "name":name_}
+		{
+			"id":self.get_instance_id(), "name":name_in_debugger,
+			"type":owner.scene_file_path.split("/")[-1]
+		}
 	)
 	
 	_active_child = _get_next_valid_child()

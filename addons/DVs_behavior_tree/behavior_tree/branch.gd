@@ -14,6 +14,7 @@ func exit(is_interrupted : bool):
 	super(is_interrupted)
 	if _active_child:
 		_active_child.exit(is_interrupted)
+		_active_child = null
 
 func get_active_child() -> BTNode:
 	return _active_child

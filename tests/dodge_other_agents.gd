@@ -3,6 +3,8 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 const _dodge_speed : float = 140.0
 
 func tick(delta : float):
+	super(delta)
+	
 	var areas_in_range : Array[Area2D] =\
 		behavior_tree.agent.detection_area.get_overlapping_areas()
 	

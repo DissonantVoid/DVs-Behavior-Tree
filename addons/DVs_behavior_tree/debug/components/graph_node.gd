@@ -45,6 +45,7 @@ attachments : Array[String]
 	_is_leaf = is_leaf
 	
 	_last_status = status
+	if _last_status == BTNode.Status.running: enter()
 	update_status(_last_status, true)
 	
 	if description:
