@@ -19,12 +19,13 @@ const _editor_weights_group : String = "Weights/"
 var _internal_weights : Dictionary # godot doesn't seem to keep track of custom properties so we do it ourselves
 var _previous_child : BTNode = null
 
+func _ready():
+	child_entered_tree.connect(_on_child_entered)
+
 func enter():
 	super()
 	# running super will calculate active_child as the first valid child just
 	# for us to override that, kinda inefficient but not a big deal for now
-	# we could fix this by having some function _setup_first_child that super() calls
-	# and derived have to override
 	_active_child = _pick_rand_child()
 
 func _pick_rand_child() -> BTNode:
@@ -56,7 +57,8 @@ func _pick_rand_child() -> BTNode:
 			var weight_offseted : float = internal_weight + most_negative_weight
 			accumulation += weight_offseted
 			if accumulation >= rand_position:
-				rand = child; break
+				rand = child
+				break
 	
 	else:
 		rand = children.pick_random()

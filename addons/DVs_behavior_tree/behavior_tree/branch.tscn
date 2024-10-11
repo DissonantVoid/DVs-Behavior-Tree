@@ -5,7 +5,4 @@
 
 [node name="Branch" instance=ExtResource("1_jvgi3")]
 script = ExtResource("2_7fk5k")
-uninterruptible = null
-
-[connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
-[connection signal="child_exiting_tree" from="." to="." method="_on_child_exiting_tree"]
+uninterruptible = false

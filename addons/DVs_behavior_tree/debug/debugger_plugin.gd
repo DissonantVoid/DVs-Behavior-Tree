@@ -64,6 +64,9 @@ func _capture(message : String, data : Array, session_id : int) -> bool:
 	elif message == "sending_blackboard_data":
 		_debugger_ui.active_tree_blackboard_received(data[0]["blackboard"])
 		return true
+	elif message == "sending_global_blackboard_data":
+		_debugger_ui.active_tree_blackboard_received(data[0]["blackboard"])
+		return true
 	
 	return false
 

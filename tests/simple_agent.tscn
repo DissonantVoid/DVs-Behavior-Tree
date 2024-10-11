@@ -57,3 +57,12 @@ conditional_abort = 1
 [node name="MoveToRandom" parent="BehaviorTree/Fallback/Wander" instance=ExtResource("4_5rasj")]
 
 [node name="WaitFor" parent="BehaviorTree/Fallback/Wander" instance=ExtResource("5_irou4")]
+
+[connection signal="child_entered_tree" from="BehaviorTree" to="BehaviorTree" method="_on_child_entered_tree"]
+[connection signal="child_exiting_tree" from="BehaviorTree" to="BehaviorTree" method="_on_child_exiting_tree"]
+[connection signal="child_entered_tree" from="BehaviorTree/Fallback" to="BehaviorTree/Fallback" method="_on_child_entered_tree"]
+[connection signal="child_exiting_tree" from="BehaviorTree/Fallback" to="BehaviorTree/Fallback" method="_on_child_exiting_tree"]
+[connection signal="child_entered_tree" from="BehaviorTree/Fallback/FollowMouse" to="BehaviorTree/Fallback/FollowMouse" method="_on_child_entered_tree"]
+[connection signal="child_exiting_tree" from="BehaviorTree/Fallback/FollowMouse" to="BehaviorTree/Fallback/FollowMouse" method="_on_child_exiting_tree"]
+[connection signal="child_entered_tree" from="BehaviorTree/Fallback/Wander" to="BehaviorTree/Fallback/Wander" method="_on_child_entered_tree"]
+[connection signal="child_exiting_tree" from="BehaviorTree/Fallback/Wander" to="BehaviorTree/Fallback/Wander" method="_on_child_exiting_tree"]

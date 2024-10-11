@@ -11,7 +11,6 @@ extends MarginContainer
 @onready var _blackboard_data_name_label : Label = $HSplitContainer/BlackboardData/MarginContainer/VBoxContainer/HBoxContainer/Name
 @onready var _blackboard_data_empty_label : Label = $HSplitContainer/BlackboardData/MarginContainer/Empty
 @onready var _blackboard_update_timer : Timer = $BlackboardUpdateTimer
-@onready var _options_panel : MarginContainer = $HSplitContainer/TreeGraph/OptionsPanel
 @onready var _no_selected_tree_label : Label = $HSplitContainer/TreeGraph/NoSelectedTree
 
 const _graph_node_scene : PackedScene = preload("res://addons/DVs_behavior_tree/debug/components/graph_node.tscn")
@@ -39,7 +38,6 @@ const _pan_sensitivity : float = 0.7
 
 func setup(debugger : EditorDebuggerPlugin):
 	_debugger = debugger
-	_options_panel.hide()
 
 func _ready():
 	_tree_sort_button.get_popup().id_pressed.connect(_on_tree_sort_id_pressed)
@@ -276,7 +274,6 @@ func _clear_graph():
 	_debugger.send_debugger_ui_request("debugger_display_ended", {"id":_active_tree_id})
 	_active_tree_id = -1
 	_no_selected_tree_label.show()
-	_options_panel.hide()
 	_id_to_graph_node_map.clear()
 	
 	for graph_node : Control in _graph_container.get_children():
@@ -315,7 +312,6 @@ func _on_tree_list_btn_toggled(toggled_on : bool, button : Button):
 		var id : int = _tree_menu_btn_to_id_map[button]
 		_active_tree_id = id
 		_no_selected_tree_label.hide()
-		_options_panel.show()
 		
 		# request full tree structure and wait for response
 		_debugger.send_debugger_ui_request("requesting_tree_structure", {"id":id})
@@ -422,9 +418,14 @@ func _on_center_view_pressed():
 	_center_view_around_graph()
 
 func _request_blackboard_content():
-	_debugger.send_debugger_ui_request(
-		"requesting_blackboard_data", {"id":_active_tree_id, "global":_is_tracking_global_blackboard}
-	)
+	if _is_tracking_global_blackboard:
+		_debugger.send_debugger_ui_request(
+			"requesting_global_blackboard_data", {}
+		)
+	else:
+		_debugger.send_debugger_ui_request(
+			"requesting_blackboard_data", {"id":_active_tree_id}
+		)
 	_blackboard_update_timer.start()
 
 func _on_open_global_blackboard_pressed():

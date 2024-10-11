@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://bv8db1cilo4dv"]
+[gd_scene load_steps=3 format=3 uid="uid://bv8db1cilo4dv"]
 
 [ext_resource type="PackedScene" uid="uid://c557vjvtb2h4w" path="res://tests/simple_agent.tscn" id="1_cs5d1"]
+[ext_resource type="Script" path="res://tests/simple_scene.gd" id="1_xavxh"]
 
-[node name="Temp" type="Node2D"]
+[node name="SimpleScene" type="Node2D"]
+script = ExtResource("1_xavxh")
 
 [node name="SimpleScene" parent="." instance=ExtResource("1_cs5d1")]
 position = Vector2(461, 274)

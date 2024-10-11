@@ -4,6 +4,7 @@
 -allow user to add non BT nodes under a branch, and just ignore them
 -mark major and minor versions with git tags
 -nodes should not have any children in local scene since users will be instancing with "add child node" which works similar to attaching the script to an empty node
+same for connecting signals, do so in code
 -color palette: main af9dd9, seconday 4a4563
 -icon file name should match scene file name
 
@@ -59,6 +60,5 @@ tree stats in debugger:
 -heatmap of the most visited nodes
 -benchmarks for whole tree and individual nodes
 
-make into C++ module
+make into gdextention plugin
 translation
-multiplayer support (isn't this as simple as the user disabling tree in puppet? need to test)

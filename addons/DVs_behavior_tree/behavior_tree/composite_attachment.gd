@@ -15,9 +15,11 @@ var behavior_tree : BTBehaviorTree
 var _frames_counter : int = 0
 
 
+# override
 func parent_entered():
 	_frames_counter = 0
 
+# override
 func parent_exiting():
 	return
 
@@ -27,6 +29,7 @@ func parent_tick(delta : float):
 		_frames_counter = 0
 		_tick(delta)
 
+# override
 func _tick(delta : float):
 	return
 

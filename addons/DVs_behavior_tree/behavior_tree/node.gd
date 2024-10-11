@@ -24,6 +24,15 @@ var is_main_path : bool = true :
 		is_main_path = value
 		_is_main_path_variable_changed()
 
+func _enter_tree():
+	if is_node_ready() && Engine.is_editor_hint() == false:
+		push_error("Behavior tree nodes can't be added at run-time")
+
+func _exit_tree():
+	if Engine.is_editor_hint() == false && get_parent().is_queued_for_deletion() == false:
+		push_error("Behavior tree nodes can't be removed at run-time")
+
+# override
 func enter():
 	if behavior_tree.is_active_tree_in_debugger():
 		BTDebuggerListener.send_message(
@@ -31,6 +40,7 @@ func enter():
 		)
 	entered.emit()
 
+# override
 func exit(is_interrupted : bool):
 	if behavior_tree.is_active_tree_in_debugger():
 		BTDebuggerListener.send_message(
@@ -40,6 +50,7 @@ func exit(is_interrupted : bool):
 		_set_status(Status.interrupted)
 	exited.emit()
 
+# override
 func tick(delta : float):
 	if behavior_tree.is_active_tree_in_debugger():
 		BTDebuggerListener.send_message(

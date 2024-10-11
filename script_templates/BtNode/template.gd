@@ -2,17 +2,18 @@
 # meta-description: Base template for behavior nodes
 extends _BASE_
 
-# Called before the node is ticked, use for initialization
+# called before the node is ticked, use for initialization
 func enter():
 	super()
 
-# Called after the last tick, use for de-initialization
-# is_interrupted refers to whether this exited because it retuend properly after last tick
-# or because it was interrupted by another node
+# called after the last tick
+# if is_interrupted, this node was interrupted while it was running by another node
 func exit(is_interrupted : bool):
 	super(is_interrupted)
 
-# Called after enter() everytime the tree is ticked, use for processing node logic
+# called after enter() everytime the tree is ticked, use for processing node logic
 func tick(delta : float):
 	super(delta)
+
+	# Set status
 	_set_status(Status.undefined)

@@ -8,7 +8,7 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 enum TickType {
 	idle, ## Ticks happen on idle frames (process)
 	physics ## Ticks happen on physics frames (physics process)
-	# TODO: TickType manual
+	# TODO: TickType manual, use a manual_tick() func and push error if type isn't manual
 }
 
 ## Determines if the tree can run or not.
@@ -71,8 +71,6 @@ func _ready():
 		}
 	)
 	
-	_active_child = _get_next_valid_child()
-	
 	# setup children, tree is static so this only needs to happen once
 	var setup_recursive : Callable = func(node : Node, func_ : Callable):
 		if node is BTNode:
@@ -86,6 +84,8 @@ func _ready():
 				func_.call(child, func_)
 	
 	setup_recursive.call(self, setup_recursive)
+	
+	self.enter()
 
 func _exit_tree():
 	if Engine.is_editor_hint(): return
@@ -99,6 +99,13 @@ func _process(delta : float):
 func _physics_process(delta : float):
 	if Engine.is_editor_hint(): return
 	tick(delta)
+
+func enter():
+	super()
+	_active_child = _get_next_valid_child()
+
+func exit(is_interrupted : bool):
+	super(is_interrupted)
 
 func tick(delta : float):
 	super(delta)
@@ -126,6 +133,11 @@ func tick(delta : float):
 		_set_status(Status.failure)
 
 func force_tick_node(target : BTNode):
+	if target == self:
+		exit(true)
+		enter()
+		return
+	
 	# ensure that target is a child of this tree
 	if target.behavior_tree != self:
 		push_error("Cannot force tick to target because it doesn't belong to this tree")
@@ -245,6 +257,7 @@ func _on_node_entered(node : BTNode):
 		if _last_active_node:
 			_last_active_node.exited.disconnect(_on_last_active_node_exited)
 		
+		# keep track of last active node in the tree
 		_last_active_node = node
 		node.exited.connect(_on_last_active_node_exited.bind(node))
 
@@ -319,13 +332,8 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 		return true
 	
 	elif message == "requesting_blackboard_data":
-		var target_blackboard : Dictionary
-		if data[0]["global"]:
-			target_blackboard = global_blackboard
-		else:
-			target_blackboard = blackboard
 		BTDebuggerListener.send_message(
-			"sending_blackboard_data", {"blackboard":target_blackboard}
+			"sending_blackboard_data", {"blackboard":blackboard}
 		)
 		return true
 	

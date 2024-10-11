@@ -18,11 +18,10 @@ Designed with customization in mind, ...
 (exports (timer min/max, tree...), entending classes)
 (image)
 ### debugger
-A powerful debugger that allows for viewing active behavior trees, their decision making and their data (blackboards) in real-time. It also allows for overriding the flow to help with debugging.
+A powerful and optimized debugger that allows for viewing active behavior trees, their decision making and data (blackboards) in real-time. It also allows for overriding the flow to help with debugging.
 (image: debugger)
 
 ## Examples
-Here are some examples I made while developing the addon:
 (projects gifs, link to projects playable HTML and source code)
 
 ## Documentations
@@ -31,8 +30,9 @@ Documentations of this addon and its features [can be found here](addons/DVs_beh
 
 ## Contribution
 ### Structure and Roadmap
+-tasks, todos in code, request features
+### Style
 -folder structure
-### Style Choices
 -godot style guide
 -philosophy
   -work around user error
