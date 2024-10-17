@@ -3,11 +3,9 @@
 class_name BTFallback
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
-## Ticks its children from first to last, if the child fails it ticks the next child,
+## Ticks its children from left to right, if a child fails it ticks the next child,
 ## otherwise returns the child's status. Can be thought of as an "OR" node in that it only
 ## executes the next child if the previous child fails.
-## example: an NPC that determines whether to go outside or go to sleep depending on the time of day:
-## fallback -> day routine, night routine.
 
 func tick(delta : float):
 	super(delta)

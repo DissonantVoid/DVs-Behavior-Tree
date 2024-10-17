@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://dp3qeq7ahfftl"]
-
-[ext_resource type="PackedScene" uid="uid://b661ejvfewmov" path="res://addons/DVs_behavior_tree/behavior_tree/composites/composite.tscn" id="1_6hbge"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence_reactive.gd" id="2_vdmro"]
-
-[node name="SequenceReactive" instance=ExtResource("1_6hbge")]
-script = ExtResource("2_vdmro")

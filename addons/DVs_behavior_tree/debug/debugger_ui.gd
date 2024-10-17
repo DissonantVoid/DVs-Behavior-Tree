@@ -18,16 +18,18 @@ const _blackboard_entry_scene : PackedScene = preload("res://addons/DVs_behavior
 
 var _debugger : EditorDebuggerPlugin
 var _existing_tree_ids : PackedInt64Array
-var _active_tree_id : int = -1
 var _is_tracking_global_blackboard : bool
 
-# active tree cache
+# active tree
+var _active_tree_id : int = -1
+var _active_tree_bounding_box : Rect2
 var _id_to_graph_node_map : Dictionary # id:graph node
 var _key_to_bb_entry_map : Dictionary # key(string):blackboard entry node
 var _tree_menu_btn_to_id_map : Dictionary # btn:id
 
 const _node_spacing : Vector2 = Vector2(70.0, 50.0)
 const _group_x_spacing : float = _node_spacing.x * 2.2
+const _center_view_graph_margin : float = 64.0
 
 const _max_zoom_in : float = 1.4
 const _max_zoom_out : float = 0.1
@@ -219,6 +221,14 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 			
 			last_parent_graph_node = parent_graph_node
 	
+	# bounding box
+	_active_tree_bounding_box = Rect2()
+	for graph_node : Control in _graph_container.get_children():
+		_active_tree_bounding_box = _active_tree_bounding_box.merge(
+			Rect2(graph_node.position, graph_node.size)
+		)
+	_active_tree_bounding_box = _active_tree_bounding_box.grow(_center_view_graph_margin)
+	
 	_center_view_around_graph()
 	_debugger.send_debugger_ui_request("debugger_display_started", {"id":_active_tree_id})
 
@@ -324,14 +334,17 @@ func _clear_blackboard():
 func _center_view_around_graph():
 	if _active_tree_id == -1: return
 	
-	var average_pos : Vector2 = Vector2.ZERO
-	for graph_node : Control in _graph_container.get_children():
-		average_pos += graph_node.position + graph_node.size / 2.0
-	average_pos /= _graph_container.get_child_count()
-	
+	# set zoom to encapsulate graph
 	_graph_container.pivot_offset = Vector2.ZERO
-	var panel_center : Vector2 = (_graph_panel.size / 2.0)
-	_graph_container.position = panel_center - average_pos * _graph_container.scale
+	var size_ratio : Vector2 = _graph_panel.size / _active_tree_bounding_box.size
+	_graph_container.scale = Vector2.ONE * clamp(
+		size_ratio[size_ratio.min_axis_index()], _max_zoom_out, _max_zoom_in
+	)
+	
+	# center position
+	var panel_center : Vector2 = _graph_panel.size / 2.0
+	_graph_container.position =\
+		panel_center - (_active_tree_bounding_box.position + _active_tree_bounding_box.size/2.0) * _graph_container.scale
 
 func _on_tree_sort_id_pressed(id : int):
 	var menu_children : Array[Node] = _tree_menu_container.get_children()

@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://lt5d3j6avgcm"]
-
-[ext_resource type="PackedScene" uid="uid://upbew6q5f37f" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/action.tscn" id="1_m1ojj"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="2_5sktb"]
-
-[node name="WaitForTime" instance=ExtResource("1_m1ojj")]
-script = ExtResource("2_5sktb")
-min = 1.0
-max = 1.0

@@ -3,8 +3,7 @@
 class_name BTWaitForTime
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 
-## Returns running for a certain time before return success.
-## If min != max the time will be randomized.
+## Returns running for a certain time before returning success.
 
 ## Minimum wait time.
 @export var min : float = 1.0 :

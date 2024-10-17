@@ -3,7 +3,7 @@
 class_name BTBlackboardModify
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 
-## Modifies (write/erase) a blackboard entry. If writing, it takes an expression as the value.
+## Writes or erases a blackboard entry.
 
 enum ActionType {
 	write, ## Write a new value or override an existing one with the same name.

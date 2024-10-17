@@ -3,7 +3,7 @@
 class_name BTCondition
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/leaf.gd"
 
-## Acts as a boolean, checks some condition and returns either success or failure.
+## Base class for conditions. Acts as a boolean, checks some condition and returns either success or failure.
 
 func _set_status(status : Status):
 	super(status)

@@ -1,12 +1,13 @@
-## Notes ##
+## Self Notes ##
 -if a node emits an editor warning in _get_configuration_warnings, don't repeat the warning at runtime somewhere else
 -avoid asserting, prefer throwing warnings and accounting for errors instead of crashing
 -allow user to add non BT nodes under a branch, and just ignore them
 -mark major and minor versions with git tags
 -nodes should not have any children in local scene since users will be instancing with "add child node" which works similar to attaching the script to an empty node
 same for connecting signals, do so in code
--color palette: main af9dd9, seconday 4a4563
--icon file name should match scene file name
+-color palette: primary af9dd9, secondary 4a4563
+-icon file name should match scene file name of the same node
+-use same node descriptions in code for docs node descriptions
 
 ## Resources ##
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference
@@ -21,15 +22,11 @@ https://github.com/aigamedev/btsk
 ## Tasks ##
 1.4:
 [..] documentations
-asset lib setup
-examples (use my space game as example, ants sim could work too)
+[] docs images
+[..] rework space game example
+[] asset lib setup
 
 unit tests: (see https://github.com/bitwes/Gut)
--all node types and their expected behavior
--blackboard
--conditional aborts
--forcing a path from any node to any other
--pausing/unpausing
 
 other nodes:
 -parallel node (runs all children in parallel)
@@ -50,9 +47,6 @@ support for time based tick intervals alongside frame based intervals in trees
 
 ability to modify blackboard values in debugger
 
-nodes grouping in debugger, a branch can have an optional "group" variable that makes the debugger
-encapsulate it and and all its children in a colored rectangle
-
 debugger real time node data updates, allowing user to track export variables
 -custom nodes made by users should be able to add their custom data too
 
@@ -61,4 +55,3 @@ tree stats in debugger:
 -benchmarks for whole tree and individual nodes
 
 make into gdextention plugin
-translation

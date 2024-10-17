@@ -2,17 +2,17 @@
 
 [ext_resource type="Script" path="res://tests/simple_agent.gd" id="1_2swed"]
 [ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_fxgyw"]
-[ext_resource type="PackedScene" uid="uid://qseqna4tt4pl" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.tscn" id="1_yxdkh"]
-[ext_resource type="PackedScene" uid="uid://1uhnor2a4ji0" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.tscn" id="3_0y2mb"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composite_attachment.gd" id="3_nbee2"]
-[ext_resource type="PackedScene" uid="uid://dhp4pifglwy4c" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.tscn" id="3_no72l"]
-[ext_resource type="PackedScene" uid="uid://bq36btxq5d66w" path="res://tests/move_to_random.tscn" id="4_5rasj"]
-[ext_resource type="PackedScene" uid="uid://m5uvh8yp7gqr" path="res://tests/is_mouse_close.tscn" id="5_0pb15"]
-[ext_resource type="PackedScene" uid="uid://lt5d3j6avgcm" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.tscn" id="5_irou4"]
-[ext_resource type="PackedScene" uid="uid://bw3uc4ka32s1t" path="res://tests/move_to_mouse.tscn" id="6_6llgm"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="3_rps4c"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_g6ah0"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence_reactive.gd" id="6_jd1om"]
-[ext_resource type="PackedScene" uid="uid://ce2mvlce4bxwj" path="res://tests/is_other_agent_in_range.tscn" id="6_kjof6"]
-[ext_resource type="PackedScene" uid="uid://ysc5x418oxld" path="res://tests/dodge_other_agents.tscn" id="8_bv7t3"]
+[ext_resource type="Script" path="res://tests/is_other_agent_in_range.gd" id="7_jtu87"]
+[ext_resource type="Script" path="res://tests/dodge_other_agents.gd" id="8_58o28"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="9_st35i"]
+[ext_resource type="Script" path="res://tests/is_mouse_close.gd" id="10_11ddo"]
+[ext_resource type="Script" path="res://tests/move_to_mouse.gd" id="11_fee82"]
+[ext_resource type="Script" path="res://tests/move_to_random.gd" id="12_60o82"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="13_hokk7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_apj5b"]
 radius = 75.0
@@ -29,40 +29,46 @@ texture = ExtResource("1_fxgyw")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
 shape = SubResource("CircleShape2D_apj5b")
 
-[node name="BehaviorTree" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("1_yxdkh")]
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("3_rps4c")
+is_active = true
 agent = NodePath("..")
+frames_per_tick = 1
 
-[node name="Fallback" parent="BehaviorTree" instance=ExtResource("3_0y2mb")]
+[node name="BTFallback" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("4_g6ah0")
 
-[node name="CompositeAttachment" type="Node" parent="BehaviorTree/Fallback"]
+[node name="CompositeAttachment" type="Node" parent="BTBehaviorTree/BTFallback"]
 script = ExtResource("3_nbee2")
 
-[node name="DodgeOthers" type="Node" parent="BehaviorTree/Fallback"]
+[node name="DodgeOthers" type="Node" parent="BTBehaviorTree/BTFallback"]
 script = ExtResource("6_jd1om")
 conditional_abort = 1
 
-[node name="IsOtherAgentInRange" parent="BehaviorTree/Fallback/DodgeOthers" instance=ExtResource("6_kjof6")]
+[node name="IsOtherAgentInRange" type="Node" parent="BTBehaviorTree/BTFallback/DodgeOthers"]
+script = ExtResource("7_jtu87")
 
-[node name="DodgeOtherAgents" parent="BehaviorTree/Fallback/DodgeOthers" instance=ExtResource("8_bv7t3")]
+[node name="DodgeOtherAgents" type="Node" parent="BTBehaviorTree/BTFallback/DodgeOthers"]
+script = ExtResource("8_58o28")
 
-[node name="FollowMouse" parent="BehaviorTree/Fallback" instance=ExtResource("3_no72l")]
+[node name="FollowMouse" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("9_st35i")
 conditional_abort = 1
 
-[node name="IsMouseClose" parent="BehaviorTree/Fallback/FollowMouse" instance=ExtResource("5_0pb15")]
+[node name="IsMouseClose" type="Node" parent="BTBehaviorTree/BTFallback/FollowMouse"]
+script = ExtResource("10_11ddo")
+description = "Checks if mouse is close"
 
-[node name="MoveToMouse" parent="BehaviorTree/Fallback/FollowMouse" instance=ExtResource("6_6llgm")]
+[node name="MoveToMouse" type="Node" parent="BTBehaviorTree/BTFallback/FollowMouse"]
+script = ExtResource("11_fee82")
+description = "Move towards mouse position"
 
-[node name="Wander" parent="BehaviorTree/Fallback" instance=ExtResource("3_no72l")]
+[node name="Wander" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("9_st35i")
 
-[node name="MoveToRandom" parent="BehaviorTree/Fallback/Wander" instance=ExtResource("4_5rasj")]
+[node name="MoveToRandom" type="Node" parent="BTBehaviorTree/BTFallback/Wander"]
+script = ExtResource("12_60o82")
+description = "Pick random point and move to it"
 
-[node name="WaitFor" parent="BehaviorTree/Fallback/Wander" instance=ExtResource("5_irou4")]
-
-[connection signal="child_entered_tree" from="BehaviorTree" to="BehaviorTree" method="_on_child_entered_tree"]
-[connection signal="child_exiting_tree" from="BehaviorTree" to="BehaviorTree" method="_on_child_exiting_tree"]
-[connection signal="child_entered_tree" from="BehaviorTree/Fallback" to="BehaviorTree/Fallback" method="_on_child_entered_tree"]
-[connection signal="child_exiting_tree" from="BehaviorTree/Fallback" to="BehaviorTree/Fallback" method="_on_child_exiting_tree"]
-[connection signal="child_entered_tree" from="BehaviorTree/Fallback/FollowMouse" to="BehaviorTree/Fallback/FollowMouse" method="_on_child_entered_tree"]
-[connection signal="child_exiting_tree" from="BehaviorTree/Fallback/FollowMouse" to="BehaviorTree/Fallback/FollowMouse" method="_on_child_exiting_tree"]
-[connection signal="child_entered_tree" from="BehaviorTree/Fallback/Wander" to="BehaviorTree/Fallback/Wander" method="_on_child_entered_tree"]
-[connection signal="child_exiting_tree" from="BehaviorTree/Fallback/Wander" to="BehaviorTree/Fallback/Wander" method="_on_child_exiting_tree"]
+[node name="WaitForTime" type="Node" parent="BTBehaviorTree/BTFallback/Wander"]
+script = ExtResource("13_hokk7")

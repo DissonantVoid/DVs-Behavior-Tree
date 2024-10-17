@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://cs2vra32ita8w"]
-
-[ext_resource type="PackedScene" uid="uid://digb3l6cjvbdv" path="res://addons/DVs_behavior_tree/behavior_tree/node.tscn" id="1_jvgi3"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/branch.gd" id="2_7fk5k"]
-
-[node name="Branch" instance=ExtResource("1_jvgi3")]
-script = ExtResource("2_7fk5k")
-uninterruptible = false

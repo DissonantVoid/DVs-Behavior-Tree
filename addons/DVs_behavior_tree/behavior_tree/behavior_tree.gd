@@ -37,8 +37,8 @@ enum TickType {
 		
 		_ticks_counter = 0
 		if _randomize_first_tick && frames_per_tick > 1:
-			_ticks_counter = randi_range(0, _ticks_counter-1)
-## If true and frames_per_tick > 1, the frame counter will start at a random value between 1 and frames_per_tick,
+			_ticks_counter = randi_range(0, frames_per_tick-1)
+## If true and frames_per_tick > 1, the tick counter will start at a random value between 0 and frames_per_tick,
 ## this is meant to spread the CPU load when having multiple instances of the same agent to minimize lag spikes.
 @export var _randomize_first_tick : bool = true
 

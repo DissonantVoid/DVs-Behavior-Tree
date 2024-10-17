@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqixi14ahsc6f"]
-
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composite_attachment.gd" id="1_cmpj5"]
-
-[node name="CompositeAttachment" type="Node"]
-script = ExtResource("1_cmpj5")

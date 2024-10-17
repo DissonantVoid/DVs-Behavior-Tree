@@ -3,11 +3,8 @@
 class_name BTRepeat
 extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 
-## Continues to tick child for a certain number of ticks, can optionally be set to stop
-## and return success if a certain status is returned. If child returns running, it will not count that tick.
-
-## Continues to tick child and return running until the target status is returned,
-## can optionally have a maximum number of tries after which it will return success.
+## Ticks child a certain number of times, can optionally be set to return
+## success if a certain status is returned. If child returns running, it will not count that tick.
 
 ## If the status is return by the child, this returns success.
 @export var stop_on_status : bool = false :

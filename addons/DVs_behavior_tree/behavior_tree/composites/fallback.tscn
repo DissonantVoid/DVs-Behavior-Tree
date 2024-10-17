@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://1uhnor2a4ji0"]
-
-[ext_resource type="PackedScene" uid="uid://b661ejvfewmov" path="res://addons/DVs_behavior_tree/behavior_tree/composites/composite.tscn" id="1_s4aaw"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="2_43asi"]
-
-[node name="Fallback" instance=ExtResource("1_s4aaw")]
-script = ExtResource("2_43asi")

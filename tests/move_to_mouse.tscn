@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://bw3uc4ka32s1t"]
-
-[ext_resource type="PackedScene" uid="uid://upbew6q5f37f" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/action.tscn" id="1_6iycl"]
-[ext_resource type="Script" path="res://tests/move_to_mouse.gd" id="2_c8tco"]
-
-[node name="MoveToMouse" instance=ExtResource("1_6iycl")]
-script = ExtResource("2_c8tco")
-description = "Move towards mouse position"

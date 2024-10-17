@@ -3,7 +3,7 @@
 class_name BTTimeLimit
 extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 
-## Fails if child fails to return success or failure before the timout,
+## Fails if child fails to return success or failure before the timeout,
 ## otherwise returns child's status.
 
 ## Minimum wait time.

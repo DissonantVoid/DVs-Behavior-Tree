@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://ce2mvlce4bxwj"]
-
-[ext_resource type="PackedScene" uid="uid://b76u6w4n7smdc" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/condition.tscn" id="1_cqvhd"]
-[ext_resource type="Script" path="res://tests/is_other_agent_in_range.gd" id="2_aoeb2"]
-
-[node name="IsOtherAgentInRange" instance=ExtResource("1_cqvhd")]
-script = ExtResource("2_aoeb2")

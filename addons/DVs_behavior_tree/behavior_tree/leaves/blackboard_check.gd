@@ -3,7 +3,7 @@
 class_name BTBlackboardCheck
 extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/condition.gd"
 
-## Checks if a blackboard key is equal, less_than etc...
+## Checks a key against an expression using a specified condition type.
 
 enum ConditionType {
 	equal, less_than, less_or_equal, more_than,

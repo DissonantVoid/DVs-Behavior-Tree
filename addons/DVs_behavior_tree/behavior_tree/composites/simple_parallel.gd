@@ -3,9 +3,9 @@
 class_name BTSimpleParallel
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
-## Runs exactly 2 nodes at the same time, one that is a leaf node and the second that can be any tree node.
-## When the first child returns success or failure the second child is interrupted,
-## unless [code]_is_delayed[/code] is true in which case
+## Runs exactly 2 nodes at the same time, the firt is a leaf node and the second can be any tree node.
+## When the first child returns success or failure the second child is interrupted and this returns first child status,
+## unless delayed mode is active in which case
 ## this waits for the second child to finish after the first one has finished and returns the second
 ## child's status.
 
@@ -42,7 +42,14 @@ func tick(delta : float):
 	if _is_first_child_ticking:
 		_active_child.tick(delta)
 		status = _active_child.get_status()
+		
+		# parallel node
 		_parallel_child.tick(delta)
+		var parallel_status : Status = _parallel_child.get_status()
+		if parallel_status == Status.success || parallel_status == Status.failure:
+			_parallel_child.exit(false)
+			_parallel_child.enter()
+		
 	else:
 		_parallel_child.tick(delta)
 		status = _parallel_child.get_status()

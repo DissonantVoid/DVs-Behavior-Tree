@@ -3,10 +3,9 @@
 class_name BTSequence
 extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 
-## Ticks its children from first to last, if the child succeeds it ticks the next child,
+## Ticks its children from left to right, if a child succeeds it ticks the next child,
 ## otherwise returns the child's status. Can be thought of as an "AND" node in that it only
 ## executes the next child if the previous child succeeds.
-## example: an NPC that needs to open a door: sequence -> has key, go to door, open door, enter.
 
 func tick(delta : float):
 	super(delta)

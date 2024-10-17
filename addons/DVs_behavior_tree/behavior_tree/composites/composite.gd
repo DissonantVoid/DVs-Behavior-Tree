@@ -3,8 +3,8 @@
 class_name BTComposite
 extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 
-## Base class for Composites, which are nodes that have 2 or more node children.
-## composites tick their children in a certain order depending on certain rules, typically from left to right.
+## Base class for Composites.
+## Composites tick their children in a certain order, typically from left to right.
 
 enum ConditionalAbort {
 	none,         ## No conditional abort.
@@ -145,6 +145,8 @@ func _on_parent_entered():
 func _on_parent_exited():
 	_exit_cond_abord_child(true)
 
+# TODO: what if self is not in the main path, should it still be able to interrupt lower priority branches?
+#       need to think of example cases
 func _on_parent_ticking(delta : float):
 	var running_sibling : BTNode = null
 	running_sibling = get_parent().get_active_child()

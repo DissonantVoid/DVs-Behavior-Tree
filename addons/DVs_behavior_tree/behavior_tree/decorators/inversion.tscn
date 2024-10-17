@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://db3chwxhiy8lr"]
-
-[ext_resource type="PackedScene" uid="uid://ddbk4u071ajk5" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.tscn" id="1_u4c7f"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/inversion.gd" id="2_ancph"]
-
-[node name="Inversion" instance=ExtResource("1_u4c7f")]
-script = ExtResource("2_ancph")
