@@ -43,7 +43,7 @@ layout_mode = 2
 icon = ExtResource("3_uybli")
 flat = false
 item_count = 2
-popup/item_0/text = "By Type"
+popup/item_0/text = "By Scene"
 popup/item_1/text = "By Instance Time"
 popup/item_1/id = 1
 

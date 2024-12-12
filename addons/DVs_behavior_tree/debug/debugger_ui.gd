@@ -56,13 +56,13 @@ func stop_monitoring():
 		)
 	_existing_tree_ids.clear()
 
-func tree_added(id : int, name_ : String, type : StringName):
+func tree_added(id : int, name_ : String, scene : StringName):
 	# NOTE: can't pass nodes between the editor and running game :(
 	var btn : Button = Button.new()
-	btn.text = name_ + " (" + type + ")"
+	btn.text = name_ + " (" + scene + ")"
 	btn.toggle_mode = true
 	_tree_menu_btn_to_id_map[btn] = id
-	btn.set_meta("type", type)
+	btn.set_meta("scene", scene)
 	btn.set_meta("instance_creation", Time.get_ticks_msec())
 	_tree_menu_container.add_child(btn)
 	btn.toggled.connect(_on_tree_list_btn_toggled.bind(btn))
@@ -122,7 +122,7 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 			var children_ids : PackedInt64Array = relations[parent_id]
 			
 			# calculate total width of all children in a group
-			# NOTE: a group is all children in a specific depth that share the same parent
+			# NOTE: a group is all nodes that share the same parent
 			var spacing_sum : float = (children_ids.size()-1) * _node_spacing.x # sum of all empty space between nodes
 			var total_width : float = spacing_sum
 			for i : int in children_ids.size():
@@ -141,7 +141,7 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 					(parent_x_center + (graph_node.size.x + _node_spacing.x) * i) - total_width / 2.0
 				graph_node.position.y =\
 					parent_graph_node.position.y + height_of_prev_depth + _node_spacing.y
-				graph_node.set_graph_parent(parent_graph_node)
+				graph_node.call_deferred("set_graph_parent", parent_graph_node)
 		
 		height_of_prev_depth = height_of_this_depth
 	
@@ -352,9 +352,9 @@ func _on_tree_sort_id_pressed(id : int):
 	
 	# sort
 	match id:
-		0: # sort by type
+		0: # sort by scene
 			sort_func = func(a : Button, b : Button) -> bool:
-				if a.get_meta("type") != b.get_meta("type"):
+				if a.get_meta("scene") != b.get_meta("scene"):
 					return true
 				return false
 		1: # sort by date

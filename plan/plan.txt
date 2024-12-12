@@ -21,9 +21,9 @@ https://github.com/aigamedev/btsk
 
 ## Tasks ##
 1.4:
-[..] documentations
+[X] documentations
 [] docs images
-[..] rework space game example
+[..] rework space game example removing .tscn node files broke the game :(
 [] asset lib setup
 
 unit tests: (see https://github.com/bitwes/Gut)

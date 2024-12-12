@@ -30,13 +30,9 @@ Documentations of this addon and its features [can be found here](addons/DVs_beh
 # Help
 ## Tasks
 All tasks and notes can be found [here](plan/plan.txt).\
-Code related smaller tasks and problems can be found in code by searching for "TODO"s
+Code related smaller tasks can be found in code by searching for "TODO"s
 ## Contribution
 (requesting features)
-## Best Practices
--godot style guide
--work around user error
--optimize icons https://docs.godotengine.org/en/stable/contributing/development/editor/creating_icons.html#icon-optimization
 
 # Credits
 ## Socials

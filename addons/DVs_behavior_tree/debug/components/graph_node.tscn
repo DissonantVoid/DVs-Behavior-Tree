@@ -48,7 +48,7 @@ draw_center = false
 [node name="GraphNode" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 0)
 offset_right = 300.0
-offset_bottom = 454.0
+offset_bottom = 224.0
 size_flags_vertical = 0
 theme = ExtResource("1_wnhip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_cbslj")

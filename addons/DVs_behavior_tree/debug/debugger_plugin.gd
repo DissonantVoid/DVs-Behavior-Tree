@@ -37,7 +37,7 @@ func _capture(message : String, data : Array, session_id : int) -> bool:
 	message = message.split(":")[1] # remove prefix
 	
 	if message == "tree_added":
-		_debugger_ui.tree_added(data[0]["id"], data[0]["name"], data[0]["type"])
+		_debugger_ui.tree_added(data[0]["id"], data[0]["name"], data[0]["scene"])
 		return true
 	elif message == "tree_removed":
 		_debugger_ui.tree_removed(data[0]["id"])

@@ -78,8 +78,6 @@ func _process(delta : float):
 		set_process(false)
 
 func set_graph_parent(parent : Control):
-	await get_tree().process_frame # wait for positioning to finish
-	
 	var start : Vector2 = Vector2(size.x/2.0, 0.0)
 	var end : Vector2 = parent.position + Vector2(parent.size.x/2.0, parent.size.y) - position
 	
@@ -112,20 +110,17 @@ func update_status(status : BTNode.Status, is_main_path : bool):
 	_last_status = status
 	
 	# line
-	var line_color : Color
 	if is_main_path:
 		if status == BTNode.Status.running:
-			line_color = _line_on_color
+			_connection_line.default_color = _line_on_color
 			# display line above other lines
 			_connection_line.z_index = 1
 		else:
-			line_color = _line_off_color
+			_connection_line.default_color = _line_off_color
 			_connection_line.z_index = 0
 	else:
-		line_color = _parallel_color
+		_connection_line.default_color = _parallel_color
 		_connection_line.z_index = 1
-	
-	_connection_line.default_color = line_color
 	
 	# style
 	var style_color : Color

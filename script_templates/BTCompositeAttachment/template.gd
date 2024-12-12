@@ -1,5 +1,5 @@
 # meta-default: true
-# meta-description: Base template for behavior nodes
+# meta-description: Base template for composite attachments
 extends _BASE_
 
 # called when the parent composite is entered

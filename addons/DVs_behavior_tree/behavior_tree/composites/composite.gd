@@ -30,6 +30,7 @@ var _conditional_abort_child : BTNode
 func _ready():
 	if Engine.is_editor_hint(): return
 	
+	# cond abort
 	var valid_child : BTNode = _get_next_valid_child()
 	_has_valid_cond_abort_child = false
 	if valid_child && (valid_child is BTCondition || valid_child is BTDecorator):
