@@ -34,6 +34,7 @@ func _pick_rand_child() -> BTNode:
 	
 	if no_repeat && _previous_child:
 		children.erase(_previous_child)
+		_previous_child = null
 		if children.size() == 1: return children[0]
 	
 	var rand : BTNode = null

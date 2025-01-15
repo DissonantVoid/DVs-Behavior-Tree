@@ -4,7 +4,7 @@ This is a guide for developers that have **little to no experience** using behav
 # What is a Behavior Tree?
 A behavior tree is a hierarchical node-based tree that controls the decision making of an entity. Behavior trees are used in fields such as robotics and control systems but their most common use is in video games. The "tree" in behavior tree refers to the data structure used to organize its nodes in a hierarchy, similar to how Godot itself organizes nodes in the scene and their parent/child relationship.\
 The tree begins at the root node, evaluating each child node down the tree until it reaches a node that represents a single task such as moving the agent from point A to B or checking if a condition is true. How this flow (known as a Tick) reaches a certain node is determined by each node along the way and by the status of each child node. The status is simply a way for a node to inform its parent that it has succeeded/failed to do its task.\
-(image: abstract tree diagram)
+<img src="https://imgur.com/ZXVytd2"/>
 Typically behavior tree nodes are categorized into 3 types:
 - Leaf Nodes: Nodes at the end of branches, they can't have any further children and their role is to execute an action like shooting a gun or check a condition like "Is the target in range?".
 - Decorator Nodes: Branch nodes that take a single leaf node and do something with its status, a common example is an Inverter, which takes the result of its child and inverts it (success->failure, failure->success).

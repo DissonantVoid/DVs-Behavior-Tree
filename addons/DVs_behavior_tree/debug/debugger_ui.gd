@@ -198,6 +198,7 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 								# common ancestor found. push all nodes below the ancestor to the left or right
 								# TODO: this seems to cause issues where the common ancestor isn't the CA of other nodes in the same depth
 								#       so not all nodes at the lm and rm depth get pushed
+								#       see https://rachel53461.wordpress.com/2014/04/20/algorithm-for-drawing-trees/
 								var push_nodes_recursive : Callable = func(graph_node_id : int, x_offset : float, func_ : Callable):
 									_id_to_graph_node_map[graph_node_id].position.x += x_offset
 									if relations.has(graph_node_id):
@@ -233,19 +234,24 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 	_debugger.send_debugger_ui_request("debugger_display_started", {"id":_active_tree_id})
 
 func active_tree_node_entered(id : int):
-	_id_to_graph_node_map[id].enter()
+	if _id_to_graph_node_map: # _id_to_graph_node_map could be empty due to graph construction lagging behind game frames
+		_id_to_graph_node_map[id].enter()
 
 func active_tree_node_exited(id : int):
-	_id_to_graph_node_map[id].exit()
+	if _id_to_graph_node_map:
+		_id_to_graph_node_map[id].exit()
 
 func active_tree_node_ticked(id : int, main_path : bool):
-	_id_to_graph_node_map[id].tick(main_path)
+	if _id_to_graph_node_map:
+		_id_to_graph_node_map[id].tick(main_path)
 
 func active_tree_node_status_changed(id : int, status : BTNode.Status, main_path : bool):
-	_id_to_graph_node_map[id].update_status(status, main_path)
+	if _id_to_graph_node_map:
+		_id_to_graph_node_map[id].update_status(status, main_path)
 
 func active_tree_comp_attachment_ticked(attachment_name : String, composite_id : int):
-	_id_to_graph_node_map[composite_id].attachment_ticked(attachment_name)
+	if _id_to_graph_node_map:
+		_id_to_graph_node_map[composite_id].attachment_ticked(attachment_name)
 
 func active_tree_blackboard_received(blackboard : Dictionary):
 	if _is_tracking_global_blackboard:
@@ -312,7 +318,7 @@ func _remove_tree_menu_entry(tree_id : int):
 
 func _on_tree_list_btn_toggled(toggled_on : bool, button : Button):
 	if toggled_on == false:
-		# prevent toggling off so we the list behaves like radio buttons
+		# prevent toggling off so the list behaves like radio buttons
 		button.set_pressed_no_signal(true)
 	else:
 		if _active_tree_id != -1:
@@ -405,13 +411,12 @@ func _on_graph_panel_gui_input(event : InputEvent):
 				zoom = max(_graph_container.scale.x - _zoom_increment, _max_zoom_out)
 			
 			if is_equal_approx(_graph_container.scale.x, zoom) == false:
-				var prev_pos : Vector2 = _graph_container.global_position
-				_graph_container.pivot_offset =\
-					_graph_container.get_local_mouse_position() * _graph_container.scale
-				# reset pos because changing pivot offsets position for some hecking reason
-				_graph_container.global_position = prev_pos
-				
+				# zoom
+				# note to self: never touch pivots again
+				var mouse_local : Vector2 = _graph_container.get_local_mouse_position()
+				var mouse_global : Vector2 = _graph_container.global_position + (mouse_local * _graph_container.scale)
 				_graph_container.scale = Vector2.ONE * zoom
+				_graph_container.global_position = mouse_global - (mouse_local * _graph_container.scale)
 		
 		# panning
 		elif event.pressed && event.button_index == MOUSE_BUTTON_LEFT && _is_panning == false:

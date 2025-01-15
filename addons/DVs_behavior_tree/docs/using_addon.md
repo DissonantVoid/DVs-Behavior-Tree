@@ -175,7 +175,7 @@ These are the node types that can be inherited:
 - BTDecorator.
 
 There are built-in script templates to make inheriting easier.
-(image of selecting script template)
+<img src="https://imgur.com/MqwHVNj"/>
 
 ## Nodes
 Nodes should override the `tick` function for processing logic and can optionally override `enter` and `exit` for initialization and de-initialization.
@@ -219,10 +219,11 @@ func parent_exiting():
 	# de-init
 
 func _tick(delta : float):
+	super()
 	# processing
 ```
 Attachments do not need to set a status code.\
-Both `parent_entered` and `parent_exiting` must call `super()`.\
+Each of the 3 functions must call `super()`.\
 Attachments also have access to the behavior tree with `behavior_tree`.
 
 # Your First Behavior Tree

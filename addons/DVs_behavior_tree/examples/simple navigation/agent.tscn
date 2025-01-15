@@ -1,0 +1,74 @@
+[gd_scene load_steps=15 format=3 uid="uid://c557vjvtb2h4w"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/agent.gd" id="1_mihpd"]
+[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="2_hsaag"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="3_if7u4"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_2cvhr"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composite_attachment.gd" id="5_j6rmj"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence_reactive.gd" id="6_n1oy8"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/is_other_agent_in_range.gd" id="7_dkdsr"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/dodge_other_agents.gd" id="8_s3gvq"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="9_nsijm"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/is_mouse_close.gd" id="10_r670j"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/move_to_mouse.gd" id="11_6r2ri"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/move_to_random.gd" id="12_tng06"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="13_rt1la"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_apj5b"]
+radius = 75.0
+
+[node name="Agent" type="Node2D"]
+script = ExtResource("1_mihpd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_hsaag")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CircleShape2D_apj5b")
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("3_if7u4")
+is_active = true
+agent = NodePath("..")
+frames_per_tick = 1
+
+[node name="BTFallback" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("4_2cvhr")
+
+[node name="CompositeAttachment" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("5_j6rmj")
+
+[node name="DodgeOthers" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("6_n1oy8")
+conditional_abort = 1
+
+[node name="IsOtherAgentInRange" type="Node" parent="BTBehaviorTree/BTFallback/DodgeOthers"]
+script = ExtResource("7_dkdsr")
+
+[node name="DodgeOtherAgents" type="Node" parent="BTBehaviorTree/BTFallback/DodgeOthers"]
+script = ExtResource("8_s3gvq")
+
+[node name="FollowMouse" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("9_nsijm")
+conditional_abort = 1
+
+[node name="IsMouseClose" type="Node" parent="BTBehaviorTree/BTFallback/FollowMouse"]
+script = ExtResource("10_r670j")
+description = "Checks if mouse is close"
+
+[node name="MoveToMouse" type="Node" parent="BTBehaviorTree/BTFallback/FollowMouse"]
+script = ExtResource("11_6r2ri")
+description = "Move towards mouse position"
+
+[node name="Wander" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("9_nsijm")
+
+[node name="MoveToRandom" type="Node" parent="BTBehaviorTree/BTFallback/Wander"]
+script = ExtResource("12_tng06")
+description = "Pick random point and move to it"
+
+[node name="WaitForTime" type="Node" parent="BTBehaviorTree/BTFallback/Wander"]
+script = ExtResource("13_rt1la")

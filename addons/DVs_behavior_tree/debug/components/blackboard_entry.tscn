@@ -37,4 +37,3 @@ theme_override_styles/separator = SubResource("StyleBoxLine_wfch7")
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Value"
-text_overrun_behavior = 3

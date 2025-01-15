@@ -12,7 +12,7 @@ Setup tree structure easily using nodes.
 ## Modular system
 Bahavior trees are highly scalable by design, allowing for iterable design where nodes are added/removed to reach a complex AI one step at a time.
 (image: complex setup, highlight sub-sections)
-## Customization and fine tuning
+## Customization and fine-tuning
 Built-in nodes offer customization whenever possible, and if ... extend any class and make your own!
 (exports (timer min/max, tree...), entending classes)
 (image)
