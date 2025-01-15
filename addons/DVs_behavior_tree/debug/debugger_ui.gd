@@ -79,7 +79,7 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 	#          that made it, he was broken, twisted and shattered into a thousand pieces, and he
 	#          will never be the same again. if you value your sanity you shall take back the road
 	#          that lead you here and live your life to the fullest, knowing that you didn't have to
-	#          witness what's bellow. that you were one of thoese who got to keep all their brain cells.
+	#          witness what's bellow. that you were one of those who got to keep all their brain cells.
 	#          if you wish to modify the inner workings of this hellish code or fix a bug, you would
 	#          do best to live with that bug rather than take a single peek at this. YOU. Have. Been. Warned.
 	
@@ -221,7 +221,7 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 			
 			last_parent_graph_node = parent_graph_node
 	
-	# bounding box
+	# bounding box cache
 	_active_tree_bounding_box = Rect2()
 	for graph_node : Control in _graph_container.get_children():
 		_active_tree_bounding_box = _active_tree_bounding_box.merge(
@@ -243,6 +243,9 @@ func active_tree_node_ticked(id : int, main_path : bool):
 
 func active_tree_node_status_changed(id : int, status : BTNode.Status, main_path : bool):
 	_id_to_graph_node_map[id].update_status(status, main_path)
+
+func active_tree_comp_attachment_ticked(attachment_name : String, composite_id : int):
+	_id_to_graph_node_map[composite_id].attachment_ticked(attachment_name)
 
 func active_tree_blackboard_received(blackboard : Dictionary):
 	if _is_tracking_global_blackboard:

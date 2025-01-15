@@ -31,6 +31,10 @@ func parent_tick(delta : float):
 
 # override
 func _tick(delta : float):
+	if behavior_tree.is_active_tree_in_debugger():
+		BTDebuggerListener.send_message(
+			"composite_attachment_ticked", {"name":self.name, "composite_id":get_parent().get_instance_id()}
+		)
 	return
 
 func _get_configuration_warnings() -> PackedStringArray:

@@ -61,6 +61,9 @@ func _capture(message : String, data : Array, session_id : int) -> bool:
 			data[0]["id"], data[0]["status"], data[0]["main_path"]
 		)
 		return true
+	elif message == "composite_attachment_ticked":
+		_debugger_ui.active_tree_comp_attachment_ticked(data[0]["name"], data[0]["composite_id"])
+		return true
 	elif message == "sending_blackboard_data":
 		_debugger_ui.active_tree_blackboard_received(data[0]["blackboard"])
 		return true

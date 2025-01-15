@@ -36,7 +36,7 @@ follow official style guide so it's easier for others to contribute
 https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
 
 ## Future ##
-additional nodes (in their own "extension" folder so we don't bloat the main folder):
+additional nodes (in their own "extra" folder so we don't bloat the main folder):
 -play animation (optional wait for finish)
 -play sound (optional wait for finish)
 -agent look at (2d/3d) (requires character2d)

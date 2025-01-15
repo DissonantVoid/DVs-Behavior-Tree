@@ -147,6 +147,11 @@ func update_status(status : BTNode.Status, is_main_path : bool):
 	
 	set_process(true)
 
+func attachment_ticked(attachment_name : String):
+	# TODO: visual indicator
+	#_running_color
+	pass
+
 func _on_force_tick_pressed():
 	action_pressed.emit("force_tick")
 

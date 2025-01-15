@@ -7,8 +7,8 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 
 enum TickType {
 	idle, ## Ticks happen on idle frames (process)
-	physics ## Ticks happen on physics frames (physics process)
-	# TODO: TickType manual, use a manual_tick() func and push error if type isn't manual
+	physics, ## Ticks happen on physics frames (physics process)
+	custom ## Ticks happen manually by calling custom_tick()
 }
 
 ## Determines if the tree can run or not.
@@ -29,7 +29,7 @@ enum TickType {
 		tick_type = value
 		_setup_tick()
 ## How many frames must pass before the tree ticks once, can be used as optimization if there are too many
-## agents at once or as a form of LOD where agents far away are ticked less often.
+## agents at once or as a form of LOD where less important agents are ticked less often.
 @export var frames_per_tick : int :
 	set(value):
 		frames_per_tick = max(value, 1)
@@ -131,6 +131,15 @@ func tick(delta : float):
 	else:
 		_set_status(Status.failure)
 
+func custom_tick(delta : float = 1.0):
+	if Engine.is_editor_hint(): return
+	
+	if tick_type != TickType.custom:
+		push_error("custom_tick() can only be called if tick_type is set to custom")
+		return
+	
+	tick(delta)
+
 func force_tick_node(target : BTNode):
 	if target == self:
 		exit(true)
@@ -229,7 +238,7 @@ func _setup_tick():
 		is_ticking = false
 	
 	# only change child state if ticking state changes
-	# if we switch from TickType.idle to TickType.physics just keep child ticking
+	# if we switch from one tick type to another just keep child ticking
 	if _active_child:
 		if was_ticking && is_ticking == false:
 			_active_child.exit(true)
