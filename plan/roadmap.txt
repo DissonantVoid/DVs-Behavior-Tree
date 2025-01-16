@@ -22,11 +22,14 @@ https://github.com/aigamedev/btsk
 ## Roadmap ##
 1.4:
 [X] documentations
-[..] docs images
+[X] docs images
 [..] rework space game example removing .tscn node files broke the game :(
+[] examples: simple-navigation, sequence-showcase, blackboard, npc-interaction, comp-attachment
 [] asset lib setup
 
 unit tests: (see https://github.com/bitwes/Gut)
+
+project structer and game-debugger chain doc page
 
 other nodes:
 -parallel node (runs all children in parallel)
@@ -34,6 +37,11 @@ other nodes:
 
 follow official style guide so it's easier for others to contribute (you lazy fool)
 https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
+
+reachout to people
+-reddit/discord
+-https://github.com/godotengine/awesome-godot
+-youtubers: https://www.youtube.com/@mrelipteach, https://www.youtube.com/gamefromscratch, https://www.youtube.com/@dev-worm, https://www.youtube.com/@ThisIsVini/videos
 
 ## Future ##
 additional nodes (in their own "extra" folder so we don't bloat the main folder):

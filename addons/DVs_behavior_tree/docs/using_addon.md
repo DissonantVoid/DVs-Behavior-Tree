@@ -11,14 +11,16 @@
 # How It Works
 ## Setup
 The first step in using a behavior tree is to setup its nodes, this works similar to any nodes hierarchy in godot.
-(image of bt hierarchy inside a character scene)
+
+<img src="https://imgur.com/nGM76CE.png" width="300"/>
+
 Nodes will show editor warnings to help you set things up correctly.\
 Other godot nodes that aren't part of this addon can be added anywhere in the tree and will simply be ignored.
 ## Tick
 A "tick" is a single update to the tree, think of it like a single call to `_process` or `_physics_process` (can be customized). When a tick occures, the tree root will tick its child which either does a certain action if it's a Leaf node or in turn ticks one of its children as a Branch node and so on all the way down. Depending on the nodes along the way and their status the tree will dynamically make decisions on what task needs to be performed next, or if a task must be interrupted in favor of another.
 ## Status
-Each node in the tree must set a status when it's ticked to determine its result. Specifically either `success`, `failure` or `running`.\
-- success and failure signal that the node is done processing, prompting its parent to move on to the next child or succeed/fail itself.\
+Each node in the tree must set a status when it's ticked to determine its result. Specifically either `success`, `failure` or `running`.
+- success and failure signal that the node is done processing, prompting its parent to move on to the next child or succeed/fail itself.
 - Running indicates that the node is still processing, which prevents the flow from changing and ensurs that the parent continues to tick the same node.\
 An example of this is moving an agent from A to B, the agent will set its status to `running` in each tick as long as it's moving, and will set its status to `success` when it reaches the destination or `failure` if point B is unreachable.
 ## Blackboard
@@ -234,26 +236,28 @@ Attachments also have access to the behavior tree with `behavior_tree`.
 The addon comes with a powerful debugger that displays the flow of every active tree in real-time, access to local blackboards and the global blackboard as well as providing debugging tools to affect the tree as it's running.\
 The behavior tree debugger can be found in the bottom panel.
 
-<img src="https://imgur.com/DQsOtrp.png"/>
+<img src="https://imgur.com/DQsOtrp.png" width="700"/>
 
-As the project runs any behavior tree instances will appear in the trees menu.
-Selecting a tree will show its graph, real-time flow and the status of each node.
-(image of graph)
+As the project runs all behavior tree instances will appear in the trees menu.
+Selecting a tree will show its graph, real-time flow and the status of each node.\
 A Node's outline color indicates its last status and whether it's running in parallel or not.
-(image of graph nodes each having one of the status codes)
 
 The graph comes with some debugging tools.
 ### Graph Actions
 Graph actions can be found in the graph tab and allow centering the tree to view as well as access to the global blackboard. Additionally the trees menu supports sorting both by Scene (instances of same .tscn) and by Instance Time (oldest instances first).
-(image of each)
+
+<img src="https://imgur.com/JZKNRI2.png" width="700"/>
+
 ### Node Actions
 Nodes have their own actions that depend on the node type:
 - `BTNode` nodes have a "force tick" action that forces the tree to redirect flow to that node for debugging.
 - `BTBehaviorTree` nodes have a "open blackboard" action that open its local blackboard.
-(image of each)
+
+<img src="https://imgur.com/qh7o9B4.png" width="400"/>
 
 The blackboard tab shows up when opening the local or global blackboard and displays its content.
-(image of blackboard tab)
+
+<img src="https://imgur.com/re9J1qD.png" width="300"/>
 
 # Best Practices
 While there are many ways to approach organizing and maintaining a behavior tree overtime, here are some best practices:
@@ -262,8 +266,7 @@ While there are many ways to approach organizing and maintaining a behavior tree
 - Rename behavior tree nodes in the editor so the tree is easier to read. Nodes also support an optional description that is visible in the debugger.
 - Blackboards vs other classes. Depending on your game, you may have some data needed by the AI that is managed by another system, an autoload or the agent script, an example of this is a `World` autoload that keeps track of information like the time/weather. In this case it can be better to access data from such autoload instead of storing a duplicate in the blackboard to avoid duplications and out of sync issues.
 
-- Local scripts vs saved scenes for custom nodes and sub-trees
-- Different ways to do the same thing (parallel node vs comp attachment, conditional abort vs reactive composite...)
+- (Different ways to do the same thing (parallel node vs comp attachment, conditional abort vs reactive composite...))
 
 # Limitations
 While this addon covers a wide range of use cases and aims to cover features from various other implementations, it does have some limitations that you should be aware of:

@@ -53,11 +53,8 @@ func _capture(message : String, data : Array, session_id : int) -> bool:
 	elif message == "node_exited":
 		_debugger_ui.active_tree_node_exited(data[0]["id"])
 		return true
-	elif message == "node_ticked":
-		_debugger_ui.active_tree_node_ticked(data[0]["id"], data[0]["main_path"])
-		return true
-	elif message == "node_status_changed":
-		_debugger_ui.active_tree_node_status_changed(
+	elif message == "node_status_set":
+		_debugger_ui.active_tree_node_status_set(
 			data[0]["id"], data[0]["status"], data[0]["main_path"]
 		)
 		return true

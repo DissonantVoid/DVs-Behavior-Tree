@@ -241,13 +241,9 @@ func active_tree_node_exited(id : int):
 	if _id_to_graph_node_map:
 		_id_to_graph_node_map[id].exit()
 
-func active_tree_node_ticked(id : int, main_path : bool):
+func active_tree_node_status_set(id : int, status : BTNode.Status, main_path : bool):
 	if _id_to_graph_node_map:
-		_id_to_graph_node_map[id].tick(main_path)
-
-func active_tree_node_status_changed(id : int, status : BTNode.Status, main_path : bool):
-	if _id_to_graph_node_map:
-		_id_to_graph_node_map[id].update_status(status, main_path)
+		_id_to_graph_node_map[id].set_status(status, main_path)
 
 func active_tree_comp_attachment_ticked(attachment_name : String, composite_id : int):
 	if _id_to_graph_node_map:

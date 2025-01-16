@@ -27,14 +27,19 @@ const _running_color : Color = Color("aa662e")
 const _parallel_color : Color = Color("696775")
 const _interrupted_color : Color = Color("8f688d")
 
-const _color_fadout_lerp : float = 1.8
-
 const _line_off_color : Color = _undefined_color
 const _line_on_color : Color = Color("d6c9ab")
+const _attachment_blink_color : Color = Color("999999")
 
 var _tick_tween : Tween
-const _tick_tween_time : float = 0.15
-const _tick_tween_max_scale : float = 1.1
+const _tick_tween_time : float = 0.2
+const _tick_tween_max_scale : float = 1.05
+
+var _stylebox_tween : Tween
+const _stylebox_tween_time : float = 1.8
+
+var _attachment_tweens : Array[Tween]
+const _attachment_tween_time : float = 0.2
 
 func setup(
 node_name : String, class_name_ : String, status : BTNode.Status,
@@ -45,8 +50,9 @@ attachments : Array[String]
 	_is_leaf = is_leaf
 	
 	_last_status = status
-	if _last_status == BTNode.Status.running: enter()
-	update_status(_last_status, true)
+	if _last_status == BTNode.Status.running:
+		enter()
+	set_status(_last_status, true)
 	
 	if description:
 		_description_text.text = "[center]" + description + "[/center]"
@@ -60,22 +66,16 @@ attachments : Array[String]
 		_action_btn_open_blackboard.hide()
 	
 	_attachments_container.visible = attachments.size() > 0
+	_attachment_tweens.resize(attachments.size())
 	for attachment_name : String in attachments:
 		var label : Label = Label.new()
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.name = attachment_name # used as identifier
 		label.text = attachment_name
 		_attachments_labels_container.add_child(label)
 
 func _ready():
-	set_process(false)
 	_status_label.pivot_offset = _status_label.size / 2.0 # center pivot for scaling effect
-
-func _process(delta : float):
-	_stylebox.border_color = lerp(
-		_stylebox.border_color, _undefined_color, _color_fadout_lerp * delta
-	)
-	if _stylebox.border_color == _undefined_color:
-		set_process(false)
 
 func set_graph_parent(parent : Control):
 	var start : Vector2 = Vector2(size.x/2.0, 0.0)
@@ -94,19 +94,7 @@ func exit():
 	if _attachments_container.visible:
 		_attachments_container_panel.get_theme_stylebox("panel").draw_center = false
 
-func tick(is_main_path : bool):
-	if _is_leaf == false: return
-	if _tick_tween && _tick_tween.is_running(): return
-	
-	_tick_tween = create_tween()
-	_tick_tween.tween_property(
-		_status_label, "scale", Vector2.ONE * _tick_tween_max_scale, _tick_tween_time
-	)
-	_tick_tween.tween_property(
-		_status_label, "scale", Vector2.ONE, _tick_tween_time
-	)
-
-func update_status(status : BTNode.Status, is_main_path : bool):
+func set_status(status : BTNode.Status, is_main_path : bool):
 	_last_status = status
 	
 	# line
@@ -122,7 +110,7 @@ func update_status(status : BTNode.Status, is_main_path : bool):
 		_connection_line.default_color = _parallel_color
 		_connection_line.z_index = 1
 	
-	# style
+	# style color animation
 	var style_color : Color
 	if is_main_path:
 		match _last_status:
@@ -138,19 +126,44 @@ func update_status(status : BTNode.Status, is_main_path : bool):
 				style_color = _interrupted_color
 	else:
 		style_color = _parallel_color
-	_stylebox.border_color = style_color
 	
-	# text
+	if _stylebox_tween && _stylebox_tween.is_valid():
+		_stylebox_tween.kill()
+	_stylebox.border_color = style_color
+	_stylebox_tween = create_tween()
+	_stylebox_tween.tween_property(_stylebox, "border_color", _undefined_color, _stylebox_tween_time)
+	
+	# status text
 	_status_label.text = "- " + BTNode.Status.find_key(_last_status) + " -"
 	_status_label.get_theme_stylebox("normal").bg_color = style_color
 	_status_label_line.get_theme_stylebox("separator").color = style_color
 	
-	set_process(true)
+	# scale animation for leaves
+	if _is_leaf:
+		if _tick_tween == null || _tick_tween.is_valid() == false:
+			_tick_tween = create_tween()
+			_tick_tween.tween_property(
+				_status_label, "scale", Vector2.ONE * _tick_tween_max_scale, _tick_tween_time/2.0
+			)
+			_tick_tween.tween_property(
+				_status_label, "scale", Vector2.ONE, _tick_tween_time/2.0
+			)
 
 func attachment_ticked(attachment_name : String):
-	# TODO: visual indicator
-	#_running_color
-	pass
+	var label : Label = _attachments_labels_container.get_node(attachment_name)
+	
+	var prev_tween : Tween = _attachment_tweens[label.get_index()]
+	if prev_tween == null || prev_tween.is_valid() == false:
+		var new_tween : Tween = create_tween()
+		new_tween.tween_method(
+			_tween_label_color.bind(label),
+			Color.WHITE, _attachment_blink_color, _attachment_tween_time/2.0
+		)
+		new_tween.tween_method(
+			_tween_label_color.bind(label),
+			_attachment_blink_color, Color.WHITE, _attachment_tween_time/2.0
+		)
+		_attachment_tweens[label.get_index()] = new_tween
 
 func _on_force_tick_pressed():
 	action_pressed.emit("force_tick")
@@ -163,3 +176,6 @@ func _on_resized():
 	# godot moment...
 	await get_tree().process_frame
 	reset_size()
+
+func _tween_label_color(color : Color, label : Label):
+	label.add_theme_color_override("font_color", color)

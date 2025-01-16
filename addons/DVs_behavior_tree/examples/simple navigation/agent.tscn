@@ -1,10 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://c557vjvtb2h4w"]
+[gd_scene load_steps=14 format=3 uid="uid://c557vjvtb2h4w"]
 
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/agent.gd" id="1_mihpd"]
 [ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="2_hsaag"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="3_if7u4"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_2cvhr"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composite_attachment.gd" id="5_j6rmj"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence_reactive.gd" id="6_n1oy8"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/is_other_agent_in_range.gd" id="7_dkdsr"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/dodge_other_agents.gd" id="8_s3gvq"]
@@ -37,9 +36,6 @@ frames_per_tick = 1
 
 [node name="BTFallback" type="Node" parent="BTBehaviorTree"]
 script = ExtResource("4_2cvhr")
-
-[node name="CompositeAttachment" type="Node" parent="BTBehaviorTree/BTFallback"]
-script = ExtResource("5_j6rmj")
 
 [node name="DodgeOthers" type="Node" parent="BTBehaviorTree/BTFallback"]
 script = ExtResource("6_n1oy8")

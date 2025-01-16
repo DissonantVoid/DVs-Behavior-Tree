@@ -17,10 +17,10 @@ Each agent has 3 states:
 These states are ordered by importance so following the mouse takes precedence over wandering randomly and dodging other agents takes precedence over both other states. A prioritized state will interrupt less important states if needed."
 
 [node name="Agent" parent="." instance=ExtResource("2_y7uu2")]
-position = Vector2(461, 274)
+position = Vector2(92, 84)
 
 [node name="Agent2" parent="." instance=ExtResource("2_y7uu2")]
-position = Vector2(1030, 455)
+position = Vector2(1183, 86)
 
 [node name="Agent3" parent="." instance=ExtResource("2_y7uu2")]
-position = Vector2(277, 572)
+position = Vector2(616, 352)

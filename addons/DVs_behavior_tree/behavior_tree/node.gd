@@ -29,8 +29,11 @@ func _enter_tree():
 		push_error("Behavior tree nodes can't be added at run-time")
 
 func _exit_tree():
-	if Engine.is_editor_hint() == false && get_parent().is_queued_for_deletion() == false:
-		push_error("Behavior tree nodes can't be removed at run-time")
+	# TODO: how can we detect that a node has been moved/removed at run-time
+	#       but not when the scene changes
+	#if Engine.is_editor_hint() == false && get_parent().is_queued_for_deletion() == false:
+		#push_error("Behavior tree nodes can't be removed at run-time")
+	pass
 
 # override
 func enter():
@@ -52,10 +55,10 @@ func exit(is_interrupted : bool):
 
 # override
 func tick(delta : float):
-	if behavior_tree.is_active_tree_in_debugger():
-		BTDebuggerListener.send_message(
-			"node_ticked", {"id":self.get_instance_id(), "main_path":is_main_path}
-		)
+	# no need for this, node_status_set does the same job with the added status info
+	#if behavior_tree.is_active_tree_in_debugger():
+		#BTDebuggerListener.send_message("node_ticked", {"id":self.get_instance_id(), "main_path":is_main_path})
+	
 	ticking.emit(delta)
 
 func get_status() -> Status:
@@ -67,7 +70,7 @@ func _set_status(status : Status):
 	
 	if behavior_tree.is_active_tree_in_debugger():
 		BTDebuggerListener.send_message(
-			"node_status_changed", {"id":self.get_instance_id(), "status":status, "main_path":is_main_path}
+			"node_status_set", {"id":self.get_instance_id(), "status":status, "main_path":is_main_path}
 		)
 	
 	_status = status
