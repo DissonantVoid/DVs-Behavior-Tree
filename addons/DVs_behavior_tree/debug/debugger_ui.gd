@@ -27,8 +27,8 @@ var _id_to_graph_node_map : Dictionary # id:graph node
 var _key_to_bb_entry_map : Dictionary # key(string):blackboard entry node
 var _tree_menu_btn_to_id_map : Dictionary # btn:id
 
-const _node_spacing : Vector2 = Vector2(70.0, 50.0)
-const _group_x_spacing : float = _node_spacing.x * 2.2
+const _node_spacing : Vector2 = Vector2(50.0, 92.0)
+const _group_x_spacing : float = _node_spacing.x * 1.4
 const _center_view_graph_margin : float = 64.0
 
 const _max_zoom_in : float = 1.4
@@ -162,7 +162,7 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 			
 			# detect if we've entered a new group
 			var is_new_group : bool = false
-			if parent_graph_node != last_parent_graph_node && i > 1:
+			if parent_graph_node != last_parent_graph_node && i > 0:
 				is_new_group = true
 			
 			if is_new_group:
@@ -192,13 +192,13 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 							var rm_grandparent : Control =\
 								get_parent_graph_node.call(rm_parent_id)
 							
-							# TODO: use godot's parent/child system for this so we only need to push the ancestor
-							#       for all children to move
 							if lm_grandparent == rm_grandparent:
 								# common ancestor found. push all nodes below the ancestor to the left or right
-								# TODO: this seems to cause issues where the common ancestor isn't the CA of other nodes in the same depth
-								#       so not all nodes at the lm and rm depth get pushed
-								#       see https://rachel53461.wordpress.com/2014/04/20/algorithm-for-drawing-trees/
+								# TODO: while the current spacing approach spaces all nodes properly, parents
+								#       are sometimes spaced way appart. we can make x_offset a range instead of 1 value
+								#       last child gets offseted by the end value of the range while parent is offseted
+								#       by the start value of the range and everything in between is everything in between
+								#       (yes I was sleep deprived while writing this, rewrite later)
 								var push_nodes_recursive : Callable = func(graph_node_id : int, x_offset : float, func_ : Callable):
 									_id_to_graph_node_map[graph_node_id].position.x += x_offset
 									if relations.has(graph_node_id):

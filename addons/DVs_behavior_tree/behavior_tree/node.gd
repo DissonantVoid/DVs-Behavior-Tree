@@ -69,7 +69,7 @@ func _set_status(status : Status):
 		BTDebuggerListener.send_message(
 			"node_status_changed", {"id":self.get_instance_id(), "status":status, "main_path":is_main_path}
 		)
-		
+	
 	_status = status
 
 func _is_main_path_variable_changed():

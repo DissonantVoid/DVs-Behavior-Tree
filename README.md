@@ -8,20 +8,27 @@ With this addon you can make complex NPCs to populate your world, or bosses that
 
 ## Easy to setup and use
 Setup tree structure easily using nodes.
-(image: Scene tab)
+
+<img src="https://imgur.com/QjE9a9n.png"/>
+
 ## Modular system
 Bahavior trees are highly scalable by design, allowing for iterable design where nodes are added/removed to reach a complex AI one step at a time.
-(image: complex setup, highlight sub-sections)
+
+<img src="https://imgur.com/MdoCMMO.png"/>
+
 ## Customization and fine-tuning
-Built-in nodes offer customization whenever possible, and if ... extend any class and make your own!
-(exports (timer min/max, tree...), entending classes)
-(image)
+Built-in nodes offer customization whenever possible, and if you need evern more control extend any class and make your own!
+
+<img src="https://imgur.com/wJhyAmr.png"/>
+<img src="https://imgur.com/S7TndQs.png"/>
+
 ## Debugger
 A powerful and optimized debugger that allows for viewing active behavior trees, their decision making and data (blackboards) in real-time. It also allows for overriding the flow to help with debugging.
-(image: debugger)
 
-# Examples
-(projects gifs, link to projects playable HTML and source code)
+<img src="https://imgur.com/DQsOtrp.png"/>
+
+# Example Project
+(coming soon)
 
 # Documentations
 If you are new to behavior trees or wish to refresh your knowledge of how they work [start here](addons/DVs_behavior_tree/docs/start_here.md).\

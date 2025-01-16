@@ -19,10 +19,10 @@ https://www.behaviortree.dev/docs/
 https://www.gameaipro.com/GameAIPro/GameAIPro_Chapter06_The_Behavior_Tree_Starter_Kit.pdf
 https://github.com/aigamedev/btsk
 
-## Tasks ##
+## Roadmap ##
 1.4:
 [X] documentations
-[] docs images
+[..] docs images
 [..] rework space game example removing .tscn node files broke the game :(
 [] asset lib setup
 
@@ -32,7 +32,7 @@ other nodes:
 -parallel node (runs all children in parallel)
 -placeholder leaf (holds desciption of what the branch is going to have)
 
-follow official style guide so it's easier for others to contribute
+follow official style guide so it's easier for others to contribute (you lazy fool)
 https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide
 
 ## Future ##
@@ -43,12 +43,9 @@ additional nodes (in their own "extra" folder so we don't bloat the main folder)
 -agent go to (2d/3d) (requires nav agent and nav mesh)
 -play particles (optional wait for finish)
 
-support for time based tick intervals alongside frame based intervals in trees
-
 ability to modify blackboard values in debugger
 
-debugger real time node data updates, allowing user to track export variables
--custom nodes made by users should be able to add their custom data too
+debugger real time display of export variables for each node, including custom nodes made by users
 
 tree stats in debugger:
 -heatmap of the most visited nodes

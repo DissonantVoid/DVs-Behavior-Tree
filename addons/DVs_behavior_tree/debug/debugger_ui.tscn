@@ -80,7 +80,7 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
-theme_override_colors/font_color = Color(0.290196, 0.270588, 0.388235, 1)
+theme_override_colors/font_color = Color(0.686275, 0.615686, 0.85098, 1)
 theme_override_font_sizes/font_size = 25
 text = "(Empty)"
 
@@ -142,7 +142,7 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.686275, 0.615686, 0.85098, 1)
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 32
 text = "No Behavior Tree Selected."
 horizontal_alignment = 1
 
@@ -152,6 +152,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 30.0
 grow_horizontal = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 8

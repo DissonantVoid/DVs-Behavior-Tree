@@ -175,7 +175,8 @@ These are the node types that can be inherited:
 - BTDecorator.
 
 There are built-in script templates to make inheriting easier.
-<img src="https://imgur.com/MqwHVNj"/>
+
+<img src="https://imgur.com/MqwHVNj.png"/>
 
 ## Nodes
 Nodes should override the `tick` function for processing logic and can optionally override `enter` and `exit` for initialization and de-initialization.
@@ -232,9 +233,10 @@ Attachments also have access to the behavior tree with `behavior_tree`.
 # Debugging Tools
 The addon comes with a powerful debugger that displays the flow of every active tree in real-time, access to local blackboards and the global blackboard as well as providing debugging tools to affect the tree as it's running.\
 The behavior tree debugger can be found in the bottom panel.
-(image of debugger in bottom panel)
+
+<img src="https://imgur.com/DQsOtrp.png"/>
+
 As the project runs any behavior tree instances will appear in the trees menu.
-(image of trees in the trees menu, or have that as part of the earlier image)
 Selecting a tree will show its graph, real-time flow and the status of each node.
 (image of graph)
 A Node's outline color indicates its last status and whether it's running in parallel or not.
