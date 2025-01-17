@@ -1,0 +1,57 @@
+[gd_scene load_steps=13 format=3 uid="uid://gautf78oa45a"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/agent.gd" id="1_4t686"]
+[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_5vsf4"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="2_c8r04"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="3_aqjar"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="4_xhtx2"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/obstacle_exists.gd" id="5_0tnmd"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared_scripts)/behaviors/move_to_random.gd" id="5_xiq8t"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/go_to_obstacle.gd" id="6_81ski"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="6_amcu7"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/pickup_obstacle.gd" id="8_bhqof"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/go_offscreen.gd" id="9_m4oj1"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/drop_obstacle.gd" id="10_on1ni"]
+
+[node name="Agent" type="Node2D"]
+script = ExtResource("1_4t686")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_5vsf4")
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("2_c8r04")
+is_active = true
+agent = NodePath("..")
+
+[node name="BTFallback" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("3_aqjar")
+
+[node name="ObstacleInteraction" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("4_xhtx2")
+conditional_abort = 1
+
+[node name="ObstacleExists" type="Node" parent="BTBehaviorTree/BTFallback/ObstacleInteraction"]
+script = ExtResource("5_0tnmd")
+
+[node name="GoToObstacle" type="Node" parent="BTBehaviorTree/BTFallback/ObstacleInteraction"]
+script = ExtResource("6_81ski")
+
+[node name="PickupObstacle" type="Node" parent="BTBehaviorTree/BTFallback/ObstacleInteraction"]
+script = ExtResource("8_bhqof")
+
+[node name="GoOffscreen" type="Node" parent="BTBehaviorTree/BTFallback/ObstacleInteraction"]
+script = ExtResource("9_m4oj1")
+
+[node name="DropObstacle" type="Node" parent="BTBehaviorTree/BTFallback/ObstacleInteraction"]
+script = ExtResource("10_on1ni")
+
+[node name="Wander" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("4_xhtx2")
+
+[node name="MoveToRandom" type="Node" parent="BTBehaviorTree/BTFallback/Wander"]
+script = ExtResource("5_xiq8t")
+
+[node name="BTWaitForTime" type="Node" parent="BTBehaviorTree/BTFallback/Wander"]
+script = ExtResource("6_amcu7")

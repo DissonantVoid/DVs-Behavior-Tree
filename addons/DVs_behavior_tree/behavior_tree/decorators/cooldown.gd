@@ -18,6 +18,12 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 var _ticked : int
 var _last_status : Status = Status.running
 
+func enter():
+	super()
+	
+	if _active_child:
+		_active_child.enter()
+
 func exit(is_interrupted : bool):
 	super(is_interrupted)
 	if reset_on_exit: _ticked = tick_cooldown

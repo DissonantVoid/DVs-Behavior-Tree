@@ -12,6 +12,9 @@ var _active_child : BTNode = null
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
+	# NOTE: since active child cleanup is automatically handled for branches
+	#       a branch should either let the active child be handled here
+	#       or make sure to set it to null if exited manually
 	if _active_child:
 		_active_child.exit(is_interrupted)
 		_active_child = null

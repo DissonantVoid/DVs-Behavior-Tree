@@ -217,12 +217,12 @@ func parent_entered():
 	super()
 	# initialization
 
-func parent_exiting():
-	super()
+func parent_exiting(is_interrupted : bool):
+	super(is_interrupted)
 	# de-init
 
 func _tick(delta : float):
-	super()
+	super(delta)
 	# processing
 ```
 Attachments do not need to set a status code.\
@@ -272,4 +272,4 @@ While there are many ways to approach organizing and maintaining a behavior tree
 While this addon covers a wide range of use cases and aims to cover features from various other implementations, it does have some limitations that you should be aware of:
 - `await` is not supported in the `tick` function, when a node is ticked, it's expected to set a status immediately. This can be worked around by connecting the signal you wish to await to some function and check every tick if that function was called.
 - The addon is implemented in GDScript, which is comparatively slower than other supported languages. This shouldn't matter for most use cases, but you might notice performance issues if you have hundreds of NPCs running complex logic. The node-based setup also carries some overhead. While there are some optimizations in place to help with this, I might switch to C# or C++ in the future.
-- Trees are static, meaning nodes cannot be added/removed at run-time. This isn't a problem for the vast majority of use cases but it means that using this addon for things like evolution sims and procedural AI is not possible. The decision to keep the tree static was made to avoid the countless headaches, stability problems and missed optimizations that come with dynamic trees.
+- Tree structure is static, meaning nodes cannot be added/removed at run-time. This isn't a problem for the vast majority of use cases but it means that using this addon for things like evolution simulations and procedural AI is not possible. The decision to keep the tree static was made to avoid the countless headaches, stability problems and missed optimizations that come with dynamic trees.

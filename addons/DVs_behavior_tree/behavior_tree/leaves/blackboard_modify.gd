@@ -52,23 +52,17 @@ func tick(delta : float):
 		# set value
 		blackboard[key] = result
 		_set_status(Status.success)
-		return
 		
-	elif action == ActionType.erase:
+	else:
 		if blackboard.has(key) == false:
 			# key doesn't exist, proceed based on must_exist
 			if must_exist:
 				_set_status(Status.failure)
-				return
 			else:
 				_set_status(Status.success)
-				return
 		else:
 			blackboard.erase(key)
 			_set_status(Status.success)
-			return
-	
-	_set_status(Status.undefined)
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()

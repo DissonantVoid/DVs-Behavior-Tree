@@ -58,7 +58,6 @@ func enter():
 	var valid_child : BTNode = _get_next_valid_child()
 	if valid_child:
 		_active_child = valid_child
-		_active_child.enter()
 	
 	# ConditionalAbort.low_priority, abort child in case self was entered naturaly without having had interrupted another branch
 	if (conditional_abort == ConditionalAbort.low_priority ||
@@ -84,7 +83,7 @@ func exit(is_interrupted : bool):
 	
 	# stop attachments
 	for attachment : BTCompositeAttachment in _attachments:
-		attachment.parent_exiting()
+		attachment.parent_exiting(is_interrupted)
 
 func tick(delta : float):
 	super(delta)

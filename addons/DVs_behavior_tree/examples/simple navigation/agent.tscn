@@ -10,7 +10,7 @@
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="9_nsijm"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/is_mouse_close.gd" id="10_r670j"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/move_to_mouse.gd" id="11_6r2ri"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/move_to_random.gd" id="12_tng06"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared_scripts)/behaviors/move_to_random.gd" id="12_tng06"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="13_rt1la"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_apj5b"]

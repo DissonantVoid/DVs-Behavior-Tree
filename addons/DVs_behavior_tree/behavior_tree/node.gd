@@ -30,7 +30,7 @@ func _enter_tree():
 
 func _exit_tree():
 	# TODO: how can we detect that a node has been moved/removed at run-time
-	#       but not when the scene changes
+	#       but not when the scene changes?
 	#if Engine.is_editor_hint() == false && get_parent().is_queued_for_deletion() == false:
 		#push_error("Behavior tree nodes can't be removed at run-time")
 	pass

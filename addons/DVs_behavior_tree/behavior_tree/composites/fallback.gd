@@ -7,6 +7,12 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 ## otherwise returns the child's status. Can be thought of as an "OR" node in that it only
 ## executes the next child if the previous child fails.
 
+func enter():
+	super()
+	
+	if _active_child:
+		_active_child.enter()
+
 func tick(delta : float):
 	super(delta)
 	if _active_child == null:

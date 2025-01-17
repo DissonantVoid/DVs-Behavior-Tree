@@ -1,0 +1,57 @@
+[gd_scene load_steps=11 format=3 uid="uid://cw2i440s61g7f"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_gatherer.gd" id="1_226yq"]
+[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="2_4vsit"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="2_s4sck"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="3_26w2e"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="4_mym6w"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/gatherer/gather_materials.gd" id="4_um8xl"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_ve70f"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/gatherer/can_gather.gd" id="6_urshs"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/gatherer/bring_materials.gd" id="7_uhmpb"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared_scripts)/behaviors/move_to_random.gd" id="10_7ya2b"]
+
+[node name="AgentMerchant" type="Node2D"]
+script = ExtResource("1_226yq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.283333, 1, 0, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_4vsit")
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("2_s4sck")
+is_active = true
+agent = NodePath("..")
+
+[node name="BTFallback" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("4_ve70f")
+
+[node name="Gather" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("3_26w2e")
+conditional_abort = 1
+
+[node name="CanGather" type="Node" parent="BTBehaviorTree/BTFallback/Gather"]
+script = ExtResource("6_urshs")
+
+[node name="GatherMaterials" type="Node" parent="BTBehaviorTree/BTFallback/Gather"]
+script = ExtResource("4_um8xl")
+
+[node name="BTWaitForTime" type="Node" parent="BTBehaviorTree/BTFallback/Gather"]
+script = ExtResource("4_mym6w")
+min = 0.5
+max = 1.5
+
+[node name="BringGoods" type="Node" parent="BTBehaviorTree/BTFallback/Gather"]
+script = ExtResource("7_uhmpb")
+
+[node name="Search" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("3_26w2e")
+
+[node name="MoveToRandom" type="Node" parent="BTBehaviorTree/BTFallback/Search"]
+script = ExtResource("10_7ya2b")
+
+[node name="BTWaitForTime" type="Node" parent="BTBehaviorTree/BTFallback/Search"]
+script = ExtResource("4_mym6w")
+min = 0.5
+max = 0.5

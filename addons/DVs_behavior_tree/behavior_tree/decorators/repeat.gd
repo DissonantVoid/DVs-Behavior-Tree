@@ -23,6 +23,8 @@ var _tried : int = 0
 func enter():
 	super()
 	_tried = 0
+	if _active_child:
+		_active_child.enter()
 
 func tick(delta : float):
 	super(delta)
@@ -45,6 +47,9 @@ func tick(delta : float):
 				# next tick
 				_active_child.exit(false)
 				_active_child.enter()
+				_set_status(Status.running)
+	else:
+		_set_status(Status.running)
 
 func _validate_property(property : Dictionary):
 	if stop_on_status == false && property["name"] == "status":

@@ -2,7 +2,7 @@
 # meta-description: Base template for behavior nodes
 extends _BASE_
 
-# called before the node is ticked, use for initialization
+# called before the first tick, use for initialization
 func enter():
 	super()
 
@@ -14,6 +14,6 @@ func exit(is_interrupted : bool):
 # called after enter() everytime the tree is ticked, use for processing node logic
 func tick(delta : float):
 	super(delta)
-
+	
 	# set status
 	_set_status(Status.undefined)

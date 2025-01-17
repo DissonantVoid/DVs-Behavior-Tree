@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3sq0637p3kec"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/main.gd" id="1_1n7wy"]
+[ext_resource type="PackedScene" uid="uid://gautf78oa45a" path="res://addons/DVs_behavior_tree/examples/sequence/agent.tscn" id="2_tbdoq"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_1n7wy")
+
+[node name="ReadMe" type="Node" parent="."]
+editor_description = "Agent will look for obstacles, if found it will grab them and move them offscreen.
+
+Left click to add obstacles."
+
+[node name="Obstacles" type="Node2D" parent="."]
+
+[node name="Agent" parent="." instance=ExtResource("2_tbdoq")]
+position = Vector2(700, 229)

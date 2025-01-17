@@ -1,0 +1,85 @@
+[gd_scene load_steps=16 format=3 uid="uid://c12g5sbh5q6w"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/dog.gd" id="1_t0r5f"]
+[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_uqqi1"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="3_ycb7x"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_d14so"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/calculate_attack_time.gd" id="5_4kxma"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="5_4n8iy"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/blackboard_check.gd" id="6_g7aej"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/retreat.gd" id="8_2w1sl"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback_random.gd" id="8_c3vjj"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/move_into_position.gd" id="8_kqdxj"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/move_to_target.gd" id="8_tidqh"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/circulate.gd" id="9_cjqnk"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/attack.gd" id="9_lpaqs"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="10_bx4bi"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/intimidate.gd" id="12_gllua"]
+
+[node name="Dog" type="Node2D"]
+script = ExtResource("1_t0r5f")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_uqqi1")
+
+[node name="TalkLabel" type="Label" parent="."]
+offset_left = -114.0
+offset_top = -113.0
+offset_right = 114.0
+offset_bottom = -64.0
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("3_ycb7x")
+is_active = true
+agent = NodePath("..")
+
+[node name="BTFallback" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("4_d14so")
+
+[node name="CalculateAttackTime" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("5_4kxma")
+tree_ticks_per_tick = 120
+
+[node name="Attack" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("5_4n8iy")
+
+[node name="IsReadyToAttack" type="Node" parent="BTBehaviorTree/BTFallback/Attack"]
+script = ExtResource("6_g7aej")
+use_global_blackboard = true
+key = "current_attack_dog"
+value_expression = "behavior_tree.agent"
+
+[node name="MoveToTarget" type="Node" parent="BTBehaviorTree/BTFallback/Attack"]
+script = ExtResource("8_tidqh")
+
+[node name="Attack" type="Node" parent="BTBehaviorTree/BTFallback/Attack"]
+script = ExtResource("9_lpaqs")
+
+[node name="Retreat" type="Node" parent="BTBehaviorTree/BTFallback/Attack"]
+script = ExtResource("8_2w1sl")
+
+[node name="BTFallbackRandom" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("8_c3vjj")
+custom_weights = true
+Weights/Circle = 6.0
+Weights/Intimidate = 1.0
+
+[node name="Circle" type="Node" parent="BTBehaviorTree/BTFallback/BTFallbackRandom"]
+script = ExtResource("5_4n8iy")
+
+[node name="MoveIntoPosition" type="Node" parent="BTBehaviorTree/BTFallback/BTFallbackRandom/Circle"]
+script = ExtResource("8_kqdxj")
+
+[node name="Circulate" type="Node" parent="BTBehaviorTree/BTFallback/BTFallbackRandom/Circle"]
+script = ExtResource("9_cjqnk")
+
+[node name="Stop" type="Node" parent="BTBehaviorTree/BTFallback/BTFallbackRandom/Circle"]
+script = ExtResource("10_bx4bi")
+min = 0.5
+max = 1.4
+
+[node name="Intimidate" type="Node" parent="BTBehaviorTree/BTFallback/BTFallbackRandom"]
+script = ExtResource("12_gllua")

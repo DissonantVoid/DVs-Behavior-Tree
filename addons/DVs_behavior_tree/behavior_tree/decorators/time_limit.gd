@@ -26,6 +26,9 @@ func enter():
 	super()
 	_enter_time = Time.get_ticks_msec()
 	_time = randf_range(min, max)
+	
+	if _active_child:
+		_active_child.enter()
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)

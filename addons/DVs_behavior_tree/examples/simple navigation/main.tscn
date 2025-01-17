@@ -7,14 +7,14 @@
 script = ExtResource("1_83hh0")
 
 [node name="ReadMe" type="Node" parent="."]
-editor_description = "Left click to add agents.
+editor_description = "Each agent has 3 states:
+- Dodge other agents.
+- Follow mouse cursor if nearby.
+- Wander randomly.
 
-Each agent has 3 states:
--dodge other agents
--follow mouse
--wander randomly
+These states are ordered by importance so following the mouse takes precedence over wandering randomly and dodging other agents takes precedence over both other states. A prioritized state will interrupt less important states if needed.
 
-These states are ordered by importance so following the mouse takes precedence over wandering randomly and dodging other agents takes precedence over both other states. A prioritized state will interrupt less important states if needed."
+Left click to add more agents."
 
 [node name="Agent" parent="." instance=ExtResource("2_y7uu2")]
 position = Vector2(92, 84)

@@ -2,7 +2,7 @@
 # meta-description: Base template for Composites
 extends _BASE_
 
-# called before the node is ticked, use for initialization
+# called before the first tick, use for initialization
 func enter():
 	super() # this will set _active_child to the first child
 
@@ -14,8 +14,8 @@ func exit(is_interrupted : bool):
 # called after enter() everytime the tree is ticked, use for processing node logic
 func tick(delta : float):
 	super(delta)
-
-  # ensure that this has a child
+	
+  # ensure that the composite has a child
   if _active_child == null:
 		_set_status(Status.failure)
 		return

@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://dg4dv8wry782"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/main.gd" id="1_2pio5"]
+[ext_resource type="Texture2D" uid="uid://dc64ua4luoib6" path="res://addons/DVs_behavior_tree/icons/inversion.svg" id="1_qab8c"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_2pio5")
+
+[node name="ReadMe" type="Node" parent="."]
+editor_description = "This is an example of sharing data between agents using the blackboard. Agents will act like a pack of dogs by circling the target and only attacking one at a time and briefly before retreating back.
+
+Left click to add more dogs."
+
+[node name="Target" type="Sprite2D" parent="."]
+position = Vector2(667, 342)
+scale = Vector2(2, 2)
+texture = ExtResource("1_qab8c")

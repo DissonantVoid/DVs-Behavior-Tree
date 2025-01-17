@@ -19,6 +19,8 @@ var _is_first_child_ticking : bool
 func enter():
 	super()
 	if _active_child:
+		_active_child.enter()
+		
 		_parallel_child = _get_next_valid_child(_active_child.get_index())
 		if _parallel_child:
 			_parallel_child.is_main_path = false
@@ -37,6 +39,7 @@ func tick(delta : float):
 	if _active_child == null || _active_child is not BTLeaf || _parallel_child == null:
 		# can't do my job
 		_set_status(Status.failure)
+		return
 	
 	var status : Status
 	if _is_first_child_ticking:
@@ -57,15 +60,20 @@ func tick(delta : float):
 	if status == Status.success || status == Status.failure:
 		if _is_delayed:
 			if _is_first_child_ticking:
+				# stop active child and make parallel child the main one
 				_is_first_child_ticking = false
 				_active_child.exit(false)
+				_active_child = null
 				_parallel_child.is_main_path = true
 				_set_status(Status.running)
 			else:
-				_parallel_child.exit(true)
 				_parallel_child.is_main_path = false
 				_set_status(status)
 		else:
+			if _is_first_child_ticking == true:
+				_parallel_child.exit(true) # interrupt parallel child
+				_parallel_child = null
+			
 			_set_status(status)
 	else:
 		_set_status(status)

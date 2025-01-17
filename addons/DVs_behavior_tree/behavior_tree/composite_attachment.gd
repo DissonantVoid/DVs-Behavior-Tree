@@ -20,7 +20,7 @@ func parent_entered():
 	_frames_counter = 0
 
 # override
-func parent_exiting():
+func parent_exiting(is_interrupted : bool):
 	return
 
 func parent_tick(delta : float):

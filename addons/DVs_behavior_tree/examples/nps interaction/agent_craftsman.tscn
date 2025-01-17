@@ -1,0 +1,54 @@
+[gd_scene load_steps=12 format=3 uid="uid://t12x4g4sq0a0"]
+
+[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_jtu0u"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_craftsman.gd" id="1_yvmtj"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="2_hmou6"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="3_4iymu"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="4_o3vyh"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/craftsman/can_craft.gd" id="5_eij7a"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/craftsman/go_to_rest_point.gd" id="5_ist38"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/rest.gd" id="6_kka86"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/craftsman/go_to_table.gd" id="6_sil3n"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/craftsman/craft.gd" id="7_vwfob"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/craftsman/take_craft_to_seller.gd" id="8_3r3k2"]
+
+[node name="AgentCraftsman" type="Node2D"]
+script = ExtResource("1_yvmtj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 0.7, 1, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_jtu0u")
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("2_hmou6")
+is_active = true
+agent = NodePath("..")
+
+[node name="BTFallback" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("3_4iymu")
+
+[node name="Craft" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("4_o3vyh")
+conditional_abort = 1
+
+[node name="CanCraft" type="Node" parent="BTBehaviorTree/BTFallback/Craft"]
+script = ExtResource("5_eij7a")
+
+[node name="GoToTable" type="Node" parent="BTBehaviorTree/BTFallback/Craft"]
+script = ExtResource("6_sil3n")
+
+[node name="Craft" type="Node" parent="BTBehaviorTree/BTFallback/Craft"]
+script = ExtResource("7_vwfob")
+
+[node name="TakeCraftToSeller" type="Node" parent="BTBehaviorTree/BTFallback/Craft"]
+script = ExtResource("8_3r3k2")
+
+[node name="Rest" type="Node" parent="BTBehaviorTree/BTFallback"]
+script = ExtResource("4_o3vyh")
+
+[node name="GoToRestPoint" type="Node" parent="BTBehaviorTree/BTFallback/Rest"]
+script = ExtResource("5_ist38")
+
+[node name="Rest" type="Node" parent="BTBehaviorTree/BTFallback/Rest"]
+script = ExtResource("6_kka86")

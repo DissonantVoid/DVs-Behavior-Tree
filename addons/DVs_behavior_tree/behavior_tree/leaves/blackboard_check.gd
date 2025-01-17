@@ -49,24 +49,18 @@ func tick(delta : float):
 	
 	if condition == ConditionType.equal && blackboard[key] == result:
 		_set_status(Status.success)
-		return
-	if condition == ConditionType.less_than && blackboard[key] < result:
+	elif condition == ConditionType.less_than && blackboard[key] < result:
 		_set_status(Status.success)
-		return
-	if condition == ConditionType.less_or_equal && blackboard[key] <= result:
+	elif condition == ConditionType.less_or_equal && blackboard[key] <= result:
 		_set_status(Status.success)
-		return
-	if condition == ConditionType.more_than && blackboard[key] > result:
+	elif condition == ConditionType.more_than && blackboard[key] > result:
 		_set_status(Status.success)
-		return
-	if condition == ConditionType.more_or_equal && blackboard[key] >= result:
+	elif condition == ConditionType.more_or_equal && blackboard[key] >= result:
 		_set_status(Status.success)
-		return
-	if condition == ConditionType.not_equal && blackboard[key] != result:
+	elif condition == ConditionType.not_equal && blackboard[key] != result:
 		_set_status(Status.success)
-		return
-	
-	_set_status(Status.failure)
+	else:
+		_set_status(Status.failure)
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()

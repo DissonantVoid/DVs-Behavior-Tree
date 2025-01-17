@@ -11,7 +11,6 @@ func enter():
 	var valid_child : BTNode = _get_next_valid_child()
 	if valid_child:
 		_active_child = valid_child
-		_active_child.enter()
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()

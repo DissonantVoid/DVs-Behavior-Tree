@@ -38,8 +38,8 @@ enum TickType {
 		_ticks_counter = 0
 		if _randomize_first_tick && frames_per_tick > 1:
 			_ticks_counter = randi_range(0, frames_per_tick-1)
-## If true and frames_per_tick > 1, the tick counter will start at a random value between 0 and frames_per_tick,
-## this is meant to spread the CPU load when having multiple instances of the same agent to minimize lag spikes.
+## If true and frames_per_tick > 1, the tick counter will start at a random value between 0 and frames_per_tick.
+## This is meant to spread the CPU load when having multiple instances of the same agent to minimize lag spikes.
 @export var _randomize_first_tick : bool = true
 
 var _is_displayed_in_debugger : bool = false
@@ -109,6 +109,10 @@ func exit(is_interrupted : bool):
 func tick(delta : float):
 	super(delta)
 	
+	if _active_child == null:
+		_set_status(Status.failure)
+		return
+	
 	_ticks_counter += 1
 	if _ticks_counter >= frames_per_tick:
 		_ticks_counter = 0
@@ -116,20 +120,16 @@ func tick(delta : float):
 		_set_status(Status.failure)
 		return
 	
-	if _active_child:
-		_active_child.tick(delta)
-		var status : Status = _active_child.get_status()
-		if status == Status.success || status == Status.failure:
-			_active_child.exit(false)
-			
-			# re-enter
-			_active_child.enter()
-			_set_status(Status.success)
-			return
-		
-		_set_status(status)
-	else:
-		_set_status(Status.failure)
+	_active_child.tick(delta)
+	var status : Status = _active_child.get_status()
+	if status == Status.success || status == Status.failure:
+		_active_child.exit(false)
+		# re-enter
+		_active_child.enter()
+		_set_status(Status.success)
+		return
+	
+	_set_status(status)
 
 func custom_tick(delta : float = 1.0):
 	if Engine.is_editor_hint(): return

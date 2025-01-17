@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bokeqysvmo2hg"]
+
+[ext_resource type="Texture2D" uid="uid://o4qn63bg1re1" path="res://addons/DVs_behavior_tree/icons/leaf.svg" id="1_d0uma"]
+
+[node name="Materials" type="Sprite2D"]
+texture = ExtResource("1_d0uma")

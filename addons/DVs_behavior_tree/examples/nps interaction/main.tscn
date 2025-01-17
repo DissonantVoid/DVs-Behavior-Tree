@@ -1,0 +1,62 @@
+[gd_scene load_steps=5 format=3 uid="uid://c4vu116edcvtv"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/main.gd" id="1_mr5b2"]
+[ext_resource type="PackedScene" uid="uid://cw2i440s61g7f" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_gatherer.tscn" id="2_vhtuk"]
+[ext_resource type="PackedScene" uid="uid://t12x4g4sq0a0" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_craftsman.tscn" id="3_iegl6"]
+[ext_resource type="PackedScene" uid="uid://c5qdxekwkrelp" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_seller.tscn" id="4_c6rxe"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_mr5b2")
+
+[node name="ReadMe" type="Node" parent="."]
+editor_description = "This is an NPC showcase where 3 NPCs follow a routine to convert raw materials to objects that can be sold.
+
+Green the gatherer is responsible for gathering resources.
+Blue the craftsman is responsible for crafting.
+Yellow the seller is responsible for... you know. Selling.
+
+Left click to add resources."
+
+[node name="CraftsmanTable" type="Polygon2D" parent="."]
+position = Vector2(1080, 547)
+rotation = 1.57079
+color = Color(0, 0.431373, 0.85098, 1)
+polygon = PackedVector2Array(-42, -200, 42, -200, 42, 200, -42, 200)
+
+[node name="SellerStock" type="Polygon2D" parent="."]
+position = Vector2(202, 547)
+rotation = 1.5708
+color = Color(0.662745, 0.615686, 0, 1)
+polygon = PackedVector2Array(-42, -200, 42, -200, 42, 200, -42, 200)
+
+[node name="AgentGatherer" parent="." instance=ExtResource("2_vhtuk")]
+position = Vector2(581, 234)
+
+[node name="AgentCraftsman" parent="." instance=ExtResource("3_iegl6")]
+position = Vector2(1158, 400)
+
+[node name="AgentSeller" parent="." instance=ExtResource("4_c6rxe")]
+position = Vector2(152, 371)
+
+[node name="Markers" type="Node2D" parent="."]
+
+[node name="CraftTable" type="Marker2D" parent="Markers"]
+position = Vector2(1089, 545)
+
+[node name="CraftsmanRest" type="Marker2D" parent="Markers"]
+position = Vector2(1214, 400)
+
+[node name="SellerStock" type="Marker2D" parent="Markers"]
+position = Vector2(195, 545)
+
+[node name="SellerRest" type="Marker2D" parent="Markers"]
+position = Vector2(210, 376)
+
+[node name="SellPoint" type="Marker2D" parent="Markers"]
+position = Vector2(-136, 358)
+
+[node name="Materials" type="Node2D" parent="."]
+
+[node name="Goods" type="Node2D" parent="."]
+
+[node name="Crafts" type="Node2D" parent="."]

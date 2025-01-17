@@ -6,6 +6,12 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/composites/random_composit
 ## Similar to the normal fallback except children are ticked in a random order, when a child fails
 ## this picks a random next child.
 
+func enter():
+	super()
+	
+	if _active_child:
+		_active_child.enter()
+
 func tick(delta : float):
 	super(delta)
 	if _active_child == null:

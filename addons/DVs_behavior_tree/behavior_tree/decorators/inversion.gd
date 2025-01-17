@@ -5,6 +5,12 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
 
 ## Inverts the status of its child.
 
+func enter():
+	super()
+	
+	if _active_child:
+		_active_child.enter()
+
 func tick(delta : float):
 	super(delta)
 	if _active_child == null:

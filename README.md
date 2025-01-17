@@ -25,12 +25,14 @@ Built-in nodes offer customization whenever possible, and if you need evern more
 <img src="https://imgur.com/S7TndQs.png" width="300"/>
 
 ## Debugger
-A powerful and optimized debugger that allows for viewing active behavior trees, their decision making and data (blackboards) in real-time. It also allows for overriding the flow to help with debugging.
+A powerful and optimized debugger that allows for viewing active behavior trees, their decision making and data (blackboards) in real-time. It also offsers debugging tools.
 
 <img src="https://imgur.com/DQsOtrp.png" width="800"/>
 
-# Example Project
+# Example Projects
 (coming soon)
+
+If you've made a game that uses this addon, feel free to reach out and I could mention it here.
 
 # Documentations
 If you are new to behavior trees or wish to refresh your knowledge of how they work [start here](addons/DVs_behavior_tree/docs/start_here.md).\
@@ -38,10 +40,10 @@ Documentations of this addon and its features [can be found here](addons/DVs_beh
 
 # Help
 ## Roadmap
-Roadmap can be found [here](plan/roadmap.txt).\
-Code related smaller tasks can be found in code by searching for "TODO"s
+Roadmap can be found [here](addons/DVs_behavior_tree/docs/roadmap.md).\
+Code related smaller tasks can be found in code by searching for "TODO"s.
 ## Contribution
-...
+Please see [contribution](addons/DVs_behavior_tree/docs/contribution.md).
 
 # Credits
 ## Socials

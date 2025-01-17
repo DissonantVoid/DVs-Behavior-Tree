@@ -8,6 +8,12 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
 ## in the sense that it rechecks previous children if a long running child is active
 ## reacting to any previous child as soon as its status goes from failure to success.
 
+func enter():
+	super()
+	
+	if _active_child:
+		_active_child.enter()
+
 func tick(delta : float):
 	super(delta)
 	if _active_child == null:
