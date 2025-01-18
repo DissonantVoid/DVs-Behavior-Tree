@@ -12,5 +12,5 @@ func parent_exiting(is_interrupted : bool):
 	super(is_interrupted)
 
 # called every parent tick by default, tick rate can be customized 
-func _tick(delta : float):
+func tick(delta : float):
 	super(delta)

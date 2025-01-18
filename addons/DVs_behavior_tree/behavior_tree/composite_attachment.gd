@@ -27,10 +27,10 @@ func parent_tick(delta : float):
 	_frames_counter += 1
 	if _frames_counter == tree_ticks_per_tick:
 		_frames_counter = 0
-		_tick(delta)
+		tick(delta)
 
 # override
-func _tick(delta : float):
+func tick(delta : float):
 	if behavior_tree.is_active_tree_in_debugger():
 		BTDebuggerListener.send_message(
 			"composite_attachment_ticked", {"name":self.name, "composite_id":get_parent().get_instance_id()}

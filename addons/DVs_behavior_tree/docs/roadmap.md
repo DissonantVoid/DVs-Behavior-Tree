@@ -41,6 +41,7 @@ make into gdextention plugin
 - color palette: primary af9dd9, secondary 4a4563
 - icon file name should match scene file name of the same node
 - use same node descriptions in code for docs node descriptions
+- minimum supported version is 4.3
 
 ## Resources
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference\

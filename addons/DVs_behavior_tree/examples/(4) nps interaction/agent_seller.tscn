@@ -1,15 +1,15 @@
 [gd_scene load_steps=12 format=3 uid="uid://c5qdxekwkrelp"]
 
-[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_fvavi"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_seller.gd" id="1_g1ja1"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/agent_seller.gd" id="1_g1ja1"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="2_0r7s0"]
+[ext_resource type="Texture2D" uid="uid://d2epb4cykmqfd" path="res://addons/DVs_behavior_tree/examples/(shared)/agent_sprite.svg" id="2_8u7ty"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="4_bwu7f"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_ethlk"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/rest.gd" id="5_bqela"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/seller/can_sell.gd" id="6_k2x3m"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/seller/go_to_rest_point.gd" id="6_ymm5r"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/seller/grab_craft.gd" id="7_wywkr"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/seller/sell.gd" id="8_82jjy"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/behaviors/rest.gd" id="5_bqela"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/behaviors/seller/can_sell.gd" id="6_k2x3m"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/behaviors/seller/go_to_rest_point.gd" id="6_ymm5r"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/behaviors/seller/grab_craft.gd" id="7_wywkr"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/behaviors/seller/sell.gd" id="8_82jjy"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="8_mbqod"]
 
 [node name="AgentSeller" type="Node2D"]
@@ -17,8 +17,7 @@ script = ExtResource("1_g1ja1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0.966667, 1, 0, 1)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("1_fvavi")
+texture = ExtResource("2_8u7ty")
 
 [node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
 script = ExtResource("2_0r7s0")

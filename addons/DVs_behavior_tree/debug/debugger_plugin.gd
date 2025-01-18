@@ -32,7 +32,7 @@ func _on_session_stopped():
 
 # TODO: a way to document data (using sub-classes perhaps)
 #       so that both the sender and receiver know what to expect
-#       minimizing bugs. https://github.com/godotengine/godot-proposals/issues/7329
+#       minimizing bugs. or just do unit tests
 func _capture(message : String, data : Array, session_id : int) -> bool:
 	message = message.split(":")[1] # remove prefix
 	

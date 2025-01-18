@@ -15,7 +15,7 @@ The first step in using a behavior tree is to setup its nodes, this works simila
 <img src="https://imgur.com/nGM76CE.png" width="300"/>
 
 Nodes will show editor warnings to help you set things up correctly.\
-Other godot nodes that aren't part of this addon can be added anywhere in the tree and will simply be ignored.
+Other nodes that aren't part of this addon can be added anywhere in the tree and will simply be ignored.
 ## Tick
 A "tick" is a single update to the tree, think of it like a single call to `_process` or `_physics_process` (can be customized). When a tick occures, the tree root will tick its child which either does a certain action if it's a Leaf node or in turn ticks one of its children as a Branch node and so on all the way down. Depending on the nodes along the way and their status the tree will dynamically make decisions on what task needs to be performed next, or if a task must be interrupted in favor of another.
 ## Status
@@ -25,14 +25,15 @@ Each node in the tree must set a status when it's ticked to determine its result
 An example of this is moving an agent from A to B, the agent will set its status to `running` in each tick as long as it's moving, and will set its status to `success` when it reaches the destination or `failure` if point B is unreachable.
 ## Blackboard
 A blackboard is simply a Dictionary that holds data shared between all nodes in a behavior tree, it acts as a central storage for any node to access and modify for context-based information. For example, a blackboard can store the current health of an agent, allowing other nodes to adapt their behavior so the agent is more likely to flee if its health is low or enter a death state if its health reches zero.\
-This addon also supports a global blackboard, which is shared between all trees in the game. Note that the global blackboard is static meaning that it exists even when no instance of a behavior tree exists so the user is responsible for cleaning data that is no longer in use. An example use case is storing environmental information, such as the time of day or player location, which can then be accessed by multiple agents for different reasons.
+There is also global blackboard, which is shared between all trees in the game. Note that the global blackboard is static meaning that it exists even when no instance of a behavior tree exists so the user is responsible for cleaning data that is no longer in use. An example use case is storing environmental information, such as the time of day or player location, which can then be accessed by multiple agents for different reasons.
 
 # Nodes
-All behavior tree nodes inherite from `BTNode`.
+All behavior tree nodes inherite from `BTNode`. These are all the built-in behavior nodes:
 ## Leaves
 Leaves inherite from `BTLeaf`.\
+Leaves tend to be specific to each game and its setup so you'll have to create your own custom leaves (we will cover that below).\
 A leaf node cannot have any children, there are 2 types of leaf nodes: actions and conditions.\
-Leaves tend to be specific to each game and its setup so you'll have to create your own custom leaves. The addon comes with a few built in leaves.
+The addon comes with a few built in leaves.
 ### Actions
 Actions inherite from `BTAction`.\
 An action leaf performs an action such as movement or attacking or playing an animation etc...
@@ -120,7 +121,7 @@ Example: Boss that picks a random attack out of its attack patterns.
 | failure | running, tick next child |
 | running | running, start over and tick first child |
 
-Example: ...
+Example: TODO
 
 - **sequence random**: Similar to the normal sequence except children are ticked in a random order, when a child succeeds this picks a random next child.
 
@@ -140,7 +141,7 @@ Example: Boss that picks a random attack out of its attack patterns.
 | failure | failure |
 | running | running, start over and tick first child |
 
-Example: An NPC that deals with some fragile machinery is order. As soon as a previously active machine turns off the NPC drops what she's doing and goes back to activating that machine.
+Example: An NPC that deals with some fragile machinery in order. As soon as a previously active machine turns off the NPC drops what she's doing and goes back to activating that machine.
 
 - **simple parallel**: Runs exactly 2 nodes at the same time, the firt is a leaf node and the second can be any tree node. When the first child returns success or failure the second child is interrupted and this returns first child status, unless delayed mode is active in which case this waits for the second child to finish after the first one has finished and returns the second child's status.
 
@@ -153,34 +154,35 @@ Composite attachments must be placed before any `BTNode` child. They will tick i
 The main use case for attachment is to run parallel code while a long action is running to monitor some game state or update the blackboard.\
 Composite attachments cannont interrupt other nodes.
 
-Example: Keep track of player position in the blackboard while an enemy runs a "Chase Player" sequence instead of updating the position in each node.
+Example: Keep track of player position in the blackboard while an enemy runs a "Chase Player" sequence instead of updating the position in each node of the sequence.
 
 # Conditional Abort
 Conditional aborts allow composite nodes to interrupt their children or interrupt other branches based on a condition. There are two types of conditional aborts:
 
-- low priority conditional abort: Allows a composite to interrupt any lower-priority branch. Low priority branches are sibling branches that come after that composite and all their offsprings. Since composites usually prioritize children in order from first child to last, children that come first tend to have more priority.\
-A composite with this setting must have a condition node as its first child, as long as a lower priority branch is ticking, this composite will tick its condition node in parallel, if the node succeeds, the active branch will be interrupted and this branch will run instead. Low priority aborts are crucial for dynamic AI that can immediately react to significant changes in its environment.\
-Examples: 
-- Reactive NPC that can run different branches (Gather Resources, Buy Tools etc...) all while still being cautious of enemies by having a high priority branch check for enemy presence in parallel. As soon as an enemy is detected, any active task will be interrupted and escaping will be prioritized.
-- Boss that has different attack patterns and nested branches, that also has a "Dead" branch representing the boss in its dead state, as soon as the boss health reaches 0, whatever branch is active will be interrupted and the Dead branch will run instead.
+- low priority conditional abort: Allows a composite to interrupt any lower-priority branch. Low priority branches are sibling branches that come after that composite plus all their offsprings. Since composites usually prioritize children in order from first child to last, children that come first tend to have more priority.\
+A composite with this setting must have a condition or decorator node as its first child, as long as a lower priority branch is ticking, this composite will tick its condition node in parallel, if the node succeeds, the active branch will be interrupted and this branch will run instead. Low priority aborts are crucial for dynamic AI that can immediately react to significant changes in its environment.\
+Examples:\
+-Reactive NPC that can run different branches (Gather Resources, Buy Tools etc...) all while still being cautious of enemies by having a high priority branch check for enemy presence in parallel. As soon as an enemy is detected, any active task will be interrupted and escaping will be prioritized.\
+-Boss that has different attack patterns and nested branches, that also has a "Dead" branch representing the boss in its dead state, as soon as the boss health reaches 0, whatever branch is active will be interrupted and the Dead branch will run instead.
 
-- self conditional abort: Allows a composite to interrupt itself and start over when its first condition child fails. The composite must have a condition node as its first child that ticks in parallel while the parent ticks its other children.
+- self conditional abort: Allows a composite to interrupt itself and start over when its first condition or decorator child fails. The composite must have a condition node as its first child that ticks in parallel while the parent ticks its other children.
 Example: An enemy running an attack combo sequence with the self abort condition node checking in parallel that the enemy has enough energy left to continue the combo.
 
 # Custom Nodes
-While this addon comes with a bunch of built-in nodes, creating your own custom nodes is inevitable especially when it comes to custom leaves that tend to be game-specific.
+While this addon comes with a bunch of built-in nodes, creating your own custom nodes is inevitable especially when it comes to custom leaves that tend to be game-specific.\
+There are built-in script templates to make inheriting easier.\
+<img src="https://imgur.com/MqwHVNj.png"/>
 
+To create your own node add a Godot `Node` to the scene then attach a script to it and make sure it inherites the proper node.\
+<img src="https://imgur.com/teDP7hk.png"/>
+
+## Nodes
 These are the node types that can be inherited:
 - BTAction.
 - BTCondition.
-- BTComposite.
 - BTDecorator.
+- BTComposite.
 
-There are built-in script templates to make inheriting easier.
-
-<img src="https://imgur.com/MqwHVNj.png"/>
-
-## Nodes
 Nodes should override the `tick` function for processing logic and can optionally override `enter` and `exit` for initialization and de-initialization.
 ```
 func enter():
@@ -210,7 +212,9 @@ behavior_tree.global_blackboard # static blackboard shared between all behavior 
 Custom branch nodes (Composites and Decorators) additionally have access to `_active_child` which represents the currently ticking child.
 
 ## Composite Attachment
-Similar to other nodes, composite attachments must override `_tick` for processing, and optionally `parent_entered` and `parent_exiting` for initialization and de-initialization.
+Inherite BTCompositeAttachment.
+
+Similar to other nodes, composite attachments must override `tick` for processing, and optionally `parent_entered` and `parent_exiting` for initialization and de-initialization.
 
 ```
 func parent_entered():
@@ -221,7 +225,7 @@ func parent_exiting(is_interrupted : bool):
 	super(is_interrupted)
 	# de-init
 
-func _tick(delta : float):
+func tick(delta : float):
 	super(delta)
 	# processing
 ```
@@ -230,7 +234,7 @@ Each of the 3 functions must call `super()`.\
 Attachments also have access to the behavior tree with `behavior_tree`.
 
 # Your First Behavior Tree
-(coming soon)
+A guide on your first behavior tree can be found [here](<(3) your first behavior tree>).
 
 # Debugging Tools
 The addon comes with a powerful debugger that displays the flow of every active tree in real-time, access to local blackboards and the global blackboard as well as providing debugging tools to affect the tree as it's running.\
@@ -260,7 +264,7 @@ The blackboard tab shows up when opening the local or global blackboard and disp
 <img src="https://imgur.com/re9J1qD.png" width="300"/>
 
 # Best Practices
-While there are many ways to approach organizing and maintaining a behavior tree overtime, here are some best practices:
+There are many ways to approach organizing a behavior tree overtime and sometimes more than 1 way to achieve the same result, how to organize you behavior tree is an art of its own, though here are some best practices that could help:
 - Make sure action nodes are minimalistic. Instead of an action like "Attack" that causes an enemy to chase the player and shoot at them it's better to separate that into smaller scope actions like "Chase" and "Shoot". This way we minimize dependency between nodes and allow them to be reused and modified easily.
 - Ensure that all condition nodes are truthy. That means condition nodes should check if a condition is true instead of false (is_damaged, has_weapon instead of is_not_damaged, has_no_weapon). This avoids having 2 versions of the same condition node, the Inverter decorator can be used to invert the node into a falsy checks.
 - Rename behavior tree nodes in the editor so the tree is easier to read. Nodes also support an optional description that is visible in the debugger.

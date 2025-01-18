@@ -1,16 +1,16 @@
 [gd_scene load_steps=14 format=3 uid="uid://c557vjvtb2h4w"]
 
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/agent.gd" id="1_mihpd"]
-[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="2_hsaag"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/agent.gd" id="1_mihpd"]
+[ext_resource type="Texture2D" uid="uid://d2epb4cykmqfd" path="res://addons/DVs_behavior_tree/examples/(shared)/agent_sprite.svg" id="2_6xaro"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="3_if7u4"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_2cvhr"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence_reactive.gd" id="6_n1oy8"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/is_other_agent_in_range.gd" id="7_dkdsr"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/dodge_other_agents.gd" id="8_s3gvq"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/behaviors/is_other_agent_in_range.gd" id="7_dkdsr"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/behaviors/dodge_other_agents.gd" id="8_s3gvq"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="9_nsijm"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/is_mouse_close.gd" id="10_r670j"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/simple navigation/behaviors/move_to_mouse.gd" id="11_6r2ri"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared_scripts)/behaviors/move_to_random.gd" id="12_tng06"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/behaviors/is_mouse_close.gd" id="10_r670j"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(1) simple navigation/behaviors/move_to_mouse.gd" id="11_6r2ri"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared)/behaviors/move_to_random.gd" id="12_tng06"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="13_rt1la"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_apj5b"]
@@ -20,8 +20,7 @@ radius = 75.0
 script = ExtResource("1_mihpd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("2_hsaag")
+texture = ExtResource("2_6xaro")
 
 [node name="DetectionArea" type="Area2D" parent="."]
 

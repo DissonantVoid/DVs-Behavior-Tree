@@ -14,8 +14,9 @@ enum TickType {
 ## Determines if the tree can run or not.
 @export var is_active : bool :
 	set(value):
+		var was_active : bool = is_active
 		is_active = value
-		_setup_tick()
+		_setup_tick(was_active)
 ## The node that this tree belongs to, usually an enemy or an NPC.
 ## Allows nodes to access the agent by calling [code]behavior_tree.agent[/code].
 @export var agent : Node :
@@ -27,7 +28,7 @@ enum TickType {
 	set(value):
 		if tick_type == value: return
 		tick_type = value
-		_setup_tick()
+		_setup_tick(is_active)
 ## How many frames must pass before the tree ticks once, can be used as optimization if there are too many
 ## agents at once or as a form of LOD where less important agents are ticked less often.
 @export var frames_per_tick : int :
@@ -57,7 +58,6 @@ func _ready():
 	if Engine.is_editor_hint(): return
 	
 	BTDebuggerListener.debugger_message_received.connect(_on_debugger_message_received)
-	_setup_tick()
 	
 	# debugger message
 	var name_in_debugger : String =\
@@ -102,6 +102,7 @@ func _physics_process(delta : float):
 func enter():
 	super()
 	_active_child = _get_next_valid_child()
+	_setup_tick(is_active)
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
@@ -169,32 +170,28 @@ func force_tick_node(target : BTNode):
 	path_to_target.append(parent) # append self as well
 	path_to_target.reverse() # reverse so it's a path to target rather than from target
 	
-	# step3, find last common ancestor between target and deepest node #
-	# now that we have both paths, both starting from self we can compare ancestors down until we find the last common ancestor
-	var smallest_path : Array[BTNode] =\
-		path_to_drn if path_to_drn.size() <= path_to_target.size() else path_to_target
-	var biggest_path : Array[BTNode] =\
-		path_to_drn if path_to_drn.size() >= path_to_target.size() else path_to_target
+	# step3, find first common ancestor between target and deepest node #
+	# now that we have both paths, both starting from self we can compare ancestors down until we find the first common ancestor
+	var shortest_path_size : int = min(path_to_drn.size(), path_to_target.size())
 	
-	var last_common_ancestor : BTNode = null
-	var last_common_ancestor_idx : int = 0
-	while last_common_ancestor_idx < smallest_path.size():
-		if biggest_path[last_common_ancestor_idx] == smallest_path[last_common_ancestor_idx]:
-			last_common_ancestor = biggest_path[last_common_ancestor_idx]
+	var first_common_ancestor : BTNode = null
+	var first_common_ancestor_idx : int = shortest_path_size-1
+	while first_common_ancestor_idx >= 0:
+		if path_to_drn[first_common_ancestor_idx] == path_to_target[first_common_ancestor_idx]:
+			first_common_ancestor = path_to_drn[first_common_ancestor_idx]
 			break
-		last_common_ancestor_idx += 1
+		first_common_ancestor_idx -= 1
 	
 	# step4, interrupt common ancestor and force it to pick path leading down to target #
 	#        continue to force branches to pick nodes leading down towards target
-	last_common_ancestor.exit(true)
+	first_common_ancestor.exit(true)
 	
-	for i : int in range(last_common_ancestor_idx, path_to_target.size()-1):
+	for i : int in range(first_common_ancestor_idx, path_to_target.size()-1):
 		var node : BTBranch = path_to_target[i]
-		node.enter()
 		node.force_pick_child(path_to_target[i+1])
 
 func get_path_to_active_node() -> Array[BTNode]:
-	# NOTE: first node is the tree (self), last is the last active node
+	# NOTE: first node is the root (self), last is the last active node
 	if _cached_path_to_last_active_node.is_empty() == false:
 		return _cached_path_to_last_active_node
 	
@@ -221,28 +218,24 @@ func get_path_to_active_node() -> Array[BTNode]:
 func is_active_tree_in_debugger() -> bool:
 	return _is_displayed_in_debugger
 
-func _setup_tick():
+func _setup_tick(was_active : bool):
 	if Engine.is_editor_hint(): return
 	
 	if is_node_ready() == false: await self.ready
 	
-	var was_ticking : bool = is_processing() || is_physics_processing()
-	var is_ticking : bool
 	if is_active:
 		set_process(tick_type == TickType.idle)
 		set_physics_process(tick_type == TickType.physics)
-		is_ticking = true
 	else:
 		set_process(false)
 		set_physics_process(false)
-		is_ticking = false
 	
-	# only change child state if ticking state changes
+	# only change child state if active state changes
 	# if we switch from one tick type to another just keep child ticking
 	if _active_child:
-		if was_ticking && is_ticking == false:
+		if was_active && is_active == false:
 			_active_child.exit(true)
-		elif was_ticking == false && is_ticking:
+		elif was_active == false && is_active:
 			_active_child.enter()
 
 func _get_configuration_warnings() -> PackedStringArray:

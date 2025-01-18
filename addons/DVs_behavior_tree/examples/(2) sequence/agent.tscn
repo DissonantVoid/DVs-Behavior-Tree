@@ -1,24 +1,23 @@
 [gd_scene load_steps=13 format=3 uid="uid://gautf78oa45a"]
 
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/agent.gd" id="1_4t686"]
-[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_5vsf4"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(2) sequence/agent.gd" id="1_4t686"]
+[ext_resource type="Texture2D" uid="uid://d2epb4cykmqfd" path="res://addons/DVs_behavior_tree/examples/(shared)/agent_sprite.svg" id="2_7yykd"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="2_c8r04"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="3_aqjar"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="4_xhtx2"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/obstacle_exists.gd" id="5_0tnmd"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared_scripts)/behaviors/move_to_random.gd" id="5_xiq8t"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/go_to_obstacle.gd" id="6_81ski"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(2) sequence/behaviors/obstacle_exists.gd" id="5_0tnmd"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared)/behaviors/move_to_random.gd" id="5_xiq8t"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(2) sequence/behaviors/go_to_obstacle.gd" id="6_81ski"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="6_amcu7"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/pickup_obstacle.gd" id="8_bhqof"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/go_offscreen.gd" id="9_m4oj1"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/sequence/behaviors/drop_obstacle.gd" id="10_on1ni"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(2) sequence/behaviors/pickup_obstacle.gd" id="8_bhqof"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(2) sequence/behaviors/go_offscreen.gd" id="9_m4oj1"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(2) sequence/behaviors/drop_obstacle.gd" id="10_on1ni"]
 
 [node name="Agent" type="Node2D"]
 script = ExtResource("1_4t686")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("1_5vsf4")
+texture = ExtResource("2_7yykd")
 
 [node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
 script = ExtResource("2_c8r04")

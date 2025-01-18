@@ -1,2 +1,19 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
+
+
+# ignore everything when exporting as zip except...
+/**  export-ignore
+
+# addon files
+/addons                        !export-ignore
+/addons/DVs_behavior_tree      !export-ignore
+/addons/DVs_behavior_tree/**   !export-ignore
+
+# script templates
+/script_templates    !export-ignore
+/script_templates/** !export-ignore
+
+# license and readme
+/LICENSE    !export-ignore
+/README.md  !export-ignore

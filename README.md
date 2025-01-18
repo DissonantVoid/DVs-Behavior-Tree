@@ -14,7 +14,7 @@ Setup tree structure easily using nodes.
 <img src="https://imgur.com/QjE9a9n.png" width="300"/>
 
 ## Modular system
-Bahavior trees are highly scalable by design, allowing for iterable design where nodes are added/removed to reach a complex AI one step at a time.
+Bahavior trees are highly scalable by design, allowing for iterable design where nodes are added, removed and even reused to reach a complex AI one step at a time.
 
 <img src="https://imgur.com/MdoCMMO.png" width="300"/>
 
@@ -27,7 +27,7 @@ Built-in nodes offer customization whenever possible, and if you need evern more
 ## Debugger
 A powerful and optimized debugger that allows for viewing active behavior trees, their decision making and data (blackboards) in real-time. It also offsers debugging tools.
 
-<img src="https://imgur.com/DQsOtrp.png" width="800"/>
+<img src="https://imgur.com/JapUHND.png" width="1000"/>
 
 # Example Projects
 (coming soon)
@@ -35,8 +35,8 @@ A powerful and optimized debugger that allows for viewing active behavior trees,
 If you've made a game that uses this addon, feel free to reach out and I could mention it here.
 
 # Documentations
-If you are new to behavior trees or wish to refresh your knowledge of how they work [start here](addons/DVs_behavior_tree/docs/start_here.md).\
-Documentations of this addon and its features [can be found here](addons/DVs_behavior_tree/docs/using_addon.md).
+If you are new to behavior trees or wish to refresh your knowledge of how they work [start here](<addons/DVs_behavior_tree/docs/(1) start here.md>).\
+Documentations of this addon and its features [can be found here](<addons/DVs_behavior_tree/docs/(2) using addon.md>).
 
 # Help
 ## Roadmap

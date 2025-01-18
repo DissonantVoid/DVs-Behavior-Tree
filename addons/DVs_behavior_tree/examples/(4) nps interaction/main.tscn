@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://c4vu116edcvtv"]
 
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/main.gd" id="1_mr5b2"]
-[ext_resource type="PackedScene" uid="uid://cw2i440s61g7f" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_gatherer.tscn" id="2_vhtuk"]
-[ext_resource type="PackedScene" uid="uid://t12x4g4sq0a0" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_craftsman.tscn" id="3_iegl6"]
-[ext_resource type="PackedScene" uid="uid://c5qdxekwkrelp" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_seller.tscn" id="4_c6rxe"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/main.gd" id="1_mr5b2"]
+[ext_resource type="PackedScene" uid="uid://cw2i440s61g7f" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/agent_gatherer.tscn" id="2_vhtuk"]
+[ext_resource type="PackedScene" uid="uid://t12x4g4sq0a0" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/agent_craftsman.tscn" id="3_iegl6"]
+[ext_resource type="PackedScene" uid="uid://c5qdxekwkrelp" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/agent_seller.tscn" id="4_c6rxe"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_mr5b2")

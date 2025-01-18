@@ -1,27 +1,26 @@
 [gd_scene load_steps=16 format=3 uid="uid://c12g5sbh5q6w"]
 
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/dog.gd" id="1_t0r5f"]
-[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="1_uqqi1"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(3) dog pack/dog.gd" id="1_t0r5f"]
+[ext_resource type="Texture2D" uid="uid://d2epb4cykmqfd" path="res://addons/DVs_behavior_tree/examples/(shared)/agent_sprite.svg" id="2_3k0rf"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="3_ycb7x"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_d14so"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/calculate_attack_time.gd" id="5_4kxma"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(3) dog pack/behaviors/calculate_attack_time.gd" id="5_4kxma"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="5_4n8iy"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/blackboard_check.gd" id="6_g7aej"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/retreat.gd" id="8_2w1sl"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(3) dog pack/behaviors/retreat.gd" id="8_2w1sl"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback_random.gd" id="8_c3vjj"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/move_into_position.gd" id="8_kqdxj"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/move_to_target.gd" id="8_tidqh"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/circulate.gd" id="9_cjqnk"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/attack.gd" id="9_lpaqs"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(3) dog pack/behaviors/move_into_position.gd" id="8_kqdxj"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(3) dog pack/behaviors/move_to_target.gd" id="8_tidqh"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(3) dog pack/behaviors/circulate.gd" id="9_cjqnk"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(3) dog pack/behaviors/attack.gd" id="9_lpaqs"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="10_bx4bi"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/dog pack/behaviors/intimidate.gd" id="12_gllua"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(3) dog pack/behaviors/intimidate.gd" id="12_gllua"]
 
 [node name="Dog" type="Node2D"]
 script = ExtResource("1_t0r5f")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("1_uqqi1")
+texture = ExtResource("2_3k0rf")
 
 [node name="TalkLabel" type="Label" parent="."]
 offset_left = -114.0

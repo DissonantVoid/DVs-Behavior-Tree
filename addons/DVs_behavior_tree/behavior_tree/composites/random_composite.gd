@@ -20,6 +20,9 @@ var _internal_weights : Dictionary # godot doesn't seem to keep track of custom 
 var _previous_child : BTNode = null
 
 func _ready():
+	super()
+	if Engine.is_editor_hint(): return
+	
 	child_entered_tree.connect(_on_child_entered)
 
 func enter():

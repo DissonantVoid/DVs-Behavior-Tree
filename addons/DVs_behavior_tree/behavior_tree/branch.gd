@@ -23,7 +23,7 @@ func get_active_child() -> BTNode:
 	return _active_child
 
 func force_pick_child(child : BTNode):
-	# called by tree, must be called after enter() and before tick()
+	# called by tree
 	# forces branch to pick one of its children instead of letting it do its thing
 	# used for conditional abort support but has potential to be used
 	# for future debugging and unit testing
@@ -31,11 +31,16 @@ func force_pick_child(child : BTNode):
 		push_error("She says I am the one🎵 but the kid is not my son🎵")
 		return
 	
+	# TODO: calling enter will cause a branch to setup and enter its _active_child
+	#       which is the normal behavior but in this case we want to force pick a
+	#       different child. for now we let the branch (self) enter its child
+	#       then we force it to exit afterward.
+	self.enter()
 	if _active_child:
 		_active_child.exit(true)
 		_active_child = null
-	
 	_active_child = child
+	
 	child.enter()
 
 func _is_main_path_variable_changed():

@@ -163,7 +163,7 @@ size_flags_horizontal = 8
 
 [node name="CenterView" type="Button" parent="HSplitContainer/TreeGraph/OptionsPanel/HBoxContainer"]
 layout_mode = 2
-text = "Center view"
+text = "Center View"
 icon = ExtResource("3_ofwat")
 icon_alignment = 1
 vertical_icon_alignment = 0

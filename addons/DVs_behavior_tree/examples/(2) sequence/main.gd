@@ -2,7 +2,7 @@ extends Node2D
 
 @onready var _obstacles_container : Node2D = $Obstacles
 
-const _obstance_scene : PackedScene = preload("res://addons/DVs_behavior_tree/examples/sequence/obstacle.tscn")
+const _obstance_scene : PackedScene = preload("obstacle.tscn")
 
 func _input(event : InputEvent):
 	if event is InputEventMouseButton && event.pressed && event.button_index == MOUSE_BUTTON_LEFT:

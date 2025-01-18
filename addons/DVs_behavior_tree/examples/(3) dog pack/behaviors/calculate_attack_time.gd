@@ -1,6 +1,6 @@
 extends BTCompositeAttachment
 
-func _tick(delta : float):
+func tick(delta : float):
 	super(delta)
 	
 	# NOTE: in an actual game there would be some centralized croud manager class

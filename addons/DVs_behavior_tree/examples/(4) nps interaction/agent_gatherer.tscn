@@ -1,23 +1,22 @@
 [gd_scene load_steps=11 format=3 uid="uid://cw2i440s61g7f"]
 
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/agent_gatherer.gd" id="1_226yq"]
-[ext_resource type="Texture2D" uid="uid://con0yamo1xqaa" path="res://icon.svg" id="2_4vsit"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/agent_gatherer.gd" id="1_226yq"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="2_s4sck"]
+[ext_resource type="Texture2D" uid="uid://d2epb4cykmqfd" path="res://addons/DVs_behavior_tree/examples/(shared)/agent_sprite.svg" id="2_x8t3j"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="3_26w2e"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/wait_for_time.gd" id="4_mym6w"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/gatherer/gather_materials.gd" id="4_um8xl"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/behaviors/gatherer/gather_materials.gd" id="4_um8xl"]
 [ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="4_ve70f"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/gatherer/can_gather.gd" id="6_urshs"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/nps interaction/behaviors/gatherer/bring_materials.gd" id="7_uhmpb"]
-[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared_scripts)/behaviors/move_to_random.gd" id="10_7ya2b"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/behaviors/gatherer/can_gather.gd" id="6_urshs"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(4) nps interaction/behaviors/gatherer/bring_materials.gd" id="7_uhmpb"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/examples/(shared)/behaviors/move_to_random.gd" id="10_7ya2b"]
 
 [node name="AgentMerchant" type="Node2D"]
 script = ExtResource("1_226yq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0.283333, 1, 0, 1)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("2_4vsit")
+texture = ExtResource("2_x8t3j")
 
 [node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
 script = ExtResource("2_s4sck")
