@@ -2,15 +2,14 @@
 extends MarginContainer
 
 @onready var _panel_style_box : StyleBox = $PanelContainer.get_theme_stylebox("panel")
-@onready var _key_label : Label = $PanelContainer/HBoxContainer/Key
+@onready var _key_label : Label = $PanelContainer/HBoxContainer/ScrollContainer/Key
 @onready var _value_label : Label = $PanelContainer/HBoxContainer/Value
 
 const _even_panel_color : Color = Color("35314a")
 const _odd_panel_color : Color = Color("4a4563")
 
-# TODO: spread value over multiple lines if it's too long
-#       also look into replacing this class with EditorProperty objects
-#       to get something similar to Stack Tace variables
+# NOTE: use built-in property inspectors in the future
+#       https://github.com/godotengine/godot-proposals/issues/1761
 func setup(key : String, value : String):
 	_key_label.text = key
 	_value_label.text = value

@@ -75,6 +75,7 @@ func _set_status(status : Status):
 	
 	_status = status
 
+# override
 func _is_main_path_variable_changed():
 	# used by branches, especially those that support parallel ticking to determine
 	# which child is the main one. a branch must have 1 main child.

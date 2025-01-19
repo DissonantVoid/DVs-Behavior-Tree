@@ -98,47 +98,40 @@ func set_status(status : BTNode.Status, is_main_path : bool):
 	_last_status = status
 	
 	# line
-	if is_main_path:
-		if status == BTNode.Status.running:
-			_connection_line.default_color = _line_on_color if is_main_path else _parallel_color
-			# display line above other lines
-			_connection_line.z_index = 1
-		else:
-			_connection_line.default_color = _line_off_color
-			_connection_line.z_index = 0
-	else:
-		# parallel color regardless of status
-		# TODO: there are cases where we need to reset line color in exit()
-		_connection_line.default_color = _parallel_color
+	if status == BTNode.Status.running:
+		_connection_line.default_color = _line_on_color if is_main_path else _parallel_color
+		# display line above other lines
 		_connection_line.z_index = 1
+	else:
+		_connection_line.default_color = _line_off_color
+		_connection_line.z_index = 0
 	
-	# style color animation
+	# pick colors
+	var status_color : Color
 	var style_color : Color
+	match _last_status:
+		BTNode.Status.undefined:   status_color = _undefined_color
+		BTNode.Status.running:     status_color = _running_color
+		BTNode.Status.success:     status_color = _success_color
+		BTNode.Status.failure:     status_color = _failure_color
+		BTNode.Status.interrupted: status_color = _interrupted_color
+	
 	if is_main_path:
-		match _last_status:
-			BTNode.Status.undefined:
-				style_color = _undefined_color
-			BTNode.Status.running:
-				style_color = _running_color
-			BTNode.Status.success:
-				style_color = _success_color
-			BTNode.Status.failure:
-				style_color = _failure_color
-			BTNode.Status.interrupted:
-				style_color = _interrupted_color
+		style_color = status_color
 	else:
 		style_color = _parallel_color
 	
+	# status text
+	_status_label.text = "- " + BTNode.Status.find_key(_last_status) + " -"
+	_status_label.get_theme_stylebox("normal").bg_color = status_color
+	_status_label_line.get_theme_stylebox("separator").color = status_color
+	
+	# stylebox border
 	if _stylebox_tween && _stylebox_tween.is_valid():
 		_stylebox_tween.kill()
 	_stylebox.border_color = style_color
 	_stylebox_tween = create_tween()
 	_stylebox_tween.tween_property(_stylebox, "border_color", _undefined_color, _stylebox_tween_time)
-	
-	# status text
-	_status_label.text = "- " + BTNode.Status.find_key(_last_status) + " -"
-	_status_label.get_theme_stylebox("normal").bg_color = style_color
-	_status_label_line.get_theme_stylebox("separator").color = style_color
 	
 	# scale animation for leaves
 	if _is_leaf:

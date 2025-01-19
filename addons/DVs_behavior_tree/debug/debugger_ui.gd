@@ -194,12 +194,6 @@ func active_tree_structure_received(nodes : Dictionary, relations : Dictionary):
 							
 							if lm_grandparent == rm_grandparent:
 								# common ancestor found. push all nodes below the ancestor to the left or right
-								# TODO: while the current spacing approach spaces all nodes properly, parents
-								#       are sometimes spaced way appart. we can make x_offset a range instead of 1 value
-								#       last child gets offseted by the end value of the range while parent is offseted
-								#       by the start value of the range and everything in between by everything in between.
-								#       another approach is to do one extra pass, for each depth calculate center of all nodes
-								#       then move each node towards that center without touching the other nodes in that direction
 								var push_nodes_recursive : Callable = func(graph_node_id : int, x_offset : float, func_ : Callable):
 									_id_to_graph_node_map[graph_node_id].position.x += x_offset
 									if relations.has(graph_node_id):

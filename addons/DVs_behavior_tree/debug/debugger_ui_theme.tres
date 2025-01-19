@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bbuhj2nojku5d"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://bbuhj2nojku5d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q0eom"]
 bg_color = Color(0.686275, 0.615686, 0.85098, 1)
@@ -33,11 +33,6 @@ bg_color = Color(0.290196, 0.270588, 0.388235, 1)
 border_width_bottom = 2
 border_color = Color(0.686275, 0.615686, 0.85098, 1)
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_bb3w7"]
-color = Color(0.290196, 0.270588, 0.388235, 1)
-thickness = 2
-vertical = true
-
 [resource]
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/styles/focus = SubResource("StyleBoxFlat_q0eom")
@@ -46,4 +41,3 @@ Button/styles/normal = SubResource("StyleBoxFlat_2uf6g")
 Button/styles/pressed = SubResource("StyleBoxFlat_5n6as")
 HSeparator/styles/separator = SubResource("StyleBoxLine_x6ip0")
 RichTextLabel/styles/normal = SubResource("StyleBoxFlat_t8bdr")
-VSeparator/styles/separator = SubResource("StyleBoxLine_bb3w7")

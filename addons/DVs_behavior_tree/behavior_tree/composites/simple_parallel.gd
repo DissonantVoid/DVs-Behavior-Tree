@@ -70,9 +70,8 @@ func tick(delta : float):
 				_parallel_child.is_main_path = false
 				_set_status(status)
 		else:
-			if _is_first_child_ticking == true:
-				_parallel_child.exit(true) # interrupt parallel child
-				_parallel_child = null
+			_parallel_child.exit(true) # interrupt parallel child
+			_parallel_child = null
 			
 			_set_status(status)
 	else:

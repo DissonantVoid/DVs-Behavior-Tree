@@ -12,6 +12,6 @@ editor_description = "This is an example of sharing data between agents using th
 Left click to add more dogs."
 
 [node name="Target" type="Sprite2D" parent="."]
-position = Vector2(667, 342)
+position = Vector2(640, 360)
 scale = Vector2(2, 2)
 texture = ExtResource("1_qab8c")

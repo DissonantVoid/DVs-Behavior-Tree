@@ -6,17 +6,17 @@ reachout to people after 1.4
 - add to godotassetlibrary
 
 1.5:\
-[] move license and readme into the addon folder and include icon with the addon\
+[X] add license duplicate to addon folder\
 [..] finish space game example\
-[] document "your first behavior tree"\
-[] mark functions that are expected to be overridden\
+[..] document "your first behavior tree"\
+[X] mark functions that are expected to be overridden\
 [] additional nodes (in their own "extra" folder so we don't bloat the main folder):\
    -play animation (optional wait for finish)\
    -play sound (optional wait for finish)\
    -agent look at (2d/3d) (requires character2d)\
    -agent go to (2d/3d) (requires nav agent and nav mesh)\
    -play particles (optional wait for finish)\
-[] script templates without comments\
+[X] script templates without comments (and update image about using templates)\
 
 ## Future
 other nodes:
@@ -45,7 +45,7 @@ make into gdextention plugin
 - color palette: primary af9dd9, secondary 4a4563
 - icon file name should match scene file name of the same node
 - use same node descriptions in code for docs node descriptions
-- minimum supported version is 4.3
+- mark functions intended to be overridden by a "# override" comment. do so only in first class that defines it
 
 ## Resources
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference\

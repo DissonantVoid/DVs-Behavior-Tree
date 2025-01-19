@@ -1,4 +1,5 @@
 The examples folder provides different use cases and feature showcase of the addon.
+Each scene includes a ReadMe node with a description explaining how the scene works.
 
 Note that the examples were designed with a base resolution of 1280x720
 which means changing the base resolution to something else could cause some nodes

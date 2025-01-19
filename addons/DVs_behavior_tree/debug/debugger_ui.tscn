@@ -142,7 +142,7 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.686275, 0.615686, 0.85098, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 26
 text = "No Behavior Tree Selected."
 horizontal_alignment = 1
 

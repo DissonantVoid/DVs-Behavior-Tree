@@ -39,11 +39,11 @@ func tick(delta : float):
 		_set_status(Status.failure)
 		return
 	
-	var exp : Expression = Expression.new()
-	exp.parse(value_expression)
-	var result : Variant= exp.execute([], self)
+	var expr := Expression.new()
+	expr.parse(value_expression)
+	var result : Variant = expr.execute([], self)
 	
-	if exp.has_execute_failed():
+	if expr.has_execute_failed():
 		_set_status(Status.failure)
 		return
 	

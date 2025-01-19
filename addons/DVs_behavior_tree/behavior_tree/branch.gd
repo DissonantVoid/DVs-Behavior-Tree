@@ -51,6 +51,10 @@ func _is_main_path_variable_changed():
 	for child : BTNode in get_valid_children():
 		child.is_main_path = is_main_path
 
+func _active_child_changed():
+	# mainly used to run code when the active child changes and right before _active_child.enter() is called
+	return
+
 # utility
 
 func get_valid_children() -> Array[BTNode]:
@@ -77,7 +81,3 @@ func _get_next_valid_child(index : int = -1) -> BTNode:
 		next_index += 1
 	
 	return null
-
-func _active_child_changed():
-	# mainly used to run code when the active child changes and right before _active_child.enter() is called
-	return

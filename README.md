@@ -29,10 +29,14 @@ A powerful and optimized debugger that allows for viewing active behavior trees,
 
 <img src="https://imgur.com/JapUHND.png" width="1000"/>
 
-# Example Projects
+# Examples
+## Projects
 (coming soon)
 
 If you've made a game that uses this addon, feel free to reach out and I could mention it here.
+
+## Built-in Examples
+Small example scenes that cover a range of use cases are included with the addon in `examples/`, please read `examples/readme_first.txt`.
 
 # Documentations
 If you are new to behavior trees or wish to refresh your knowledge of how they work [start here](<addons/DVs_behavior_tree/docs/(1) start here.md>).\

@@ -17,10 +17,16 @@ These states are ordered by importance so following the mouse takes precedence o
 Left click to add more agents."
 
 [node name="Agent" parent="." instance=ExtResource("2_y7uu2")]
-position = Vector2(92, 84)
+position = Vector2(100, 100)
 
 [node name="Agent2" parent="." instance=ExtResource("2_y7uu2")]
-position = Vector2(1183, 86)
+position = Vector2(1180, 100)
 
 [node name="Agent3" parent="." instance=ExtResource("2_y7uu2")]
-position = Vector2(616, 352)
+position = Vector2(640, 360)
+
+[node name="Agent4" parent="." instance=ExtResource("2_y7uu2")]
+position = Vector2(100, 620)
+
+[node name="Agent5" parent="." instance=ExtResource("2_y7uu2")]
+position = Vector2(1180, 620)

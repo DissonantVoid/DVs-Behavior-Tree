@@ -14,4 +14,4 @@ Left click to add obstacles."
 [node name="Obstacles" type="Node2D" parent="."]
 
 [node name="Agent" parent="." instance=ExtResource("2_tbdoq")]
-position = Vector2(700, 229)
+position = Vector2(640, 360)

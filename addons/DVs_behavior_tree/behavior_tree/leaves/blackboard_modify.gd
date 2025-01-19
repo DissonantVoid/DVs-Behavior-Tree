@@ -42,10 +42,10 @@ func tick(delta : float):
 		behavior_tree.global_blackboard if use_global_blackboard else behavior_tree.blackboard
 	
 	if action == ActionType.write:
-		var exp : Expression = Expression.new()
-		exp.parse(value_expression)
-		var result : Variant = exp.execute([], self)
-		if exp.has_execute_failed():
+		var expr := Expression.new()
+		expr.parse(value_expression)
+		var result : Variant = expr.execute([], self)
+		if expr.has_execute_failed():
 			_set_status(Status.failure)
 			return
 		
