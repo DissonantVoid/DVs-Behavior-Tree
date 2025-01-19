@@ -171,7 +171,7 @@ Example: An enemy running an attack combo sequence with the self abort condition
 # Custom Nodes
 While this addon comes with a bunch of built-in nodes, creating your own custom nodes is inevitable especially when it comes to custom leaves that tend to be game-specific.\
 There are built-in script templates to make inheriting easier.\
-<img src="https://imgur.com/MqwHVNj.png"/>
+<img src="https://imgur.com/0HYOrTi.png"/>
 
 To create your own node add a Godot `Node` to the scene then attach a script to it and make sure it inherites the proper node.\
 <img src="https://imgur.com/teDP7hk.png"/>
