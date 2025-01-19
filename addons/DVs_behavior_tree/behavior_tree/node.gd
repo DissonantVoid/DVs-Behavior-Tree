@@ -10,7 +10,7 @@ signal exited
 signal ticking(delta)
 
 enum Status {undefined=0, running=1, success=2, failure=3, interrupted=4}
-enum StatusBinary                   {success=2, failure=3}
+enum StatusBinary                   {success=2, failure=3} # used by some export variables in some nodes
 
 ## Optional description used by the debugger, supports BBCode.
 @export_multiline var description : String

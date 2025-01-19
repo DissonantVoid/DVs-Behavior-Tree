@@ -3,16 +3,20 @@ reachout to people after 1.4
 - reddit/discord
 - https://github.com/godotengine/awesome-godot
 - youtubers: https://www.youtube.com/@mrelipteach, https://www.youtube.com/gamefromscratch, https://www.youtube.com/@dev-worm, https://www.youtube.com/@ThisIsVini/videos
+- add to godotassetlibrary
 
 1.5:\
+[] move license and readme into the addon folder and include icon with the addon\
 [..] finish space game example\
 [] document "your first behavior tree"\
+[] mark functions that are expected to be overridden\
 [] additional nodes (in their own "extra" folder so we don't bloat the main folder):\
    -play animation (optional wait for finish)\
    -play sound (optional wait for finish)\
    -agent look at (2d/3d) (requires character2d)\
    -agent go to (2d/3d) (requires nav agent and nav mesh)\
    -play particles (optional wait for finish)\
+[] script templates without comments\
 
 ## Future
 other nodes:

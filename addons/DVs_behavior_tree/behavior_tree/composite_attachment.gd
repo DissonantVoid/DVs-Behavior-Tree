@@ -38,13 +38,18 @@ func tick(delta : float):
 	return
 
 func _get_configuration_warnings() -> PackedStringArray:
+	var warnings := PackedStringArray()
+	
 	var has_previous_node_sibling : bool = false
-	for i : int in range(get_index(), 0, -1):
+	for i : int in get_index():
 		if get_parent().get_child(i) is BTNode:
 			has_previous_node_sibling = true
 			break
 	
-	if get_parent() is BTComposite == false || has_previous_node_sibling:
-		return ["Attachment node must be a child of a Composite node, and must be positioned before any non-attachment children"]
+	if get_parent() is BTComposite == false:
+		warnings.append("Attachment node must be a child of a Composite node")
+		
+	if has_previous_node_sibling:
+		warnings.append("Attachment node must be positioned before any non-attachment children")
 	
-	return []
+	return warnings

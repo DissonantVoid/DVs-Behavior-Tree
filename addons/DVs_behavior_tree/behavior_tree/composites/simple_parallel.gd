@@ -64,7 +64,7 @@ func tick(delta : float):
 				_is_first_child_ticking = false
 				_active_child.exit(false)
 				_active_child = null
-				_parallel_child.is_main_path = true
+				_parallel_child.is_main_path = self.is_main_path
 				_set_status(Status.running)
 			else:
 				_parallel_child.is_main_path = false

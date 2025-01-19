@@ -8,7 +8,10 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/node.gd"
 ## If true higher priority composites cannot interrupt this branch even if their interrupt_target is set to low_priority or both.
 @export var uninterruptible : bool = false
 
-var _active_child : BTNode = null
+var _active_child : BTNode = null :
+	set(value):
+		_active_child = value
+		_active_child_changed()
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
@@ -74,3 +77,7 @@ func _get_next_valid_child(index : int = -1) -> BTNode:
 		next_index += 1
 	
 	return null
+
+func _active_child_changed():
+	# mainly used to run code when the active child changes and right before _active_child.enter() is called
+	return

@@ -98,13 +98,19 @@ func set_status(status : BTNode.Status, is_main_path : bool):
 	_last_status = status
 	
 	# line
-	if status == BTNode.Status.running:
-		_connection_line.default_color = _line_on_color if is_main_path else _parallel_color
-		# display line above other lines
-		_connection_line.z_index = 1
+	if is_main_path:
+		if status == BTNode.Status.running:
+			_connection_line.default_color = _line_on_color if is_main_path else _parallel_color
+			# display line above other lines
+			_connection_line.z_index = 1
+		else:
+			_connection_line.default_color = _line_off_color
+			_connection_line.z_index = 0
 	else:
-		_connection_line.default_color = _line_off_color
-		_connection_line.z_index = 0
+		# parallel color regardless of status
+		# TODO: there are cases where we need to reset line color in exit()
+		_connection_line.default_color = _parallel_color
+		_connection_line.z_index = 1
 	
 	# style color animation
 	var style_color : Color

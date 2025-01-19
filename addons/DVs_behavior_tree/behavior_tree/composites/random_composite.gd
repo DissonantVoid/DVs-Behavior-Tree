@@ -21,9 +21,8 @@ var _previous_child : BTNode = null
 
 func _ready():
 	super()
-	if Engine.is_editor_hint(): return
-	
-	child_entered_tree.connect(_on_child_entered)
+	if Engine.is_editor_hint():
+		child_entered_tree.connect(_on_child_entered)
 
 func enter():
 	super()
@@ -33,6 +32,7 @@ func enter():
 
 func _pick_rand_child() -> BTNode:
 	var children : Array[BTNode] = get_valid_children()
+	if children.size() == 0: return null
 	if children.size() == 1: return children[0]
 	
 	if no_repeat && _previous_child:

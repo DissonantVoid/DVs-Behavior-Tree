@@ -8,10 +8,8 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
 
 enum ConditionalAbort {
 	none,         ## No conditional abort.
-	low_priority, ## If first child is a condition, as long as a lower priority node is ticking (a node that comes after self in the tree and all its offsprings),
-				  ## this will tick its first child in parallel. If the condition succeeds the lower priority node will be interrupted and this will run instead.
-	self_,        ## If first child is a condition, as long as self is ticking its children
-				  ## it will also tick its first child in parallel, if the condition fails this will interrupt its running child and start over.
+	low_priority, ## If first child is a condition, as long as a lower priority node is ticking (a node that comes after self in the tree and all its offsprings), this will tick its first child in parallel. If the condition succeeds the lower priority node will be interrupted and this will run instead.
+	self_,        ## If first child is a condition, as long as self is ticking its children it will also tick its first child in parallel, if the condition fails this will interrupt its running child and start over.
 	both          ## Same effect as low_priority and self combined.
 }
 
@@ -47,8 +45,8 @@ func _ready():
 	for child : Node in get_children():
 		if child is BTCompositeAttachment:
 			_attachments.append(child)
-		else:
-			# ignore attachments placed after other nodes, BTCompositeAttachment will handle warnings
+		elif child is BTNode:
+			# ignore attachments placed after other behavior nodes, BTCompositeAttachment will handle warnings
 			break
 
 func enter():
@@ -60,7 +58,7 @@ func enter():
 	# ConditionalAbort.low_priority, abort child in case self was entered naturaly without having had interrupted another branch
 	if (conditional_abort == ConditionalAbort.low_priority ||
 	conditional_abort == ConditionalAbort.both) && _conditional_abort_child:
-		_exit_cond_abord_child_if_running(true)
+		_exit_cond_abort_child_if_running(true)
 	
 	# ConditionalAbort.self_, get conditional
 	if (conditional_abort == ConditionalAbort.self_ ||
@@ -74,10 +72,10 @@ func enter():
 func exit(is_interrupted : bool):
 	super(is_interrupted)
 	
-	# interrupt self abort child if it's still running
+	# stop self abort child if it's still running
 	if (conditional_abort == ConditionalAbort.self_ ||
 	conditional_abort == ConditionalAbort.both) && _conditional_abort_child:
-		_exit_cond_abord_child_if_running(true)
+		_exit_cond_abort_child_if_running(is_interrupted)
 	
 	# stop attachments
 	for attachment : BTCompositeAttachment in _attachments:
@@ -94,10 +92,6 @@ func tick(delta : float):
 	conditional_abort == ConditionalAbort.both) && _has_valid_cond_abort_child):
 		if _active_child == _conditional_abort_child:
 			# don't tick cond abort child if it's the current active child
-			# TODO: need a way to call _conditional_abort_child.exit right before _active_child
-			#       is ticked, so the cond child exits properly before being entered back as active child
-			#       for now, we just avoid calling _conditional_abort_child.exit which means that the child
-			#       is entered a second time without being exited
 			return
 		
 		if _conditional_abort_child == null:
@@ -108,7 +102,7 @@ func tick(delta : float):
 		_conditional_abort_child.tick(delta)
 		var status : Status = _conditional_abort_child.get_status()
 		if status == Status.failure:
-			_exit_cond_abord_child_if_running(false)
+			_exit_cond_abort_child_if_running(false)
 			# interrupt self and start over
 			self.exit(true)
 			self.enter()
@@ -129,19 +123,27 @@ func _get_configuration_warnings() -> PackedStringArray:
 	
 	return warnings
 
-func _exit_cond_abord_child_if_running(is_interrupted : bool):
+func _exit_cond_abort_child_if_running(is_interrupted : bool):
 	if _conditional_abort_child:
 		_conditional_abort_child.exit(is_interrupted)
 		_conditional_abort_child.is_main_path = self.is_main_path # cond abort node runs in parallel to main path
 		_conditional_abort_child = null
 
-# conditional abort (low_priority)
+func _active_child_changed():
+	if ((conditional_abort == ConditionalAbort.self_ ||
+	conditional_abort == ConditionalAbort.both) && _has_valid_cond_abort_child):
+		if _active_child == _conditional_abort_child:
+			# active child just changed to the same node as _conditional_abort_child
+			# disable conditional abort
+			_exit_cond_abort_child_if_running(true)
+
+# conditional abort (low_priority) #
 
 func _on_parent_entered():
 	return
 
 func _on_parent_exited():
-	_exit_cond_abord_child_if_running(true)
+	_exit_cond_abort_child_if_running(true)
 
 # TODO: what if self is not in the main path, for example self is a child of the second child of a parallel
 #       node, if it interrupts its sibling force_pick_child would break the parallel node
@@ -153,11 +155,11 @@ func _on_parent_ticking(delta : float):
 	if running_sibling == self:
 		# NOTE: the signal that calls this (BTNode.ticking) is received before parent ticks self, so we don't have to worry
 		#       about derived self entering cond child right as we're trying to make it exit
-		_exit_cond_abord_child_if_running(true)
+		_exit_cond_abort_child_if_running(true)
 		return
 	# sibling is higher priority than us because it's to the left
 	if running_sibling.get_index() < self.get_index():
-		_exit_cond_abord_child_if_running(true)
+		_exit_cond_abort_child_if_running(true)
 		return
 	
 	# check if one of the branches along the path to active node is uninterruptible
@@ -166,7 +168,7 @@ func _on_parent_ticking(delta : float):
 		var node : BTNode = path_to_active[i]
 		if node is BTBranch && node.uninterruptible:
 			# uninterruptible
-			_exit_cond_abord_child_if_running(true)
+			_exit_cond_abort_child_if_running(true)
 			return
 	
 	# tick our conditional child
@@ -178,6 +180,6 @@ func _on_parent_ticking(delta : float):
 	_conditional_abort_child.tick(delta)
 	var status : Status = _conditional_abort_child.get_status()
 	if status == Status.success:
-		_exit_cond_abord_child_if_running(false)
+		_exit_cond_abort_child_if_running(false)
 		# interrupt and redirect flow to self
 		behavior_tree.force_tick_node(self)
