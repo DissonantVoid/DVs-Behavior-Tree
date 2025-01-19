@@ -13,7 +13,3 @@
 # script templates
 /script_templates    !export-ignore
 /script_templates/** !export-ignore
-
-# license and readme
-/LICENSE    !export-ignore
-/README.md  !export-ignore
