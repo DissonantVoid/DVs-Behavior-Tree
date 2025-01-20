@@ -6,10 +6,10 @@ extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
 ## Calls different animation player functions and optionally waits for it to finish.
 
 enum Action {
-	play, ## Correspondence to animation_player.play().
-	play_backwards, ## Correspondence to animation_player.play_backwards().
-	pause, ## Correspondence to animation_player.pause().
-	stop ## Correspondence to animation_player.stop().
+	play, ## Corresponds to animation_player.play().
+	play_backwards, ## Corresponds to animation_player.play_backwards().
+	pause, ## Corresponds to animation_player.pause().
+	stop ## Corresponds to animation_player.stop().
 }
 
 ## Path to the animation player node.

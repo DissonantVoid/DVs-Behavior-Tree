@@ -3,8 +3,9 @@ Any help is welcome and appreciated. You can check the [roadmap](roadmap.md) for
 For pull requests please open an issue first to discuss your feature unless it's a simple bug fix or correction.
 
 ## Contribution Guidelines
-- Avoid asserting or crashing, prefer pushing errors/warnings and working around user error instead.
-- Color palette used: `#af9dd9` for primary color, `#4a4563` for secondary.
+- Avoid asserting or crashing, prefer pushing errors/warnings in the editor and working around user error at run-time.
+- Color palette used: `#af9dd9` for primary color, `#4a4563` for secondary. Other colors can be added as needed.
+- If a function of a base class is intended to be overridden by derived classes, place a "# override" comment above it.
 
 ### Style Guide
 For coding I use a slightly modified version of the [Godot official style](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide). Don't worry about it too much I can always do a sweep after the PR is merged but here are the main points:
@@ -43,3 +44,4 @@ And finally to make sure svg files are smaller and don't include unnecessary dat
 
 # Docs
 I try my best to keep the docs simple and easy to understand, but I'm not a native English speaker nor a good writer, any help with spelling or writing is very much appreciated.
+When updating node references in [using addon](./(2)%20using%20addon.md) use the same node description as the one in the node script.
