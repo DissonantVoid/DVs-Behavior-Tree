@@ -37,17 +37,20 @@ The addon comes with a few built in leaves.
 ### Actions
 Actions inherite from `BTAction`.\
 An action leaf performs an action such as movement or attacking or playing an animation etc...
-- **blackboard modify**: Writes or erases a blackboard entry.
-- **wait for time**: Returns running for a certain time before returning success.
+- **blackboard_modify**: Writes or erases a blackboard entry.
+- **wait_for_time**: Returns running for a certain time before returning success.
+- **extras/control_animation_player**: Calls different animation player functions and optionally waits for it to finish.
+- **extras/control_sound**: Calls different audio stream functions and optionally waits for it to finish.
+- **extras/control_particles**: Sets particle node to emit/stop and optionally waits for it to finish.
 ### Conditions
 Conditions inherite from `BTCondition`.\
 A condition leaf acts as a boolean, checking some condition and returning either success or failure.
-- **blackboard check**: Checks a key against an expression using a specified condition type.
+- **blackboard_check**: Checks a key against an expression using a specified condition type.
 
 ## Branches
 Branches inherite from `BTBranch`.\
 A branch is a node that can have further children.
-- **Behavior Tree**: The root of a behavior tree.
+- **behavior_tree**: The root of a behavior tree.
 ### Decorators
 Decorators inherite from `BTDecorator`.\
 Decorators can only have a single child which can be any other node.\
@@ -56,7 +59,7 @@ A decorator branch takes the status of its child node and modifies it.
 - **cooldown**: If child returns success or failure the cooldown will start preventing child from ticking again until a certain number of ticks occures, while the cooldown is active it will return the last status that the child has returned before the cooldown.\
 Example: Preventing an expensive condition check from running when it's not nessesary to recheck the result every tick.
 
-- **force status**: Forces success or failure to be returned.\
+- **force_status**: Forces success or failure to be returned.\
 Example: Running a non-critical action that we don't care about its status. A scavenger runs a sequence: Enter House->Check Loot Chest->Exit. In this case we don't care if Check Loot Chest succeeds or fails so we can attach it to a Force Status node that always returns success.
 
 - **inversion**: Inverts the status of its child.
@@ -72,7 +75,7 @@ Example: Checking if a condition node is false without the need for 2 condition 
 - **repeat**: Ticks child a certain number of times, can optionally be set to return success if a certain status is returned. If child returns running, it will not count that tick.\
 Example: A lumberjack NPC that hits a tree 3 times before it falls, the sequence would look like: Go To Tree->Repeat3(Hit Animation).
 
-- **time limit**: Fails if child fails to return success or failure before the timeout, otherwise returns child's status.
+- **time_limit**: Fails if child fails to return success or failure before the timeout, otherwise returns child's status.
 
 | Child Status | Decorator Status |
 | ---     | --- |
@@ -103,7 +106,7 @@ Example: An NPC that determines whether to work or go to sleep depending on the 
 
 Example: An NPC that needs to open a door: Sequence->Has Key?, Go To Door, Open Door, Enter.
 
-- **fallback random**: Similar to the normal fallback except children are ticked in a random order, when a child fails this picks a random next child.
+- **fallback_random**: Similar to the normal fallback except children are ticked in a random order, when a child fails this picks a random next child.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -113,7 +116,7 @@ Example: An NPC that needs to open a door: Sequence->Has Key?, Go To Door, Open 
 
 Example: Boss that picks a random attack out of its attack patterns.
 
-- **fallback reactive**: Similar to the normal fallback except when a child returns running this will start over from the first child and return running. The fallback is reactive in the sense that it rechecks previous children if a long running child is active reacting to any previous child as soon as its status goes from failure to success.
+- **fallback_reactive**: Similar to the normal fallback except when a child returns running this will start over from the first child and return running. The fallback is reactive in the sense that it rechecks previous children if a long running child is active reacting to any previous child as soon as its status goes from failure to success.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -123,7 +126,7 @@ Example: Boss that picks a random attack out of its attack patterns.
 
 Example: TODO
 
-- **sequence random**: Similar to the normal sequence except children are ticked in a random order, when a child succeeds this picks a random next child.
+- **sequence_random**: Similar to the normal sequence except children are ticked in a random order, when a child succeeds this picks a random next child.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -133,7 +136,7 @@ Example: TODO
 
 Example: Boss that picks a random attack out of its attack patterns.
 
-- **sequence reactive**: Similar to the normal sequence except when a child returns running this will start over from the first child and return running. The sequence is reactive in the sense that it rechecks previous children if a long running child is active reacting to any previous child as soon as its status goes from success to failure.
+- **sequence_reactive**: Similar to the normal sequence except when a child returns running this will start over from the first child and return running. The sequence is reactive in the sense that it rechecks previous children if a long running child is active reacting to any previous child as soon as its status goes from success to failure.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -143,7 +146,7 @@ Example: Boss that picks a random attack out of its attack patterns.
 
 Example: An NPC that deals with some fragile machinery in order. As soon as a previously active machine turns off the NPC drops what she's doing and goes back to activating that machine.
 
-- **simple parallel**: Runs exactly 2 nodes at the same time, the firt is a leaf node and the second can be any tree node. When the first child returns success or failure the second child is interrupted and this returns first child status, unless delayed mode is active in which case this waits for the second child to finish after the first one has finished and returns the second child's status.
+- **simple_parallel**: Runs exactly 2 nodes at the same time, the firt is a leaf node and the second can be any tree node. When the first child returns success or failure the second child is interrupted and this returns first child status, unless delayed mode is active in which case this waits for the second child to finish after the first one has finished and returns the second child's status.
 
 Example: Reactive AI that runs a long sequence like Patrolling while having a parallel Condition node checking if a threat is in range, in which case the Patrolling sequence is interrupted.
 

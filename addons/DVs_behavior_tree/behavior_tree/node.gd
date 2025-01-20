@@ -83,5 +83,5 @@ func _is_main_path_variable_changed():
 
 func _get_configuration_warnings() -> PackedStringArray:
 	if get_parent() is not BTBranch && self is not BTBehaviorTree:
-		return ["Behavior nodes must be parented to a BTBranch node"]
+		return ["Behavior nodes must be children of a BTBranch node"]
 	return []

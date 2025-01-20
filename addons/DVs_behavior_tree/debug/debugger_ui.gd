@@ -37,6 +37,7 @@ const _zoom_increment : float = 0.1
 var _is_panning : bool
 const _pan_sensitivity : float = 0.7
 
+# TODO: button to sort blackboard entries by last modified and alphabetic
 
 func setup(debugger : EditorDebuggerPlugin):
 	_debugger = debugger

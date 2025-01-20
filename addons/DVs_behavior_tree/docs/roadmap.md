@@ -7,15 +7,14 @@ reachout to people after 1.4
 
 1.5:\
 [X] add license duplicate to addon folder\
-[..] finish space game example\
 [..] document "your first behavior tree"\
 [X] mark functions that are expected to be overridden\
-[] additional nodes (in their own "extra" folder so we don't bloat the main folder):\
-   -play animation (optional wait for finish)\
-   -play sound (optional wait for finish)\
-   -agent look at (2d/3d) (requires character2d)\
-   -agent go to (2d/3d) (requires nav agent and nav mesh)\
-   -play particles (optional wait for finish)\
+[X] additional nodes (in their own "extra" folder so we don't bloat the main folder):\
+   -[X] play animation (optional wait for finish)\
+   -[X] play sound (optional wait for finish)\
+   -[X] play particles (optional wait for finish)\
+   -[X] documentation\
+   -[X] icons\
 [X] script templates without comments (and update image about using templates)\
 
 ## Future
