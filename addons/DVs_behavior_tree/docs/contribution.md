@@ -1,10 +1,9 @@
 # Contribution
-Any help is welcome and appreciated. You can check the [roadmap](roadmap.md) for ideas.\
+Any help is welcome and appreciated. You can check the [github issues](https://github.com/DissonantVoid/DVs-Behavior-Tree/issues) for ideas.\
 For pull requests please open an issue first to discuss your feature unless it's a simple bug fix or correction.
 
 ## Contribution Guidelines
 - Avoid asserting or crashing, prefer pushing errors/warnings in the editor and working around user error at run-time.
-- Color palette used: `#af9dd9` for primary color, `#4a4563` for secondary. Other colors can be added as needed.
 - If a function of a base class is intended to be overridden by derived classes, place a "# override" comment above it.
 
 ### Style Guide
@@ -38,7 +37,7 @@ Here's a visualization of the communication pipeline:
 # Icons
 There isn't much to help with at the moment unless new nodes are added or you have a better idea for an existing icon.\
 Please make sure that the icon is placed in `icons` for behavior nodes or `icons/debugger` for debugger icons, for nodes make sure the icon name matches the file name of the node that will use it (ex: action.svg for the icon used by action.gd).\
-Make sure that the icon typs is .svg and size is 32x32 pixels and use the color palette mentioned above.\
+Make sure that the icon typs is .svg and size is 32x32 pixels and use the color `#af9dd9`.\
 In the import settings in Godot set both `scale with editor` and `convert colors with editor theme` to true.\
 And finally to make sure svg files are smaller and don't include unnecessary data run the optimization script found in `scripts/optimize_svgs.bat` which should automatically scan the icons folder and optimize icons using [svgcleaner](https://docs.godotengine.org/en/4.2/contributing/development/editor/creating_icons.html#icon-optimization) which is an open source utility that can be downloaded [here](https://github.com/RazrFalcon/svgcleaner/releases). If you can't be bothered with the optimization step or can't run the .bat script on linux, I'll do it for you.
 

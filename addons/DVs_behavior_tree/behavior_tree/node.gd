@@ -64,6 +64,7 @@ func tick(delta : float):
 func get_status() -> Status:
 	return _status
 
+# TODO: a way to detect that user forgot to call this function in tick() and push error
 func _set_status(status : Status):
 	if status == Status.undefined:
 		push_error("Status.undefiend is not supposed to be returned by behavior tree nodes")

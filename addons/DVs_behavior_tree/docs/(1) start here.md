@@ -42,8 +42,27 @@ Note that there are other approaches to AI implementations like GOAP (Goal-Orien
 # Addon Documentation
 Now that you hopefully have an understanding of the basics you can explore the addon and its features [here](<(2) using addon.md>).
 
-# External Resources
-https://www.gamedeveloper.com/programming/behavior-trees-for-ai-how-they-work \
-https://robohub.org/introduction-to-behavior-trees/ \
-https://en.wikipedia.org/wiki/Behavior_tree_(artificial_intelligence,_robotics_and_control) \
+# Resources
+https://www.gamedeveloper.com/programming/behavior-trees-for-ai-how-they-work
+
+https://robohub.org/introduction-to-behavior-trees/
+
+https://en.wikipedia.org/wiki/Behavior_tree_(artificial_intelligence,_robotics_and_control)
+
 https://www.youtube.com/channel/UCov_51F0betb6hJ6Gumxg3Q
+
+https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference
+
+https://www.gamedeveloper.com/programming/behavior-trees-for-ai-how-they-work
+
+https://github.com/bitbrain/beehave
+
+https://github.com/draghan/behavior_tree
+
+https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---quick-start-guide?application_version=5.2
+
+https://www.behaviortree.dev/docs/
+
+https://www.gameaipro.com/GameAIPro/GameAIPro_Chapter06_The_Behavior_Tree_Starter_Kit.pdf
+
+https://github.com/aigamedev/btsk

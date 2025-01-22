@@ -1,11 +1,12 @@
 # Dissonant Void's Behavior Tree
-A modular behavior tree implementation addon for Godot4, with a user-friendly, extendable system allowing for adaptive AI that reacts to its environment and performs many actions without the code turning spagetti with each iteration.\
+A modular behavior tree implementation addon for Godot 4, with a user-friendly, extendable system allowing for adaptive AI that reacts to its environment and performs many actions without the code turning spagetti with each iteration.\
 With this addon you can make complex NPCs to populate your world, or bosses that can go through multiple phases with the combination of simple actions and flow control.
 
-This addon started as a small project for personal use to implement features I couldn't find in other BT addons (mainly node interruption) but had grew enough to be worth sharing with the community.
+> [!NOTE]
+> This addon started as a small project for personal use to implement features I couldn't find in other BT addons (mainly interruption related) but had grew enough to be worth sharing with the community.
 
 <p align="center">
-  <img src="icon.svg" alt="Icon" width="300"/>
+  <img src="icon.svg" alt="Icon" width="360"/>
 </p>
 
 ## Easy to setup and use
@@ -25,26 +26,26 @@ Built-in nodes offer customization whenever possible, and if you need evern more
 <img src="https://imgur.com/S7TndQs.png" width="300"/>
 
 ## Debugger
-A powerful and optimized debugger that allows for viewing active behavior trees, their decision making and data (blackboards) in real-time. It also offsers debugging tools.
+A powerful and optimized debugger that allows for viewing active behavior trees, their decision making and variables in real-time. It also offsers debugging tools.
 
 <img src="https://imgur.com/JapUHND.png" width="1000"/>
 
 # Examples
-## Projects
-(coming soon)
+## Showcase
+> [!NOTE]
+> If you've made a game or a tutorial that uses this addon, feel free to reach out and I could mention it here.
 
-If you've made a game that uses this addon, feel free to reach out and I could mention it here.
-
-## Built-in Examples
+## Examples
+[Official begginers guide](./addons/DVs_behavior_tree/docs/(3)%20your%20first%20behavior%20tree.md).\
 Small example scenes that cover a range of use cases are included with the addon in `examples/`, please read `examples/readme_first.txt`.
 
 # Documentations
-If you are new to behavior trees or wish to refresh your knowledge of how they work [start here](<addons/DVs_behavior_tree/docs/(1) start here.md>).\
-Documentations of this addon and its features [can be found here](<addons/DVs_behavior_tree/docs/(2) using addon.md>).
+If you are new to behavior trees or wish to refresh your knowledge of how they work [start here](./addons/DVs_behavior_tree/docs/(1)%20start%20here.md).\
+Documentation of this addon and its features [can be found here](./addons/DVs_behavior_tree/docs/(2)%20using%20addon.md).
 
 # Help
 ## Roadmap
-Roadmap can be found [here](addons/DVs_behavior_tree/docs/roadmap.md).\
+[Milestones](https://github.com/DissonantVoid/DVs-Behavior-Tree/milestones).\
 Code related smaller tasks can be found in code by searching for "TODO"s.
 ## Contribution
 Please see [contribution](addons/DVs_behavior_tree/docs/contribution.md).
@@ -58,6 +59,3 @@ Please see [contribution](addons/DVs_behavior_tree/docs/contribution.md).
 [Itch io](https://x-void-x.itch.io).
 
 [Discord Profile](https://discordapp.com/users/1109492493197787206).
-
-## Support
-Please support me on [Ko-Fi](https://ko-fi.com/dissonantvoid).

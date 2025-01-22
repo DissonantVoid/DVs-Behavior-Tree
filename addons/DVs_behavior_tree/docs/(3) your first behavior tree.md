@@ -1,5 +1,3 @@
-(WORK IN PROGRESS)
-
 # Table of Content
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
