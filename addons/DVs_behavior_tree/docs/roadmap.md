@@ -1,38 +1,36 @@
 ## Roadmap
-reachout to people after 1.5
+post 1.5:\
+use github issues, tags and milestones to organize this
+
+reachout to people
 - reddit/discord
 - https://github.com/godotengine/awesome-godot
 - youtubers: https://www.youtube.com/@mrelipteach, https://www.youtube.com/gamefromscratch, https://www.youtube.com/@dev-worm, https://www.youtube.com/@ThisIsVini/videos
 
-1.5:\
-[X] add license duplicate to addon folder\
-[..] document "your first behavior tree"\
-   - figure out best approach to have both project and its template in one repo without duplication\
-[X] mark functions that are expected to be overridden\
-[X] additional nodes (in their own "extra" folder so we don't bloat the main folder):\
-   - [X] play animation (optional wait for finish)
-   - [X] play sound (optional wait for finish)
-   - [X] play particles (optional wait for finish)
-   - [X] documentation
-   - [X] icons
-[X] script templates without comments (and update image about using templates)\
+1.6:\
+[] some placeholder node for prototyping that has its own debugger representation\
+[] unit tests: (see https://github.com/bitwes/Gut)
 
 ## Future
-other nodes:
-- parallel node (runs all children in parallel)
-- placeholder leaf (holds desciption of what the branch is going to have)
+Debugger real time display of export variables for each node, including custom nodes made by users. Might need to make it so you can only inspect the selected node to reduce debugger requests
 
-unit tests: (see https://github.com/bitwes/Gut)
-
-debugger real time display of export variables for each node, including custom nodes made by users
+Rename Decorators as Filters? more readable
 
 ability to modify blackboard values in debugger
+
+set default values for export variables, make sure it doesn't cause setter to not be called.
+
+expose blackboard as export variable for initialization
+
+add new signal emitter node that emits a signal defined in the agent script
+
+add icons to each node name in [using addon](./(2)%20using%20addon.md) see [here](https://stackoverflow.com/questions/255170/markdown-and-image-alignment)
+
+ability to display tree graph in a similar way to nodes in Nodes tab
 
 tree stats in debugger:
 - heatmap of the most visited nodes
 - benchmarks for whole tree and individual nodes
-
-make into gdextention plugin
 
 ## Resources
 https://nodecanvas.paradoxnotion.com/documentation/?section=bt-nodes-reference

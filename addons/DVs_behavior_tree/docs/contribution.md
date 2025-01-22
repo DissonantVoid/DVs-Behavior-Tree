@@ -39,9 +39,9 @@ Here's a visualization of the communication pipeline:
 There isn't much to help with at the moment unless new nodes are added or you have a better idea for an existing icon.\
 Please make sure that the icon is placed in `icons` for behavior nodes or `icons/debugger` for debugger icons, for nodes make sure the icon name matches the file name of the node that will use it (ex: action.svg for the icon used by action.gd).\
 Make sure that the icon typs is .svg and size is 32x32 pixels and use the color palette mentioned above.\
-In the import settings set both `scale with editor` and `convert colors with editor theme` to true.\
+In the import settings in Godot set both `scale with editor` and `convert colors with editor theme` to true.\
 And finally to make sure svg files are smaller and don't include unnecessary data run the optimization script found in `scripts/optimize_svgs.bat` which should automatically scan the icons folder and optimize icons using [svgcleaner](https://docs.godotengine.org/en/4.2/contributing/development/editor/creating_icons.html#icon-optimization) which is an open source utility that can be downloaded [here](https://github.com/RazrFalcon/svgcleaner/releases). If you can't be bothered with the optimization step or can't run the .bat script on linux, I'll do it for you.
 
 # Docs
-I try my best to keep the docs simple and easy to understand, but I'm not a native English speaker nor a good writer, any help with spelling or writing is very much appreciated.
+I try my best to keep the docs simple and easy to understand, but I'm not a native English speaker nor a good writer, any help with spelling or writing is very much appreciated.\
 When updating node references in [using addon](./(2)%20using%20addon.md) use the same node description as the one in the node script.

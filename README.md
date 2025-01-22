@@ -51,13 +51,13 @@ Please see [contribution](addons/DVs_behavior_tree/docs/contribution.md).
 
 # Credits
 ## Socials
-[Xhitter](https://twitter.com/Dissonant_Void)
+[Xhitter](https://twitter.com/Dissonant_Void).
 
-[Instagram](https://www.instagram.com/dissonant_void/)
+[Instagram](https://www.instagram.com/dissonant_void/).
 
-[Itch io](https://x-void-x.itch.io)
+[Itch io](https://x-void-x.itch.io).
 
-[Discord Profile](https://discordapp.com/users/1109492493197787206)
+[Discord Profile](https://discordapp.com/users/1109492493197787206).
 
 ## Support
-[Support me on Ko-Fi](https://ko-fi.com/dissonantvoid)
+Please support me on [Ko-Fi](https://ko-fi.com/dissonantvoid).

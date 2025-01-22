@@ -19,28 +19,28 @@ Other nodes that aren't part of this addon can be added anywhere in the tree and
 ## Tick
 A "tick" is a single update to the tree, think of it like a single call to `_process` or `_physics_process` (can be customized). When a tick occures, the tree root will tick its child which either does a certain action if it's a Leaf node or in turn ticks one of its children as a Branch node and so on all the way down. Depending on the nodes along the way and their status the tree will dynamically make decisions on what task needs to be performed next, or if a task must be interrupted in favor of another.
 ## Status
-Each node in the tree must set a status when it's ticked to determine its result. Specifically either `success`, `failure` or `running`.
+Each node in the tree must set a status when it's ticked to determine its result. Specifically either `Status.success`, `Status.failure` or `Status.running`.
 - success and failure signal that the node is done processing, prompting its parent to move on to the next child or succeed/fail itself.
-- Running indicates that the node is still processing, which prevents the flow from changing and ensurs that the parent continues to tick the same node.\
+- running indicates that the node is still processing, which prevents the flow from changing and ensurs that the parent continues to tick the same node.
+
 An example of this is moving an agent from A to B, the agent will set its status to `running` in each tick as long as it's moving, and will set its status to `success` when it reaches the destination or `failure` if point B is unreachable.
 ## Blackboard
-A blackboard is simply a Dictionary that holds data shared between all nodes in a behavior tree, it acts as a central storage for any node to access and modify for context-based information. For example, a blackboard can store the current health of an agent, allowing other nodes to adapt their behavior so the agent is more likely to flee if its health is low or enter a death state if its health reches zero.\
-There is also global blackboard, which is shared between all trees in the game. Note that the global blackboard is static meaning that it exists even when no instance of a behavior tree exists so the user is responsible for cleaning data that is no longer in use. An example use case is storing environmental information, such as the time of day or player location, which can then be accessed by multiple agents for different reasons.
+A blackboard is simply a Dictionary that holds data shared between all nodes in a behavior tree, it acts as a central storage for any node to access and modify. For example, a blackboard can store the current health of an agent, allowing other nodes to adapt their behavior so the agent is more likely to flee if its health is low or enter a death state if its health reches zero.\
+There is also global blackboard, which is shared between all trees in the game. Note that the global blackboard is static meaning that it exists even when no instance of a behavior tree exists so the user is responsible for erasing variables that is no longer in use. An example use case is storing environmental information, such as the time of day or player location, which can then be accessed by multiple agents for different reasons.
 
 # Nodes
 All behavior tree nodes inherite from `BTNode`. These are all the built-in behavior nodes:
 ## Leaves
 Leaves inherite from `BTLeaf`.\
-Leaves tend to be specific to each game and its setup so you'll have to create your own custom leaves (we will cover that below).\
-A leaf node cannot have any children, there are 2 types of leaf nodes: actions and conditions.\
-The addon comes with a few built in leaves.
+The addon comes with a few built in leaves but they tend to be specific to each game and its implementation so you'll mostly have to create your own custom leaves (we will cover that below).\
+A leaf node cannot have any children and is one of 2 types: actions and conditions.\
 ### Actions
 Actions inherite from `BTAction`.\
 An action leaf performs an action such as movement or attacking or playing an animation etc...
 - **blackboard_modify**: Writes or erases a blackboard entry.
 - **wait_for_time**: Returns running for a certain time before returning success.
 - **extras/control_animation_player**: Calls different animation player functions and optionally waits for it to finish.
-- **extras/control_sound**: Calls different audio stream functions and optionally waits for it to finish.
+- **extras/control_sound**: Calls different audio stream player functions and optionally waits for it to finish.
 - **extras/control_particles**: Sets particle node to emit/stop and optionally waits for it to finish.
 ### Conditions
 Conditions inherite from `BTCondition`.\
@@ -49,7 +49,7 @@ A condition leaf acts as a boolean, checking some condition and returning either
 
 ## Branches
 Branches inherite from `BTBranch`.\
-A branch is a node that can have further children.
+A branch is a node that can have children nodes.
 - **behavior_tree**: The root of a behavior tree.
 ### Decorators
 Decorators inherite from `BTDecorator`.\
@@ -146,21 +146,21 @@ Example: Boss that picks a random attack out of its attack patterns.
 
 Example: An NPC that deals with some fragile machinery in order. As soon as a previously active machine turns off the NPC drops what she's doing and goes back to activating that machine.
 
-- **simple_parallel**: Runs exactly 2 nodes at the same time, the firt is a leaf node and the second can be any tree node. When the first child returns success or failure the second child is interrupted and this returns first child status, unless delayed mode is active in which case this waits for the second child to finish after the first one has finished and returns the second child's status.
+- **simple_parallel**: Runs exactly 2 nodes at the same time, the first is a leaf node and the second can be any tree node. When the first child returns success or failure the second child is interrupted and this returns first child status, unless delayed mode is active in which case this waits for the second child to finish after the first one has finished and returns the second child's status.
 
 Example: Reactive AI that runs a long sequence like Patrolling while having a parallel Condition node checking if a threat is in range, in which case the Patrolling sequence is interrupted.
 
 ## Composite Attachments
-Composite attachements can be added as children of composite nodes. Unlike other nodes they don't inherite from `BTNode` and therefore don't report a status but still have access to the behavior tree. Attachements are inspired by Services from the Unreal Engine behavior tree implementation.\
+Composite attachements can be added as children of composite nodes. Unlike other nodes they don't inherite from `BTNode` and therefore don't set a status but still have access to the behavior tree. Attachements are inspired by Services from the Unreal Engine behavior tree implementation.\
 Composite attachments must be placed before any `BTNode` child. They will tick in parallel as long as the parent is ticking.
 
 The main use case for attachment is to run parallel code while a long action is running to monitor some game state or update the blackboard.\
-Composite attachments cannont interrupt other nodes.
+Composite attachments cannot interrupt other nodes.
 
 Example: Keep track of player position in the blackboard while an enemy runs a "Chase Player" sequence instead of updating the position in each node of the sequence.
 
 # Conditional Abort
-Conditional aborts allow composite nodes to interrupt their children or interrupt other branches based on a condition. There are two types of conditional aborts:
+Conditional aborts allow composite nodes to interrupt their children or interrupt other branches based on a condition. There are 3 types of conditional aborts:
 
 - low priority conditional abort: Allows a composite to interrupt any lower-priority branch. Low priority branches are sibling branches that come after that composite plus all their offsprings. Since composites usually prioritize children in order from first child to last, children that come first tend to have more priority.\
 A composite with this setting must have a condition or decorator node as its first child, as long as a lower priority branch is ticking, this composite will tick its condition node in parallel, if the node succeeds, the active branch will be interrupted and this branch will run instead. Low priority aborts are crucial for dynamic AI that can immediately react to significant changes in its environment.\
@@ -170,6 +170,8 @@ Examples:\
 
 - self conditional abort: Allows a composite to interrupt itself and start over when its first condition or decorator child fails. The composite must have a condition node as its first child that ticks in parallel while the parent ticks its other children.
 Example: An enemy running an attack combo sequence with the self abort condition node checking in parallel that the enemy has enough energy left to continue the combo.
+
+- both conditional abort: Does the same as both of the other types combined.
 
 # Custom Nodes
 While this addon comes with a bunch of built-in nodes, creating your own custom nodes is inevitable especially when it comes to custom leaves that tend to be game-specific.\
@@ -181,10 +183,10 @@ To create your own node add a Godot `Node` to the scene then attach a script to 
 
 ## Nodes
 These are the node types that can be inherited:
-- BTAction.
-- BTCondition.
-- BTDecorator.
-- BTComposite.
+- `BTAction`.
+- `BTCondition`.
+- `BTDecorator`.
+- `BTComposite`.
 
 Nodes should override the `tick` function for processing logic and can optionally override `enter` and `exit` for initialization and de-initialization.
 ```
@@ -215,7 +217,7 @@ behavior_tree.global_blackboard # static blackboard shared between all behavior 
 Custom branch nodes (Composites and Decorators) additionally have access to `_active_child` which represents the currently ticking child.
 
 ## Composite Attachment
-Inherite BTCompositeAttachment.
+Inherite `BTCompositeAttachment`.
 
 Similar to other nodes, composite attachments must override `tick` for processing, and optionally `parent_entered` and `parent_exiting` for initialization and de-initialization.
 
@@ -237,7 +239,7 @@ Each of the 3 functions must call `super()`.\
 Attachments also have access to the behavior tree with `behavior_tree`.
 
 # Your First Behavior Tree
-A guide on your first behavior tree can be found [here](<(3) your first behavior tree>).
+A beginner guide on making your first behavior tree can be found [here](./(3)%20your%20first%20behavior%20tree.md).
 
 # Debugging Tools
 The addon comes with a powerful debugger that displays the flow of every active tree in real-time, access to local blackboards and the global blackboard as well as providing debugging tools to affect the tree as it's running.\
@@ -278,5 +280,5 @@ There are many ways to approach organizing a behavior tree overtime and sometime
 # Limitations
 While this addon covers a wide range of use cases and aims to cover features from various other implementations, it does have some limitations that you should be aware of:
 - `await` is not supported in the `tick` function, when a node is ticked, it's expected to set a status immediately. This can be worked around by connecting the signal you wish to await to some function and check every tick if that function was called.
-- The addon is implemented in GDScript, which is comparatively slower than other supported languages. This shouldn't matter for most use cases, but you might notice performance issues if you have hundreds of NPCs running complex logic. The node-based setup also carries some overhead. While there are some optimizations in place to help with this, I might switch to C# or C++ in the future.
 - Tree structure is static, meaning nodes cannot be added/removed at run-time. This isn't a problem for the vast majority of use cases but it means that using this addon for things like evolution simulations and procedural AI is not possible. The decision to keep the tree static was made to avoid the countless headaches, stability problems and missed optimizations that come with dynamic trees.
+- The addon is implemented in GDScript, which is comparatively slower than other supported languages. This shouldn't matter for most use cases, but you might notice performance issues if you have hundreds of NPCs running complex logic. The node-based setup also carries some overhead. While there are some optimizations in place to help with this, I might switch to C# or C++ in the future.
