@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/control_sound.svg")
 class_name BTControlSound
-extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
+extends BTAction
 
 ## Calls different audio stream functions and optionally waits for it to finish.
 

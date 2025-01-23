@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/random_composite.svg")
 class_name BTRandomComposite
-extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
+extends BTComposite
 
 ## Base class for RNG based composites.
 

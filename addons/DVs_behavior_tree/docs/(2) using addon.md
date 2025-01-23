@@ -39,6 +39,7 @@ Actions inherite from `BTAction`.\
 An action leaf performs an action such as movement or attacking or playing an animation etc...
 - <img width="16px" src="../icons/blackboard_modify.svg"/> **blackboard_modify**: Writes or erases a blackboard entry.
 - <img width="16px" src="../icons/wait_for_time.svg"/> **wait_for_time**: Returns running for a certain time before returning success.
+- <img width="16px" src="../icons/signal_emitter.svg"/> **signal_emitter**: Emits a signal defined in the agent script.
 
 - <img width="16px" src="../icons/control_animation_player.svg"/> **extras/control_animation_player**: Calls different animation player functions and optionally waits for it to finish.
 - <img width="16px" src="../icons/control_sound.svg"/> **extras/control_sound**: Calls different audio stream player functions and optionally waits for it to finish.

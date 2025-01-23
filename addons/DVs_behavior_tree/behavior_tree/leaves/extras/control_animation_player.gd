@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/control_animation_player.svg")
 class_name BTControlAnimPlayer
-extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
+extends BTAction
 
 ## Calls different animation player functions and optionally waits for it to finish.
 
