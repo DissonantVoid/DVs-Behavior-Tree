@@ -7,7 +7,7 @@ extends Node
 
 signal entered
 signal exited
-signal ticking(delta)
+signal ticking(delta : float)
 
 enum Status {undefined=0, running=1, success=2, failure=3, interrupted=4}
 enum StatusBinary                   {success=2, failure=3} # used by some export variables in some nodes

@@ -38,16 +38,15 @@ func tick(delta : float):
 		_set_status(Status.success)
 		return
 	
-	if child_status != Status.running:
-		if max_tries > 0:
-			_tried += 1
-			if _tried == max_tries:
-				_set_status(Status.success)
-			else:
-				# next tick
-				_active_child.exit(false)
-				_active_child.enter()
-				_set_status(Status.running)
+	if child_status != Status.running && max_tries > 0:
+		_tried += 1
+		if _tried == max_tries:
+			_set_status(Status.success)
+		else:
+			# next tick
+			_active_child.exit(false)
+			_active_child.enter()
+			_set_status(Status.running)
 	else:
 		_set_status(Status.running)
 

@@ -32,6 +32,11 @@ window/size/viewport_height=720
 
 enabled=PackedStringArray("res://addons/DVs_behavior_tree/plugin.cfg")
 
+[gdunit4]
+
+settings/common/update_notification_enabled=false
+settings/common/server_connection_timeout_minutes=0
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://3eo373vojcsj"]
+
+[ext_resource type="Script" path="res://unit_tests/framework/ut_test_runner.gd" id="1_ph2fc"]
+
+[node name="UTTestRunner" type="Node"]
+script = ExtResource("1_ph2fc")
+_directory = "res://unit_tests/tests"

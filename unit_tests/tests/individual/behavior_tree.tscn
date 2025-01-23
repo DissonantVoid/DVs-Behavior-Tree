@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://ovyysbuycn8i"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="1_th5xy"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="2_t0p8k"]
+
+[node name="TestBehaviorTree" type="Node2D"]
+
+[node name="BTBehaviorTree" type="Node" parent="."]
+script = ExtResource("1_th5xy")
+is_active = true
+frames_per_tick = 1
+
+[node name="BTSequence" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("2_t0p8k")

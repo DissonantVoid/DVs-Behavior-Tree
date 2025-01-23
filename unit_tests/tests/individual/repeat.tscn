@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5lcdvmug5gxg"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="1_yllcn"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/decorators/repeat.gd" id="2_6r8uv"]
+[ext_resource type="Script" path="res://unit_tests/test_action.gd" id="3_k6db0"]
+
+[node name="Repeat" type="Node2D"]
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("1_yllcn")
+is_active = true
+agent = NodePath("..")
+frames_per_tick = 1
+
+[node name="BTRepeat" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("2_6r8uv")
+
+[node name="TestAction" type="Node" parent="BTBehaviorTree/BTRepeat"]
+script = ExtResource("3_k6db0")

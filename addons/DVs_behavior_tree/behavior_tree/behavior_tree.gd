@@ -115,7 +115,7 @@ func tick(delta : float):
 		return
 	
 	_ticks_counter += 1
-	if _ticks_counter >= frames_per_tick:
+	if _ticks_counter == frames_per_tick:
 		_ticks_counter = 0
 	else:
 		_set_status(Status.failure)
@@ -274,7 +274,7 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 		return false
 	
 	if message == "requesting_tree_structure":
-		var nodes : Dictionary # id : {name, depth, class_name, status, description, icon_path, is_leaf}
+		var nodes : Dictionary # id : {name, depth, class_name, status, description, icon_path, is_leaf, attachments}
 		var relations : Dictionary # parent id : [children ids]
 		
 		var global_class_list : Array[Dictionary] = ProjectSettings.get_global_class_list()
@@ -307,6 +307,7 @@ func _on_debugger_message_received(message : String, data : Array) -> bool:
 				"icon_path":icon_path, "is_leaf":node is BTLeaf, "attachments":attachments
 			}
 			
+			# relations
 			if node is BTBranch:
 				relations[node.get_instance_id()] = []
 				for child : BTNode in node.get_valid_children():
