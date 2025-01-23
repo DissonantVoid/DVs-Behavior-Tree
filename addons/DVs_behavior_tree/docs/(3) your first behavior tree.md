@@ -10,7 +10,7 @@ This is a step-by-step guide to making your own boss AI using the addon. It will
 
 Here's a preview of the boss AI that we'll be making, our boss will have an idle, combat and dead related behaviors and a few attack patterns that it will use based on its health:
 
-<img src="images/your first behavior tree/full.gif" width="500"/>
+<img src="images/your first behavior tree/full.gif" width="500px"/>
 
 We will cover:
 - The process of creating and iterating a behavior tree.
@@ -27,15 +27,15 @@ Here's the [source code](https://github.com/DissonantVoid/DVs-Behavior-Tree-Exam
 
 You'll need the latest version of this addon which you can grab from the assets library inside Godot or from [github](https://github.com/DissonantVoid/DVs-Behavior-Tree/releases).
 
-<img src="images/your first behavior tree/addon_release.png" width="600"/>
+<img src="images/your first behavior tree/addon_release.png" width="600px"/>
 
 You'll also need to download the [project template](https://github.com/DissonantVoid/DVs-Behavior-Tree-Example/releases) before we start. Make sure to download the version that matches with your addon version.
 
-<img src="images/your first behavior tree/guide_release.png" width="600"/>
+<img src="images/your first behavior tree/guide_release.png" width="600px"/>
 
 Add the addon and its script templates to the project and activate it in the plugins tab, if you get any errors just restart the editor after activating the addon and it should go away.
 
-<img src="images/your first behavior tree/unpacking addon.png" width="500"/>
+<img src="images/your first behavior tree/unpacking addon.png" width="500px"/>
 
 It's a pre-set project to save us the tedious setup process so we can just get to the fun stuff. It contains:
 - Assets (a few textures, sounds and music).
@@ -56,7 +56,7 @@ Alright can we do somethig now? yes deer reader. Please take delight in knowing 
 
 Let's give our boss a brain. All behavior trees start with a root node, open the boss scene and add a root node by searching for `BTBehaviorTree`.
 
-<img src="images/your first behavior tree/add_root_node.png" width="600"/>
+<img src="images/your first behavior tree/add_root_node.png" width="600px"/>
 
 You'll notice that there are some export variables that need setup. Toggle `active` on and set the agent to the root node of the scene. The agent can be any node and is used by behavior nodes to communicate with our boss script, we'll see that later. Your inspector should look like this:
 
@@ -76,7 +76,7 @@ While the addon comes with some generic leaf nodes. Generally speaking whenever 
 
 Add a new `Node` node as a child of the root node and let's name it "Idle". Attach a script and name it "idle", make sure it inherites from `BTAction` and let's save it to the boss folder. This will provide us with a template for our script.
 
-<img src="images/your first behavior tree/idle_behavior.png" width="600"/>
+<img src="images/your first behavior tree/idle_behavior.png" width="600px"/>
 
 Whenever we create our own custom scripts we attach them to a `Node` node. This is because behavior nodes are just scripts with no related scenes so we need a default node to attach that script to. Also, we chose to inherite the `BTAction` node, that is one of the 2 types of leaf nodes which are Actions (`BTAction`) and Conditions (`BTCondition`). An action is what you'll be inheriting most of the time to represent an action like idling in our case while condition is basically a boolean that checks some condition and returns true or false (success or failure).
 
@@ -94,7 +94,7 @@ The tick function is expected to set a status every time it's called by calling 
 And check it out! well... not much is going on visually.\
 Open the debugger in the editor while the game is running and navigate to "Behavior Trees", select the "Boss" tree and there it is, the very brain of our boss! A tiny little brain with one behavior but it's a start and it's ready for us to expand upon with more behaviors. It will look more like this in no time:
 
-<img src="images/your first behavior tree/graph_full.PNG"/>
+<img src="images/your first behavior tree/graph_full.png"/>
 
 ### Attack
 Time for the real stuff, let's add combat! Add another `Node` as sibling to our idle node and let's call it "SimpleShot", attach an action script just like before and save it in the boss folder. The root node is going to give us a warning, that's because the root node must only have one child and can't decide on its own what behavior to run if there are many. As we mentioned earlier decision making is the specialty of **Composite** nodes so let's add one. There are many built-in composite nodes available but the 2 that you'll use the most are `BTSequence` and `BTFallback`.
@@ -145,7 +145,7 @@ const _projectile_scene : PackedScene = preload("res://scenes/objects/projectile
 
 Your script should look like this:
 
-<img src="images/your first behavior tree/boss_shoot.png" width="600"/>
+<img src="images/your first behavior tree/boss_shoot.png" width="600px"/>
 
 If we run the game our boss will still be just idling, we can see why if we open the debugger tab again.
 
@@ -153,7 +153,7 @@ If we run the game our boss will still be just idling, we can see why if we open
 
 Since our idle behavior never fails the fallback has no reason to fallback to the next behavior. The fallback node is prioritizing the idle behavior since that's its first child. In a behavior tree typically children that come first are prioritized and checked first so let's swap our idle and simple shot nodes so idle becomes the second child and only runs if the boss isn't fighting. This easily turns our boss into the hardest boss ever.
 
-<img src="images/your first behavior tree/hardest_boss.gif" width="500"/>
+<img src="images/your first behavior tree/hardest_boss.gif" width="500px"/>
 
 To fix this we need to add a cooldown between shots, luckily there is a built-in action node for that called `BTWaitForTime` which as the name implies will wait for a certain time with a status of `Status.running` until the timer is finished in which case it will set its status to `Status.success`. We want the cooldown to happen after each shot so let's also add a `BTSequence` composite that will be the parent of both the simple shot action and the cooldown timer and set the timer to wait for 0.3seconds
 
@@ -182,7 +182,7 @@ The variable we want to check in the inspector is `is_fighting` and we want to c
 
 Now run the game and see how our boss goes back to not fighting because `is_fighting` is false. Open the debugger graph and hey! our tree is growing and we can visualize why the boss isn't fighting. Also, the root node in the graph has a button `open blackboard`, click that to see our tree's blackboard in real-time.
 
-<img src="images/your first behavior tree/bb_graph.png" width="500"/>
+<img src="images/your first behavior tree/bb_graph.png" width="500px"/>
 
 Another cool thing you can do in the debugger is force a node to be ticked for debugging purposes, try and click `force tick` of the simple shot node and see how that causes the boss to shoot at the player once. Cool beans ey?
 
@@ -271,7 +271,7 @@ func take_damage():
 
 Your boss script should look like this:
 
-<img src="images/your first behavior tree/boss_script_full.png" width="600"/>
+<img src="images/your first behavior tree/boss_script_full.png" width="600px"/>
 
 The `take_damage` function will be called whenever the player's projectile hits the boss and will simply reduce the boss's health by 1 and handle UI and sound. Notice the `if` statement at the bottom that sets `is_fighting` to true if it's not true already. This is to prevent an exploit where player can sit outside the detection range of the boss and shoot at it without the boss reacting.
 
@@ -301,7 +301,7 @@ Here's the solution: Place the **Dead** behavior as the first child of the fallb
 
 And we're donzo! Try to beat the boss now and once its health reaches zero it's a goner! You might find having to shoot the boss 100 times to test this a bit tedious so feel free to modify the `take_damage` function inside `boss.gd` to deal more damage while testing but make sure to set it back to 1 when done because we'll introduce some combat patterns and we'll need a big health bar to see all of them before the boss dies. Also, take a look at the graph!
 
-<img src="images/your first behavior tree/dead_graph.gif" width="600"/>
+<img src="images/your first behavior tree/dead_graph.gif" width="600px"/>
 
 ### Movement
 So far our boss idles by default, then switches to combat when triggered and finally dies. It's a functional boss and we can stop here if we want to but it would make for a boring boss fight. Let's add some very simple movement.

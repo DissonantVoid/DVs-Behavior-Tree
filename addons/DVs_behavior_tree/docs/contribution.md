@@ -32,7 +32,7 @@ The main class on the game side is:
 
 Here's a visualization of the communication pipeline:
 
-<img src="https://imgur.com/fSePdBC.png" width="500"/>
+<img src="./images/contribution/piepline.png" width="500px"/>
 
 # Icons
 There isn't much to help with at the moment unless new nodes are added or you have a better idea for an existing icon.\
