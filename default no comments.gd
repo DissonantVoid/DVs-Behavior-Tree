@@ -1,5 +1,5 @@
 # meta-default: true
-# meta-description: Base template for Decorators
+# meta-description: Base template for Composites
 extends _BASE_
 
 func enter():
@@ -14,5 +14,5 @@ func tick(delta : float):
 	if _active_child == null:
 		_set_status(Status.failure)
 		return
-	
+
 	_set_status(Status.undefined)

@@ -6,7 +6,7 @@ extends Node
 # NOTE: there is no auto_free() that automatically removes node after test ends
 #    dev is responsible for explicitly instancing and freeing nodes
 
-var test_runner : UTTestRunner
+signal error
 
 func before_all():
 	return
@@ -22,4 +22,4 @@ func after_each():
 
 func test_assert(statement : bool):
 	if statement == false:
-		test_runner.eyo_we_got_problems_chief()
+		error.emit()

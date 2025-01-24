@@ -11,8 +11,8 @@ func exit(is_interrupted : bool):
 func tick(delta : float):
 	super(delta)
 	
-  if _active_child == null:
+	if _active_child == null:
 		_set_status(Status.failure)
 		return
-
+	
 	_set_status(Status.undefined)

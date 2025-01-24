@@ -14,9 +14,9 @@ func exit(is_interrupted : bool):
 # called after enter() everytime the tree is ticked, use for processing node logic
 func tick(delta : float):
 	super(delta)
-
-  # ensure that the decorator has a child
-  if _active_child == null:
+	
+	# ensure that the decorator has a child
+	if _active_child == null:
 		_set_status(Status.failure)
 		return
 	
