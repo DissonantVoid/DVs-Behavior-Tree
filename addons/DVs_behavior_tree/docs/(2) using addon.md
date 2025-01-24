@@ -12,7 +12,7 @@
 ## Setup
 The first step in using a behavior tree is to setup its nodes, this works similar to any nodes hierarchy in godot.
 
-<img src="https://imgur.com/nGM76CE.png" width="300"/>
+<img src="images/using addon/setup.png" width="300px"/>
 
 Nodes will show editor warnings to help you set things up correctly.\
 Other nodes that aren't part of this addon can be added anywhere in the tree and will simply be ignored.
@@ -28,42 +28,43 @@ An example of this is moving an agent from A to B, the agent will set its status
 A blackboard is simply a Dictionary that holds data shared between all nodes in a behavior tree, it acts as a central storage for any node to access and modify. For example, a blackboard can store the current health of an agent, allowing other nodes to adapt their behavior so the agent is more likely to flee if its health is low or enter a death state if its health reches zero.\
 There is also global blackboard, which is shared between all trees in the game. Note that the global blackboard is static meaning that it exists even when no instance of a behavior tree exists so the user is responsible for erasing variables that is no longer in use. An example use case is storing environmental information, such as the time of day or player location, which can then be accessed by multiple agents for different reasons.
 
-# <img width="32px" src="../icons/node.svg">Nodes
+# <img width="32px" src="../icons/node.svg"/>Nodes
 All behavior tree nodes inherite from `BTNode`. These are all the built-in behavior nodes:
-## <img width="16px" src="../icons/leaf.svg">Leaves
+## <img width="16px" src="../icons/leaf.svg"/>Leaves
 Leaves inherite from `BTLeaf`.\
 The addon comes with a few built in leaves but they tend to be specific to each game and its implementation so you'll mostly have to create your own custom leaves (we will cover that below).\
 A leaf node cannot have any children and is one of 2 types: actions and conditions.\
-### <img width="16px" src="../icons/action.svg">Actions
+### <img width="16px" src="../icons/action.svg"/>Actions
 Actions inherite from `BTAction`.\
 An action leaf performs an action such as movement or attacking or playing an animation etc...
-- <img width="16px" src="../icons/blackboard_modify.svg"> **blackboard_modify**: Writes or erases a blackboard entry.
-- <img width="16px" src="../icons/wait_for_time.svg"> **wait_for_time**: Returns running for a certain time before returning success.
+- <img width="16px" src="../icons/blackboard_modify.svg"/> **blackboard_modify**: Writes or erases a blackboard entry.
+- <img width="16px" src="../icons/wait_for_time.svg"/> **wait_for_time**: Returns running for a certain time before returning success.
+- <img width="16px" src="../icons/signal_emitter.svg"/> **signal_emitter**: Emits a signal defined in the agent script.
 
-- <img width="16px" src="../icons/control_animation_player.svg"> **extras/control_animation_player**: Calls different animation player functions and optionally waits for it to finish.
-- <img width="16px" src="../icons/control_sound.svg"> **extras/control_sound**: Calls different audio stream player functions and optionally waits for it to finish.
-- <img width="16px" src="../icons/control_particles.svg"> **extras/control_particles**: Sets particle node to emit/stop and optionally waits for it to finish.
-### <img width="16px" src="../icons/condition.svg">Conditions
+- <img width="16px" src="../icons/control_animation_player.svg"/> **extras/control_animation_player**: Calls different animation player functions and optionally waits for it to finish.
+- <img width="16px" src="../icons/control_sound.svg"/> **extras/control_sound**: Calls different audio stream player functions and optionally waits for it to finish.
+- <img width="16px" src="../icons/control_particles.svg"/> **extras/control_particles**: Sets particle node to emit/stop and optionally waits for it to finish.
+### <img width="16px" src="../icons/condition.svg"/>Conditions
 Conditions inherite from `BTCondition`.\
 A condition leaf acts as a boolean, checking some condition and returning either success or failure.
-- <img width="16px" src="../icons/blackboard_check.svg"> **blackboard_check**: Checks a key against an expression using a specified condition type.
+- <img width="16px" src="../icons/blackboard_check.svg"/> **blackboard_check**: Checks a key against an expression using a specified condition type.
 
-## <img width="16px" src="../icons/branch.svg">Branches
+## <img width="16px" src="../icons/branch.svg"/>Branches
 Branches inherite from `BTBranch`.\
 A branch is a node that can have children nodes.
-- <img width="16px" src="../icons/behavior_tree.svg"> **behavior_tree**: The root of a behavior tree.
-### <img width="16px" src="../icons/decorator.svg">Decorators
+- <img width="16px" src="../icons/behavior_tree.svg"/> **behavior_tree**: The root of a behavior tree.
+### <img width="16px" src="../icons/decorator.svg"/>Decorators
 Decorators inherite from `BTDecorator`.\
 Decorators can only have a single child which can be any other node.\
 A decorator branch takes the status of its child node and modifies it.
 
-- <img width="16px" src="../icons/cooldown.svg"> **cooldown**: If child returns success or failure the cooldown will start preventing child from ticking again until a certain number of ticks occures, while the cooldown is active it will return the last status that the child has returned before the cooldown.\
+- <img width="16px" src="../icons/cooldown.svg"/> **cooldown**: If child returns success or failure the cooldown will start preventing child from ticking again until a certain number of ticks occures, while the cooldown is active it will return the last status that the child has returned before the cooldown.\
 Example: Preventing an expensive condition check from running when it's not nessesary to recheck the result every tick.
 
-- <img width="16px" src="../icons/force_status.svg"> **force_status**: Forces success or failure to be returned.\
+- <img width="16px" src="../icons/force_status.svg"/> **force_status**: Forces success or failure to be returned.\
 Example: Running a non-critical action that we don't care about its status. A scavenger runs a sequence: Enter House->Check Loot Chest->Exit. In this case we don't care if Check Loot Chest succeeds or fails so we can attach it to a Force Status node that always returns success.
 
-- <img width="16px" src="../icons/inversion.svg"> **inversion**: Inverts the status of its child.
+- <img width="16px" src="../icons/inversion.svg"/> **inversion**: Inverts the status of its child.
 
 | Child Status | Decorator Status |
 | ---     | --- |
@@ -73,10 +74,10 @@ Example: Running a non-critical action that we don't care about its status. A sc
 
 Example: Checking if a condition node is false without the need for 2 condition nodes for true and false. For example a condition "is hungry?" can be attached to an inverter to check if "is not hungry?".
 
-- <img width="16px" src="../icons/repeat.svg"> **repeat**: Ticks child a certain number of times, can optionally be set to return success if a certain status is returned. If child returns running, it will not count that tick.\
+- <img width="16px" src="../icons/repeat.svg"/> **repeat**: Ticks child a certain number of times, can optionally be set to return success if a certain status is returned. If child returns running, it will not count that tick.\
 Example: A lumberjack NPC that hits a tree 3 times before it falls, the sequence would look like: Go To Tree->Repeat3(Hit Animation).
 
-- <img width="16px" src="../icons/time_limit.svg"> **time_limit**: Fails if child fails to return success or failure before the timeout, otherwise returns child's status.
+- <img width="16px" src="../icons/time_limit.svg"/> **time_limit**: Fails if child fails to return success or failure before the timeout, otherwise returns child's status.
 
 | Child Status | Decorator Status |
 | ---     | --- |
@@ -84,10 +85,10 @@ Example: A lumberjack NPC that hits a tree 3 times before it falls, the sequence
 | failure | failure |
 | running | failure if timeout, else running |
 
-### <img width="16px" src="../icons/composite.svg">Composites
+### <img width="16px" src="../icons/composite.svg"/>Composites
 Composites inherite from `BTComposite`.\
 Composites can have 2 of more children which are ticked in a certain order, typically from left to right.
-- <img width="16px" src="../icons/fallback.svg"> **fallback**: Ticks its children from left to right, if a child fails it ticks the next child, otherwise returns the child's status. Can be thought of as an "OR" node in that it only executes the next child if the previous child fails.
+- <img width="16px" src="../icons/fallback.svg"/> **fallback**: Ticks its children from left to right, if a child fails it ticks the next child, otherwise returns the child's status. Can be thought of as an "OR" node in that it only executes the next child if the previous child fails.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -97,7 +98,7 @@ Composites can have 2 of more children which are ticked in a certain order, typi
 
 Example: An NPC that determines whether to work or go to sleep depending on the time of day: Fallback->Day Routine, Night Routine.
 
-- <img width="16px" src="../icons/sequence.svg"> **sequence**: Ticks its children from left to right, if a child succeeds it ticks the next child, otherwise returns the child's status. Can be thought of as an "AND" node in that it only executes the next child if the previous child succeeds.
+- <img width="16px" src="../icons/sequence.svg"/> **sequence**: Ticks its children from left to right, if a child succeeds it ticks the next child, otherwise returns the child's status. Can be thought of as an "AND" node in that it only executes the next child if the previous child succeeds.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -107,7 +108,7 @@ Example: An NPC that determines whether to work or go to sleep depending on the 
 
 Example: An NPC that needs to open a door: Sequence->Has Key?, Go To Door, Open Door, Enter.
 
-- <img width="16px" src="../icons/fallback_random.svg"> **fallback_random**: Similar to the normal fallback except children are ticked in a random order, when a child fails this picks a random next child.
+- <img width="16px" src="../icons/fallback_random.svg"/> **fallback_random**: Similar to the normal fallback except children are ticked in a random order, when a child fails this picks a random next child.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -117,7 +118,7 @@ Example: An NPC that needs to open a door: Sequence->Has Key?, Go To Door, Open 
 
 Example: Boss that picks a random attack out of its attack patterns.
 
-- <img width="16px" src="../icons/fallback_reactive.svg"> **fallback_reactive**: Similar to the normal fallback except when a child returns running this will start over from the first child and return running. The fallback is reactive in the sense that it rechecks previous children if a long running child is active reacting to any previous child as soon as its status goes from failure to success.
+- <img width="16px" src="../icons/fallback_reactive.svg"/> **fallback_reactive**: Similar to the normal fallback except when a child returns running this will start over from the first child and return running. The fallback is reactive in the sense that it rechecks previous children if a long running child is active reacting to any previous child as soon as its status goes from failure to success.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -127,7 +128,7 @@ Example: Boss that picks a random attack out of its attack patterns.
 
 Example: TODO
 
-- <img width="16px" src="../icons/sequence_random.svg"> **sequence_random**: Similar to the normal sequence except children are ticked in a random order, when a child succeeds this picks a random next child.
+- <img width="16px" src="../icons/sequence_random.svg"/> **sequence_random**: Similar to the normal sequence except children are ticked in a random order, when a child succeeds this picks a random next child.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -137,7 +138,7 @@ Example: TODO
 
 Example: Boss that picks a random attack out of its attack patterns.
 
-- <img width="16px" src="../icons/sequence_reactive.svg"> **sequence_reactive**: Similar to the normal sequence except when a child returns running this will start over from the first child and return running. The sequence is reactive in the sense that it rechecks previous children if a long running child is active reacting to any previous child as soon as its status goes from success to failure.
+- <img width="16px" src="../icons/sequence_reactive.svg"/> **sequence_reactive**: Similar to the normal sequence except when a child returns running this will start over from the first child and return running. The sequence is reactive in the sense that it rechecks previous children if a long running child is active reacting to any previous child as soon as its status goes from success to failure.
 
 | Child Status | Composite Status |
 | ---     | --- |
@@ -147,11 +148,11 @@ Example: Boss that picks a random attack out of its attack patterns.
 
 Example: An NPC that deals with some fragile machinery in order. As soon as a previously active machine turns off the NPC drops what she's doing and goes back to activating that machine.
 
-- <img width="16px" src="../icons/simple_parallel.svg"> **simple_parallel**: Runs exactly 2 nodes at the same time, the first is a leaf node and the second can be any tree node. When the first child returns success or failure the second child is interrupted and this returns first child status, unless delayed mode is active in which case this waits for the second child to finish after the first one has finished and returns the second child's status.
+- <img width="16px" src="../icons/simple_parallel.svg"/> **simple_parallel**: Runs exactly 2 nodes at the same time, the first is a leaf node and the second can be any tree node. When the first child returns success or failure the second child is interrupted and this returns first child status, unless delayed mode is active in which case this waits for the second child to finish after the first one has finished and returns the second child's status.
 
 Example: Reactive AI that runs a long sequence like Patrolling while having a parallel Condition node checking if a threat is in range, in which case the Patrolling sequence is interrupted.
 
-## <img width="16px" src="../icons/composite_attachment.svg">Composite Attachments
+## <img width="16px" src="../icons/composite_attachment.svg"/>Composite Attachments
 Composite attachements can be added as children of composite nodes. Unlike other nodes they don't inherite from `BTNode` and therefore don't set a status but still have access to the behavior tree. Attachements are inspired by Services from the Unreal Engine behavior tree implementation.\
 Composite attachments must be placed before any `BTNode` child. They will tick in parallel as long as the parent is ticking.
 
@@ -177,10 +178,10 @@ Example: An enemy running an attack combo sequence with the self abort condition
 # Custom Nodes
 While this addon comes with a bunch of built-in nodes, creating your own custom nodes is inevitable especially when it comes to custom leaves that tend to be game-specific.\
 There are built-in script templates to make inheriting easier.\
-<img src="https://imgur.com/0HYOrTi.png"/>
+<img src="./images/using addon/inheritance.png"/>
 
 To create your own node add a Godot `Node` to the scene then attach a script to it and make sure it inherites the proper node.\
-<img src="https://imgur.com/teDP7hk.png"/>
+<img src="./images/using addon/inheritance2.png"/>
 
 ## Nodes
 These are the node types that can be inherited:
@@ -246,7 +247,7 @@ A beginner guide on making your first behavior tree can be found [here](./(3)%20
 The addon comes with a powerful debugger that displays the flow of every active tree in real-time, access to local blackboards and the global blackboard as well as providing debugging tools to affect the tree as it's running.\
 The behavior tree debugger can be found in the bottom panel.
 
-<img src="https://imgur.com/DQsOtrp.png" width="700"/>
+<img src="./images/using addon/graph.png" width="700px"/>
 
 As the project runs all behavior tree instances will appear in the trees menu.
 Selecting a tree will show its graph, real-time flow and the status of each node.\
@@ -256,18 +257,18 @@ The graph comes with some debugging tools.
 ### Graph Actions
 Graph actions can be found in the graph tab and allow centering the tree to view as well as access to the global blackboard. Additionally the trees menu supports sorting both by Scene (instances of same .tscn) and by Instance Time (oldest instances first).
 
-<img src="https://imgur.com/JZKNRI2.png" width="700"/>
+<img src="./images/using addon/graph2.png" width="700px"/>
 
 ### Node Actions
 Nodes have their own actions that depend on the node type:
 - `BTNode` nodes have a "force tick" action that forces the tree to redirect flow to that node for debugging.
 - `BTBehaviorTree` nodes have a "open blackboard" action that open its local blackboard.
 
-<img src="https://imgur.com/qh7o9B4.png" width="400"/>
+<img src="./images/using addon/graph3.png" width="400px"/>
 
 The blackboard tab shows up when opening the local or global blackboard and displays its content.
 
-<img src="https://imgur.com/re9J1qD.png" width="300"/>
+<img src="./images/using addon/graph4.png" width="300px"/>
 
 # Best Practices
 There are many ways to approach organizing a behavior tree overtime and sometimes more than 1 way to achieve the same result, how to organize you behavior tree is an art of its own, here are some best practices that could help:

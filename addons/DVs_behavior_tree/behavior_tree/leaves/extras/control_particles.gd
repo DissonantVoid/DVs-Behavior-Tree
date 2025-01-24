@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/control_particles.svg")
 class_name BTControlParticles
-extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
+extends BTAction
 
 ## Sets particle node to emit/stop and optionally waits for it to finish.
 

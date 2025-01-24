@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/decorator.svg")
 class_name BTDecorator
-extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
+extends BTBranch
 
 ## Base class for decorators, which are nodes that take a single node child and modify its status.
 

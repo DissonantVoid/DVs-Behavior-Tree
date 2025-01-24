@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/simple_parallel.svg")
 class_name BTSimpleParallel
-extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
+extends BTComposite
 
 ## Runs exactly 2 nodes at the same time, the firt is a leaf node and the second can be any tree node.
 ## When the first child returns success or failure the second child is interrupted and this returns first child status,

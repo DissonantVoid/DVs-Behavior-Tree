@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/sequence_reactive.svg")
 class_name BTSequenceReactive
-extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
+extends BTComposite
 
 ## Similar to the normal sequence except when a child returns running
 ## this will start over from the first child and return running. The sequence is reactive

@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/fallback.svg")
 class_name BTFallback
-extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
+extends BTComposite
 
 ## Ticks its children from left to right, if a child fails it ticks the next child,
 ## otherwise returns the child's status. Can be thought of as an "OR" node in that it only

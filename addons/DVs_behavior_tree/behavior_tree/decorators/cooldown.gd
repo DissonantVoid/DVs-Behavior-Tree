@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/cooldown.svg")
 class_name BTCooldown
-extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
+extends BTDecorator
 
 ## If child returns success or failure the cooldown will start preventing child from
 ## ticking again until a certain number of ticks occures,

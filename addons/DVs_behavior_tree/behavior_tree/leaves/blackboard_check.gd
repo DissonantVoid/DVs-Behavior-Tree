@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/blackboard_check.svg")
 class_name BTBlackboardCheck
-extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/condition.gd"
+extends BTCondition
 
 ## Checks a key against an expression using a specified condition type.
 

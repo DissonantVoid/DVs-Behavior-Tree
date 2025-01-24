@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/blackboard_modify.svg")
 class_name BTBlackboardModify
-extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
+extends BTAction
 
 ## Writes or erases a blackboard entry.
 

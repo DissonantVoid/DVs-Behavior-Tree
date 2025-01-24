@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/fallback_reactive.svg")
 class_name BTFallbackReactive
-extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
+extends BTComposite
 
 ## Similar to the normal fallback except when a child returns running
 ## this will start over from the first child and return running. The fallback is reactive

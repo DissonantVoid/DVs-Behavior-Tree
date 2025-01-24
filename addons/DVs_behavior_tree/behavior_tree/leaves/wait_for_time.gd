@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/wait_for_time.svg")
 class_name BTWaitForTime
-extends "res://addons/DVs_behavior_tree/behavior_tree/leaves/action.gd"
+extends BTAction
 
 ## Returns running for a certain time before returning success.
 

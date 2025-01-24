@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/sequence_random.svg")
 class_name BTSequenceRandom
-extends "res://addons/DVs_behavior_tree/behavior_tree/composites/random_composite.gd"
+extends BTRandomComposite
 
 ## Similar to the normal sequence except children are ticked in a random order, when a child succeeds
 ## this picks a random next child.

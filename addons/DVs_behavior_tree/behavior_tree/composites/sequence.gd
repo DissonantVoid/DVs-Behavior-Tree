@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/sequence.svg")
 class_name BTSequence
-extends "res://addons/DVs_behavior_tree/behavior_tree/composites/composite.gd"
+extends BTComposite
 
 ## Ticks its children from left to right, if a child succeeds it ticks the next child,
 ## otherwise returns the child's status. Can be thought of as an "AND" node in that it only

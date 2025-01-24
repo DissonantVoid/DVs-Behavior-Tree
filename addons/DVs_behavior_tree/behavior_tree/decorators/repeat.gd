@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/repeat.svg")
 class_name BTRepeat
-extends "res://addons/DVs_behavior_tree/behavior_tree/decorators/decorator.gd"
+extends BTDecorator
 
 ## Ticks child a certain number of times, can optionally be set to return
 ## success if a certain status is returned. If child returns running, it will not count that tick.

@@ -1,7 +1,7 @@
 @tool
 @icon("res://addons/DVs_behavior_tree/icons/behavior_tree.svg")
 class_name BTBehaviorTree
-extends "res://addons/DVs_behavior_tree/behavior_tree/branch.gd"
+extends BTBranch
 
 ## The root of a behavior tree.
 
@@ -21,6 +21,10 @@ enum TickType {
 ## Allows nodes to access the agent by calling [code]behavior_tree.agent[/code].
 @export var agent : Node :
 	set(value):
+		if value is BTNode || value is BTCompositeAttachment:
+			push_warning("Agent can't be a behavior node")
+			return
+		
 		agent = value
 		update_configuration_warnings()
 ## Determines when the tree should tick.
@@ -53,13 +57,13 @@ var _ticks_counter : int = 0
 var _last_active_node : BTNode = null
 var _cached_path_to_last_active_node : Array[BTNode]
 
-
 func _ready():
 	if Engine.is_editor_hint(): return
 	
+	
+	# debugger
 	BTDebuggerListener.debugger_message_received.connect(_on_debugger_message_received)
 	
-	# debugger message
 	var name_in_debugger : String =\
 		agent.name if agent else name
 	BTDebuggerListener.send_message(
@@ -81,7 +85,6 @@ func _ready():
 			
 			for child : Node in node.get_children():
 				func_.call(child, func_)
-	
 	setup_recursive.call(self, setup_recursive)
 	
 	self.enter()
