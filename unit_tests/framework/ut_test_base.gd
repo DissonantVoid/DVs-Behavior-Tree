@@ -6,7 +6,7 @@ extends Node
 # NOTE: there is no auto_free() that automatically removes node after test ends
 #    dev is responsible for explicitly instancing and freeing nodes
 
-signal error
+signal error(message : String)
 
 func before_all():
 	return
@@ -20,6 +20,6 @@ func before_each():
 func after_each():
 	return
 
-func test_assert(statement : bool):
-	if statement == false:
-		error.emit()
+func assert_equal(a, b):
+	if a != b:
+		error.emit("# and # are not equal".format([a, b], "#"))

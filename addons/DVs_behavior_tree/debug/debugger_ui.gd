@@ -298,6 +298,7 @@ func _clear_graph():
 
 func _remove_tree_menu_entry(tree_id : int):
 	for btn : Button in _tree_menu_container.get_children():
+		# TODO: error here when tree_removed is called for the first time
 		if _tree_menu_btn_to_id_map[btn] == tree_id:
 			_tree_menu_btn_to_id_map.erase(btn)
 			btn.queue_free()

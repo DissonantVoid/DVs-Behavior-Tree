@@ -23,11 +23,14 @@ func test_custom_tick():
 	)
 	# make sure ticking doesn't happen
 	await get_tree().create_timer(1).timeout
-	test_assert(tick_counter[0] == 0)
+	assert_equal(tick_counter[0], 0)
 	
 	# make sure 1 tick happens when calling custom_tick
 	behavior_tree.custom_tick()
-	test_assert(tick_counter[0] == 1)
+	assert_equal(tick_counter[0], 1)
+	
+	# TEMP
+	assert_equal(true, false)
 
 func test_frames_per_tick():
 	behavior_tree._randomize_first_tick = false
@@ -56,8 +59,8 @@ func test_frames_per_tick():
 	
 	for i in 6:
 		behavior_tree.custom_tick()
-		test_assert(behavior_tree._ticks_counter == (i+1) % behavior_tree.frames_per_tick)
-		test_assert(tick_counter[0] == i+1)
+		assert_equal(behavior_tree._ticks_counter, (i+1) % behavior_tree.frames_per_tick)
+		assert_equal(tick_counter[0], i+1)
 
 func test_runtime_active_toggle():
 	var tick_counter : Array[int] = [0] # array to pass as reference
@@ -67,7 +70,7 @@ func test_runtime_active_toggle():
 	behavior_tree.is_active = false
 	
 	await get_tree().create_timer(1).timeout
-	test_assert(tick_counter[0] == 0)
+	assert_equal(tick_counter[0], 0)
 	
 	await get_tree().process_frame # wait for idle frame before activating
 	behavior_tree.is_active = true
@@ -75,10 +78,10 @@ func test_runtime_active_toggle():
 	const frames : int = 10
 	for i : int in frames:
 		await get_tree().process_frame
-	test_assert(tick_counter[0] == frames)
+	assert_equal(tick_counter[0], frames)
 	
 	tick_counter[0] = 0
 	behavior_tree.is_active = false
 	for i : int in 10:
 		await get_tree().process_frame
-	test_assert(tick_counter[0] == 0)
+	assert_equal(tick_counter[0], 0)

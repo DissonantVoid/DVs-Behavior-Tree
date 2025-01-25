@@ -30,9 +30,6 @@ func enter():
 	if _active_child:
 		_active_child.enter()
 
-func exit(is_interrupted : bool):
-	super(is_interrupted)
-
 func tick(delta : float):
 	super(delta)
 	if _active_child == null:

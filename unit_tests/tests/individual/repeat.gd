@@ -25,12 +25,12 @@ func test_stop_on_status():
 	test_action.tick_status = BTNode.Status.failure
 	await repeat.ticking # tick called in base class
 	await get_tree().process_frame # tick called in repeat.gds
-	test_assert(repeat.get_status() == BTNode.Status.running)
+	assert_equal(repeat.get_status(), BTNode.Status.running)
 	
 	test_action.tick_status = BTNode.Status.success
 	await repeat.ticking
 	await get_tree().process_frame
-	test_assert(repeat.get_status() == BTNode.Status.success)
+	assert_equal(repeat.get_status(), BTNode.Status.success)
 	
 	# stop on failure #
 	repeat.status = BTNode.StatusBinary.failure
@@ -38,9 +38,24 @@ func test_stop_on_status():
 	test_action.tick_status = BTNode.Status.success
 	await repeat.ticking
 	await get_tree().process_frame
-	test_assert(repeat.get_status() == BTNode.Status.running)
+	assert_equal(repeat.get_status(), BTNode.Status.running)
 	
 	test_action.tick_status = BTNode.Status.failure
 	await repeat.ticking
 	await get_tree().process_frame
-	test_assert(repeat.get_status() == BTNode.Status.success)
+	assert_equal(repeat.get_status(), BTNode.Status.success)
+
+func test_max_tries():
+	const tries : int = 5
+	
+	repeat.max_tries = tries
+	test_action.tick_status = BTNode.Status.success
+	
+	for i in tries:
+		await repeat.ticking
+		await get_tree().process_frame
+		
+		if i != tries-1:
+			assert_equal(repeat.get_status(), BTNode.Status.running)
+		else:
+			assert_equal(repeat.get_status(), BTNode.Status.success)

@@ -32,50 +32,56 @@ func setup(test_runner : UTTestRunner, directory_path : String):
 func _ready():
 	_tree.cell_selected.connect(_on_tree_cell_selected)
 
-func tests_completed(results : Array[UTTestRunner.ResultEntry]):
+func tests_completed(results : Array[Dictionary], show_errors_only : bool):
 	_input_blocker.hide()
 	
 	var script_count : int = results.size()
 	var methods_count : int = 0
 	var success : int = 0
 	
-	for entery : UTTestRunner.ResultEntry in results:
-		_output.text += entery.script_ + "\n"
-		methods_count += entery.results.size()
+	for entry : Dictionary in results:
+		var script_path : String = entry["script_path"]
+		var method_results : Array[UTTestRunner.MethodResult] = entry["results"]
 		
-		for method_name : String in entery.results.keys():
-			if entery.results[method_name].is_empty():
-				# no failures reported, assume success by default
-				_output.text += "\t"
-				_output.text += "[color=green][success][/color] #\n".format([method_name], "#")
+		_output.text += script_path + "\n"
+		methods_count += method_results.size()
+		
+		for result : UTTestRunner.MethodResult in method_results:
+			if result.error_lines.size() == 0:
+				if show_errors_only == false:
+					# no errors
+					_output.text += "\t"
+					_output.text += "[color=green][success][/color] #()\n".format([result.method], "#")
 				success += 1
 			else:
-				# failures
+				# errors
 				_output.text += "\t"
-				_output.text += "[color=red][failure][/color] #\n".format([method_name], "#")
-				for line_num : int in entery.results[method_name]:
+				_output.text += "[color=red][failure][/color] #()\n".format([result.method], "#")
+				for i : int in result.error_messages.size():
 					_output.text += "\t\t"
-					_output.text += "at line: #\n".format([str(line_num)], "#")
+					_output.text += "(#) at line: #\n".format([result.error_messages[i], str(result.error_lines[i])], "#")
+		_output.text += "\n"
 	
 	# summery
-	_output.text += "[# methods across # scripts tested, [color=green]#[/color] succeeded, [color=red]#[/color] failed]\n"\
+	_output.text += "[# scripts, # methods, [color=green]#[/color] succeeded, [color=red]#[/color] failed]\n"\
 		.format([methods_count, script_count, success, methods_count-success], "#")
-	_output.text += "-".repeat(16) + "\n"
+	_output.text += "[center]#[/center]\n".format(["_".repeat(16)], "#")
 
 func _on_tree_cell_selected():
 	if _tree.get_selected() == null:
 		_run_btn.disabled = true
 		_selected_scripts_label.text = "No scripts selected"
 	else:
-		_run_btn.disabled = false
-		
 		var cell_path : String = _tree.get_selected().get_meta("path")
 		if cell_path.ends_with(".gd"):
 			_selected_scripts = [cell_path]
 			_selected_scripts_label.text = "1 script selected (#)".format([cell_path], "#")
+			_run_btn.disabled = false
 		else:
 			_selected_scripts = _test_runner.files_handler.get_scripts_in_folder(cell_path, true)
 			_selected_scripts_label.text = "# scripts selected inside #".format([_selected_scripts.size(), cell_path], "#")
+			
+			_run_btn.disabled = _selected_scripts.size() == 0
 
 func _on_run_pressed():
 	if _selected_scripts:
