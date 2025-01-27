@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://bb0du14fwf7h"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="1_vcl76"]
+[ext_resource type="Script" path="res://unit_tests/fake_composite.gd" id="2_m2vct"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/sequence.gd" id="3_7vf3j"]
+[ext_resource type="Script" path="res://unit_tests/fake_action.gd" id="4_3qp52"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/fallback.gd" id="5_xmr0m"]
+
+[node name="SequenceNFallback" type="Node"]
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("1_vcl76")
+is_active = true
+agent = NodePath("..")
+frames_per_tick = 1
+
+[node name="FakeComposite" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("2_m2vct")
+
+[node name="BTSequence" type="Node" parent="BTBehaviorTree/FakeComposite"]
+script = ExtResource("3_7vf3j")
+
+[node name="FakeAction" type="Node" parent="BTBehaviorTree/FakeComposite/BTSequence"]
+script = ExtResource("4_3qp52")
+
+[node name="FakeAction2" type="Node" parent="BTBehaviorTree/FakeComposite/BTSequence"]
+script = ExtResource("4_3qp52")
+
+[node name="FakeAction3" type="Node" parent="BTBehaviorTree/FakeComposite/BTSequence"]
+script = ExtResource("4_3qp52")
+
+[node name="BTFallback" type="Node" parent="BTBehaviorTree/FakeComposite"]
+script = ExtResource("5_xmr0m")
+
+[node name="FakeAction" type="Node" parent="BTBehaviorTree/FakeComposite/BTFallback"]
+script = ExtResource("4_3qp52")
+
+[node name="FakeAction2" type="Node" parent="BTBehaviorTree/FakeComposite/BTFallback"]
+script = ExtResource("4_3qp52")
+
+[node name="FakeAction3" type="Node" parent="BTBehaviorTree/FakeComposite/BTFallback"]
+script = ExtResource("4_3qp52")

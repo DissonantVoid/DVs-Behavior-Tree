@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://om8x3llyjwln"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="1_fyaau"]
+[ext_resource type="Script" path="res://unit_tests/tests/individual/signal_emitter_agent.gd" id="1_whu5i"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/signal_emitter.gd" id="2_1udjm"]
+
+[node name="SignalEmitter" type="Node"]
+
+[node name="Agent" type="Node" parent="."]
+script = ExtResource("1_whu5i")
+
+[node name="BTBehaviorTree" type="Node" parent="Agent" node_paths=PackedStringArray("agent")]
+script = ExtResource("1_fyaau")
+is_active = true
+agent = NodePath("..")
+tick_type = 2
+frames_per_tick = 1
+
+[node name="BTSignalEmitter" type="Node" parent="Agent/BTBehaviorTree"]
+script = ExtResource("2_1udjm")
+
+[connection signal="a" from="Agent" to="Agent" method="_on_a"]
+[connection signal="b" from="Agent" to="Agent" method="_on_b"]

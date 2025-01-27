@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2vr66b6syexe"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="1_q5jqa"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/leaves/blackboard_modify.gd" id="2_oltkc"]
+
+[node name="BlackboardModify" type="Node"]
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("1_q5jqa")
+is_active = true
+agent = NodePath("..")
+tick_type = 2
+frames_per_tick = 1
+
+[node name="BTBlackboardModify" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("2_oltkc")

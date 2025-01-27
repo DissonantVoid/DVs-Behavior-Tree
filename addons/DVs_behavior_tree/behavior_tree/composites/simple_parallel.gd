@@ -10,7 +10,7 @@ extends BTComposite
 ## child's status.
 
 ## If false, the second child will be interrupted as soon as the first child finishes.
-## If truee, this will wait for the second child to finish after the first child finishes.
+## If true, this will wait for the second child to finish after the first child finishes.
 @export var _is_delayed : bool
 
 var _parallel_child : BTNode

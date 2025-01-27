@@ -1,0 +1,6 @@
+- conditional abort
+- uninterruptible
+- check that all nodes set a status after tick
+- behavior_tree.force_tick_node
+- behavior_tree._last_active_node
+- composite detecting attachments

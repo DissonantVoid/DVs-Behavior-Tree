@@ -2,7 +2,7 @@ extends PanelContainer
 
 @onready var _input_blocker : ColorRect = $"../InputBlocker"
 @onready var _tree : Tree = $MarginContainer/HSplitContainer/VBoxContainer/Tree
-@onready var _run_btn : Button = $MarginContainer/HSplitContainer/MarginContainer/VBoxContainer/Control/VBoxContainer/Run
+@onready var _run_btn : Button = $MarginContainer/HSplitContainer/MarginContainer/VBoxContainer/Control/VBoxContainer/HBoxContainer/Run
 @onready var _selected_scripts_label : Label = $MarginContainer/HSplitContainer/MarginContainer/VBoxContainer/Control/VBoxContainer/Selected
 @onready var _output : RichTextLabel = $MarginContainer/HSplitContainer/MarginContainer/VBoxContainer/Results/Output
 
@@ -59,12 +59,12 @@ func tests_completed(results : Array[Dictionary], show_errors_only : bool):
 				_output.text += "[color=red][failure][/color] #()\n".format([result.method], "#")
 				for i : int in result.error_messages.size():
 					_output.text += "\t\t"
-					_output.text += "(#) at line: #\n".format([result.error_messages[i], str(result.error_lines[i])], "#")
+					_output.text += "({0}) at line: {1}\n".format([result.error_messages[i], str(result.error_lines[i])])
 		_output.text += "\n"
 	
 	# summery
 	_output.text += "[# scripts, # methods, [color=green]#[/color] succeeded, [color=red]#[/color] failed]\n"\
-		.format([methods_count, script_count, success, methods_count-success], "#")
+		.format([script_count, methods_count, success, methods_count-success], "#")
 	_output.text += "[center]#[/center]\n".format(["_".repeat(16)], "#")
 
 func _on_tree_cell_selected():
@@ -90,3 +90,6 @@ func _on_run_pressed():
 		get_viewport().gui_release_focus()
 		
 		_test_runner.run_tests(_selected_scripts)
+
+func _on_clear_pressed():
+	_output.text = ""

@@ -51,8 +51,8 @@ class _ScriptData:
 		return _results
 
 class MethodResult:
-	func _init(method : String):
-		self.method = method
+	func _init(method_ : String):
+		method = method_
 	
 	var method : String
 	var error_lines : Array[int]
@@ -83,21 +83,27 @@ func run_tests(scripts : Array[String]):
 	for script_path : String in scripts:
 		var script_data : _ScriptData = _script_data[script_path]
 		_curr_script_data = script_data
+		
+		# instance a root node with script
 		var root : Node = Node.new()
 		root.set_script(script_data.script_)
+		root.error.connect(on_active_test_error)
 		_test_container.add_child(root)
 		
-		root.error.connect(on_active_test_error)
-		
-		await root.before_all()
+		await get_tree().process_frame # ensures any nodes created in before_all will _ready next frame
+		root.before_all()
 		
 		# test methods
 		for method : MethodResult in script_data.get_methods():
 			script_data.set_current_test_method(method)
-			await root.before_each()
+			
+			await get_tree().process_frame  # ensures any nodes created in before_each will _ready next frame
+			root.before_each()
+			
 			await root.call(method.method)
 			
 			await root.after_each()
+			
 			# check for orphans
 			await get_tree().process_frame
 			if root.get_child_count() > 0:

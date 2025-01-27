@@ -22,6 +22,7 @@ texture = ExtResource("2_x8t3j")
 script = ExtResource("2_s4sck")
 is_active = true
 agent = NodePath("..")
+frames_per_tick = 1
 
 [node name="BTFallback" type="Node" parent="BTBehaviorTree"]
 script = ExtResource("4_ve70f")

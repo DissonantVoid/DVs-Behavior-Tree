@@ -26,8 +26,7 @@ func _ready():
 
 func enter():
 	super()
-	# running super will calculate active_child as the first valid child just
-	# for us to override that, kinda inefficient but not a big deal for now
+	# override _active_child 
 	_active_child = _pick_rand_child()
 
 func _pick_rand_child() -> BTNode:

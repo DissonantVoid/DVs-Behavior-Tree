@@ -34,6 +34,7 @@ autowrap_mode = 2
 script = ExtResource("3_ycb7x")
 is_active = true
 agent = NodePath("..")
+frames_per_tick = 1
 
 [node name="BTFallback" type="Node" parent="BTBehaviorTree"]
 script = ExtResource("4_d14so")

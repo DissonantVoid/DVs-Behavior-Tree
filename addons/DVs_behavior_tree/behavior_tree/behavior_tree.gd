@@ -6,9 +6,9 @@ extends BTBranch
 ## The root of a behavior tree.
 
 enum TickType {
-	idle, ## Ticks happen on idle frames (process)
-	physics, ## Ticks happen on physics frames (physics process)
-	custom ## Ticks happen manually by calling custom_tick()
+	idle, ## Ticks happen on idle frames (process).
+	physics, ## Ticks happen on physics frames (physics_process).
+	custom ## Ticks happen manually by calling custom_tick().
 }
 
 ## Determines if the tree can run or not.
@@ -16,7 +16,17 @@ enum TickType {
 	set(value):
 		var was_active : bool = is_active
 		is_active = value
-		_setup_tick(was_active)
+		
+		if Engine.is_editor_hint(): return
+		
+		_is_active_or_tick_type_changed()
+		if is_node_ready():
+			# triggers only if _ready was called
+			if was_active && is_active == false:
+				self.exit(true)
+			elif was_active == false && is_active:
+				self.enter()
+
 ## The node that this tree belongs to, usually an enemy or an NPC.
 ## Allows nodes to access the agent by calling [code]behavior_tree.agent[/code].
 @export var agent : Node :
@@ -30,14 +40,16 @@ enum TickType {
 ## Determines when the tree should tick.
 @export var tick_type : TickType :
 	set(value):
-		if tick_type == value: return
 		tick_type = value
-		_setup_tick(is_active)
+		if Engine.is_editor_hint(): return
+		
+		_is_active_or_tick_type_changed()
 ## How many frames must pass before the tree ticks once, can be used as optimization if there are too many
 ## agents at once or as a form of LOD where less important agents are ticked less often.
 @export var frames_per_tick : int :
 	set(value):
 		frames_per_tick = max(value, 1)
+		update_configuration_warnings()
 		if Engine.is_editor_hint(): return
 		
 		_ticks_counter = 0
@@ -59,7 +71,6 @@ var _cached_path_to_last_active_node : Array[BTNode]
 
 func _ready():
 	if Engine.is_editor_hint(): return
-	
 	
 	# debugger
 	BTDebuggerListener.debugger_message_received.connect(_on_debugger_message_received)
@@ -87,6 +98,7 @@ func _ready():
 				func_.call(child, func_)
 	setup_recursive.call(self, setup_recursive)
 	
+	_is_active_or_tick_type_changed()
 	self.enter()
 
 func _exit_tree():
@@ -105,10 +117,12 @@ func _physics_process(delta : float):
 func enter():
 	super()
 	_active_child = _get_next_valid_child()
-	_setup_tick(is_active)
+	if _active_child:
+		_active_child.enter()
 
 func exit(is_interrupted : bool):
 	super(is_interrupted)
+	# super will exit _active_child
 
 func tick(delta : float):
 	super(delta)
@@ -127,9 +141,9 @@ func tick(delta : float):
 	_active_child.tick(delta)
 	var status : Status = _active_child.get_status()
 	if status == Status.success || status == Status.failure:
-		_active_child.exit(false)
+		self.exit(false)
 		# re-enter
-		_active_child.enter()
+		self.enter()
 		_set_status(Status.success)
 		return
 	
@@ -146,8 +160,8 @@ func custom_tick(delta : float = 1.0):
 
 func force_tick_node(target : BTNode):
 	if target == self:
-		exit(true)
-		enter()
+		self.exit(true)
+		self.enter()
 		return
 	
 	# ensure that target is a child of this tree
@@ -221,25 +235,13 @@ func get_path_to_active_node() -> Array[BTNode]:
 func is_active_tree_in_debugger() -> bool:
 	return _is_displayed_in_debugger
 
-func _setup_tick(was_active : bool):
-	if Engine.is_editor_hint(): return
-	
-	if is_node_ready() == false: await self.ready
-	
+func _is_active_or_tick_type_changed():
 	if is_active:
 		set_process(tick_type == TickType.idle)
 		set_physics_process(tick_type == TickType.physics)
 	else:
 		set_process(false)
 		set_physics_process(false)
-	
-	# only change child state if active state changes
-	# if we switch from one tick type to another just keep child ticking
-	if _active_child:
-		if was_active && is_active == false:
-			_active_child.exit(true)
-		elif was_active == false && is_active:
-			_active_child.enter()
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings : PackedStringArray = super()
@@ -247,10 +249,10 @@ func _get_configuration_warnings() -> PackedStringArray:
 	
 	if get_parent() is BTNode:
 		warnings.append("Behavior tree node must be the root of the tree")
+	if frames_per_tick == 0:
+		warnings.append("frames_per_tick is set to 0, no tick will occur")
 	if valid_children.size() != 1:
 		warnings.append("Behavior tree must have a single BTNode child")
-	if valid_children.size() == 1 && valid_children[0] is BTBranch == false:
-		warnings.append("Tree is useless if child isn't a BTBranch")
 	if agent == null:
 		warnings.append("Agent is null")
 	

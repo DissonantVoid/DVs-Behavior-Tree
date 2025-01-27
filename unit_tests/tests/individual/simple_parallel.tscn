@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://53xwrv6vmuhe"]
+
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/behavior_tree.gd" id="1_mqnhx"]
+[ext_resource type="Script" path="res://addons/DVs_behavior_tree/behavior_tree/composites/simple_parallel.gd" id="2_tn4w4"]
+[ext_resource type="Script" path="res://unit_tests/fake_action.gd" id="3_4460m"]
+[ext_resource type="Script" path="res://unit_tests/fake_composite.gd" id="4_d8ioh"]
+
+[node name="SimpleParallel" type="Node"]
+
+[node name="BTBehaviorTree" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = ExtResource("1_mqnhx")
+is_active = true
+agent = NodePath("..")
+frames_per_tick = 1
+
+[node name="BTSimpleParallel" type="Node" parent="BTBehaviorTree"]
+script = ExtResource("2_tn4w4")
+
+[node name="FakeAction" type="Node" parent="BTBehaviorTree/BTSimpleParallel"]
+script = ExtResource("3_4460m")
+
+[node name="FakeComposite" type="Node" parent="BTBehaviorTree/BTSimpleParallel"]
+script = ExtResource("4_d8ioh")
+pick_child = 0
+
+[node name="FakeAction" type="Node" parent="BTBehaviorTree/BTSimpleParallel/FakeComposite"]
+script = ExtResource("3_4460m")
+tick_status = 1

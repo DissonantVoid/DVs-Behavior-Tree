@@ -18,9 +18,8 @@ extends BTAction
 
 var _is_runtime_valid : bool
 
-func _ready():
-	if Engine.is_editor_hint(): return
-	
+func enter():
+	super()
 	_is_runtime_valid = _get_setup_warning().is_empty()
 
 func tick(delta : float):

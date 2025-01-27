@@ -8,6 +8,8 @@ extends Node
 
 signal error(message : String)
 
+# NOTE: before_all and before_each cannot use await to ensure that each test
+#       starts right after _ready
 func before_all():
 	return
 
@@ -22,4 +24,7 @@ func after_each():
 
 func assert_equal(a, b):
 	if a != b:
-		error.emit("# and # are not equal".format([a, b], "#"))
+		error.emit("{0} and {1} are not equal".format([a, b]))
+
+func assert_fail(message : String = "It. Just. Failed!"):
+	error.emit(message)
