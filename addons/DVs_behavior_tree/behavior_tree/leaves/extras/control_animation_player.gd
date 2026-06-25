@@ -67,16 +67,18 @@ func tick(delta : float):
 			if wait_for_finish == false:
 				_set_status(Status.success)
 			else:
-				_is_waiting_for_finish = true
-				animation_player.animation_finished.connect(_on_animation_finished)
+				if _is_waiting_for_finish == false:
+					_is_waiting_for_finish = true
+					animation_player.animation_finished.connect(_on_animation_finished)
 				_set_status(Status.running)
 		Action.play_backwards:
 			animation_player.play_backwards(animation_name, custom_blend)
 			if wait_for_finish == false:
 				_set_status(Status.success)
 			else:
-				_is_waiting_for_finish = true
-				animation_player.animation_finished.connect(_on_animation_finished)
+				if _is_waiting_for_finish == false:
+					_is_waiting_for_finish = true
+					animation_player.animation_finished.connect(_on_animation_finished)
 				_set_status(Status.running)
 			
 		Action.pause:
